@@ -6,11 +6,15 @@ export interface QuestLine {
 }
 
 export interface Quest {
+  id: string
   prerequisiteQuestId?: string
   levelRequirement: number
   title: string
   description: string
   rewards: QuestReward[]
+  timeLengthDays: number
+  timeLengthHours: number
+  timeLengthMinutes: number
 }
 
 export interface QuestReward {
@@ -18,4 +22,10 @@ export interface QuestReward {
   description: string
   type: 'experience' | 'money'
   amount: number
+}
+
+export interface QuestTimer {
+  characterId: string
+  questId: string
+  timeStarted: string
 }

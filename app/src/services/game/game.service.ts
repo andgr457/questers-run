@@ -6,12 +6,11 @@ import { Save } from "../../interfaces/game.interfaces"
  * @returns The new list of saves
  */
 export function addSave(save: Save): Save[] {
-  const savesFile = localStorage.getItem('saves')
-  const saves: Save[] = []
-  if(savesFile === null){
+  const saveData = localStorage.getItem('saves')
+  const saves: Save[] = JSON.parse(saveData ?? '[]')
+  if(saves.length === 0){
     saves.push(save)
   } else {
-    const saves: Save[] = JSON.parse(savesFile)
     saves.push(save)
   }
   localStorage.setItem('saves', JSON.stringify(saves))

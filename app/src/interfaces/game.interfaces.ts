@@ -14,7 +14,7 @@ export interface Game {
 
 export interface Save {
   saveName: string
-  lastSave: DateTime
+  lastSave: string
   charactersFile: string
   skillsFile: string
   questLinesFile: string
