@@ -23,12 +23,12 @@ const SavesComponent = (props: SavesComponentProperties) => {
     if(!saveNames.includes(newSaveName.toLowerCase())){
       const save: Save = {
         saveName: newSaveName.toLowerCase(),
-        mobsFile: '',
-        charactersFile: '',
+        mobs: '',
+        characters: '',
         lastSave: DateTime.utc().toISO(),
         questLinesFile: '',
-        skillsFile: '',
-        zonesFile: ''
+        skills: '',
+        zones: ''
       }
       props.addNewSave(save)
       setNewSaveName(undefined)

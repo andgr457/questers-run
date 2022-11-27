@@ -1,4 +1,30 @@
+import { DateTime } from "luxon"
 import { Save } from "../../interfaces/game.interfaces"
+
+/**
+ * This function updates a save in the save list.
+ * @param save The save to update to the list of saves
+ * @returns The new list of saves
+ */
+export function updateSave(save: Save): Save[] {
+  const saveData = localStorage.getItem('saves')
+  const saves: Save[] = JSON.parse(saveData ?? '[]')
+  if(saves.length === 0){
+    saves.push(save)
+  } else {
+    for(let s of saves){
+      if(s.saveName === save.saveName){
+        s = {
+          ...save,
+          lastSave: DateTime.utc().toISO()
+        }
+        break
+      }
+    }
+  }
+  localStorage.setItem('saves', JSON.stringify(saves))
+  return saves
+}
 
 /**
  * This function adds a save to the save list.

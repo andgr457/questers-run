@@ -15,9 +15,9 @@ export interface Game {
 export interface Save {
   saveName: string
   lastSave: string
-  charactersFile: string
-  skillsFile: string
+  characters: string
+  skills: string
   questLinesFile: string
-  mobsFile: string
-  zonesFile: string
+  mobs: string
+  zones: string
 }
