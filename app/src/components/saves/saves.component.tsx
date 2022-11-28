@@ -31,6 +31,7 @@ const SavesComponent = (props: SavesComponentProperties) => {
         zones: ''
       }
       props.addNewSave(save)
+      props.setSelectedSave(newSaveName)
       setNewSaveName(undefined)
     }
   }, [newSaveName, props])
