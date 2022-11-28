@@ -3,7 +3,14 @@ export interface Mob {
   level: number
   title: string
   description: string
+  stats: MobStats
   attack: number
   defense: number
-  zoneId?: string
+  zoneIds?: string[]
+}
+
+export interface MobStats {
+  health: number
+  mana: number
+  stamina: number
 }
