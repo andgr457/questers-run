@@ -3,7 +3,7 @@ import { Save } from '../../interfaces/game.interfaces'
 import { addSave, getSaves } from '../../services/game/game.service'
 import DashboardComponent from '../dashboard/dashboard.component'
 import './game.css'
-import SavesComponent from './saves.component'
+import SavesComponent from '../saves/saves.component'
 const GameComponent = () => {
   const [view, setView] = useState('saves')
   const [saves, setSaves]: [Save[], any] = useState([])
