@@ -40,27 +40,6 @@ const GameComponent = () => {
       setView('nav_saves')
       return
     }
-    if(loadedSaves.length === 1){
-      changeSave(loadedSaves[0].saveName)
-      setView('nav_dashboard')
-      return
-    }
-    if(loadedSaves.length > 1){
-      let newestSaveName = ''
-      for(const save of loadedSaves){
-        if(newestSaveName === ''){
-          newestSaveName = save.saveName
-          console.log(newestSaveName)
-          continue
-        } 
-        const saveDate = DateTime.fromISO(save.lastSave)
-        if(DateTime.fromISO(newestSaveName) > saveDate){
-          newestSaveName = save.saveName
-        }
-      }
-      changeSave(newestSaveName)
-      setView('nav_dashboard')
-    }
   }, [changeSave, setView, setSaves])
 
   const renderView = useMemo(() => {
