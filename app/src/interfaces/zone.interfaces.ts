@@ -1,5 +1,5 @@
 export interface Zone {
-  zoneId: string
+  id: string
   title: string
   description: string
   levelRequirement: number

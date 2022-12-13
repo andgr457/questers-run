@@ -13,6 +13,7 @@ export interface Game {
 }
 
 export interface Save {
+  id: string
   saveName: string
   lastSave: string
   characters: string

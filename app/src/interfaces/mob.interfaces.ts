@@ -1,4 +1,5 @@
 export interface Mob {
+  id: string
   image: string
   level: number
   title: string

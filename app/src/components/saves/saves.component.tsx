@@ -1,3 +1,4 @@
+import { createHash } from "crypto"
 import { DateTime } from "luxon"
 import { useCallback, useMemo, useState } from "react"
 import { Save } from "../../interfaces/game.interfaces"
@@ -14,7 +15,8 @@ const SavesComponent = (props: SavesComponentProperties) => {
 
   const newSaveChanged = useCallback((e: any) => {
     setNewSaveName(e.target.value)
-  }, [])
+    props.setView('nav_dashboard')
+  }, [props])
 
   const newSaveButtonClicked = useCallback((e: any) => {
     if(typeof newSaveName === 'undefined') return
@@ -22,6 +24,7 @@ const SavesComponent = (props: SavesComponentProperties) => {
     const saveNames = props.saves?.map(save => save.saveName) ?? []
     if(!saveNames.includes(newSaveName.toLowerCase())){
       const save: Save = {
+        id: `${newSaveName.replace(' ', '_').toLowerCase()}_${DateTime.utc().toMillis()}`,
         saveName: newSaveName.toLowerCase(),
         mobs: '',
         characters: '',
@@ -33,12 +36,14 @@ const SavesComponent = (props: SavesComponentProperties) => {
       props.addNewSave(save)
       props.setSelectedSave(newSaveName)
       setNewSaveName(undefined)
+      props.setView('nav_dashboard')
     }
   }, [newSaveName, props])
 
   const saveButtonClicked = useCallback((e: any) => {
     console.log(e.target.id)
     props.setSelectedSave(e.target.id)
+    props.setView('nav_dashboard')
   }, [props])
 
   const renderSaveList = useMemo(() => {

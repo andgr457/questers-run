@@ -1,6 +1,7 @@
 import { DateTime } from "luxon"
 
 export interface Character {
+  id: string
   name: string
   level: number
   image: string
@@ -18,6 +19,7 @@ export interface CharacterStats {
 }
 
 export interface CharacterSkill {
+  id: string
   name: string
   healthModifier: number
   manaModifier: number

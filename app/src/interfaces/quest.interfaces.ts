@@ -1,4 +1,5 @@
 export interface QuestLine {
+  id: string
   title: string
   description: string
   levelRequirement: number
@@ -18,6 +19,7 @@ export interface Quest {
 }
 
 export interface QuestReward {
+  id: string
   title: string
   description: string
   type: 'experience' | 'money'

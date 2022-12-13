@@ -2,7 +2,6 @@
 const DashboardComponent = () => {
   return (
     <>
-    Dashboard
     </>
   )
 }
