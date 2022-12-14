@@ -1,13 +1,65 @@
 body {
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: Roboto, sans-serif;
+	background-color: #004643;
+	color: #abd1c6;
 }
 
+.headline {
+	color: #fffffe;
+}
 button, input[type="submit"], input[type="reset"] {
-	background: none;
-	color: inherit;
 	border: none;
-	padding: 0;
+	padding: 5px;
+	border-radius: 2px;
 	font: inherit;
 	cursor: pointer;
 	outline: inherit;
+	background-color: #0f3433;
+	color: #fffffe;
+	font-weight: bolder;
+	font-size: small;
+}
+
+.titleContainer {
+	text-align: center;
+	font-size: large;
+	font-weight: bolder;
+}
+
+.dropdown {
+	border-radius: 3px;
+	border: none;
+	height: 20px;
+}
+
+a {
+	color: #f9bc60;
+}
+
+input {
+	border-radius: 3px;
+	border: none;
+	height: 20px;
+}
+
+.card {
+	border-radius: 4px;
+	height: auto;
+	width: auto;
+	margin: 20px;
+	background-color: #e8e4e6;
+	color: #0f3433;
+	padding: 5px;
+}
+
+.card table {
+	padding: 15px;
+}
+
+.card thead {
+	font-weight: bold;
+}
+
+.card td {
+	padding: 5px;
 }

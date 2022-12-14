@@ -11,6 +11,9 @@ const DashboardComponent = (props: DashboardProperties) => {
 
   return (
     <>
+    <div className="card">
+      Nothing here yet...
+    </div>
     </>
   )
 }

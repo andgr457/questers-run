@@ -47,22 +47,26 @@ const SavesComponent = (props: SavesComponentProperties) => {
 
   const renderSaveList = useMemo(() => {
     const newSaveButton = (
-      <button onClick={newSaveButtonClicked}>New Save</button>
+      <button onClick={newSaveButtonClicked}>Create New Save</button>
     )
     return (
       <>
       {props.saves?.map(save => {
         return (
-          <button key={save.saveName} id={save.saveName} onClick={saveButtonClicked}>
-            {save.saveName} - {DateTime.fromISO(save.lastSave).setZone(Intl.DateTimeFormat().resolvedOptions().timeZone).toFormat('MM/dd/yyyy t')}
-          </button>
+          <>
+            &nbsp;&nbsp;<button key={save.saveName} id={save.saveName} onClick={saveButtonClicked}>
+              {save.saveName}<br/>{DateTime.fromISO(save.lastSave).setZone(Intl.DateTimeFormat().resolvedOptions().timeZone).toFormat('MM/dd/yyyy t')}
+            </button>
+          </>
         )
       })}
+      <hr></hr>
       <div>
         New Game:
         <div>
           <input type='text' id='newSaveInput' placeholder="Enter save name..." onChange={newSaveChanged}></input>
         </div>
+        <hr></hr>
         <div>
           {newSaveButton}
         </div>
@@ -73,7 +77,9 @@ const SavesComponent = (props: SavesComponentProperties) => {
 
   return (
     <>
-      {renderSaveList}
+      <div className="card">
+        {renderSaveList}
+      </div>
     </>
   )
 }

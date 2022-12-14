@@ -91,12 +91,7 @@ const GameComponent = () => {
   const fullView = useMemo(() => {
     return (
       <>
-      <div className='navContainer'>
-        <NavComponent changeView={setView} saveSelected={selectedSave !== ''}></NavComponent>
-      </div>
-      <div className='titleContainer'>
-        {title}
-      </div>
+      <NavComponent title={title} changeView={setView} saveSelected={selectedSave !== ''}></NavComponent>
       <div className='mainContainer'>
         {renderView}
       </div>

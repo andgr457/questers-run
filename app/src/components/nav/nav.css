@@ -1,0 +1,16 @@
+.nav {
+  text-align: left;
+}
+
+.logoImg {
+  float: left;
+}
+
+.logoImg img {
+  height: 70px;
+}
+
+.logo {
+  font-weight: bolder;
+  font-size: xx-large;
+}

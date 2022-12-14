@@ -98,8 +98,9 @@ const CharactersComponent = (props: CharactersProperties) => {
     return (
       <div>
         <img src={Classes[characterClass].img} alt='Character Class Image'></img><br/>
-        <input id='newCharacterNameTxt' placeholder="Enter character name..." onChange={newCharacterNameChanged} value={characterName}></input><br/>
-        <select id='newCharacterClassSelect' placeholder="Select class" onChange={newCharacterClassChanged}>
+        Character Name<br/>
+        <input id='newCharacterNameTxt' placeholder="" onChange={newCharacterNameChanged} value={characterName}></input><br/>
+        Select a Class<br/><select className="dropdown" id='newCharacterClassSelect' placeholder="Select class" onChange={newCharacterClassChanged}>
           {classOptions}
         </select><hr/>
         <button id='newCharacterSaveBtn' onClick={newCharacterButtonClicked}>Save</button>
@@ -109,9 +110,12 @@ const CharactersComponent = (props: CharactersProperties) => {
 
   return (
     <>
-    {characterList}
-    <hr/>
-    {newCharacterSection}
+    <div className="card">
+      {characterList}
+      <hr/>
+      New Character
+      {newCharacterSection}
+    </div>
     </>
   )
 }

@@ -4,14 +4,15 @@ import './nav.css'
 interface NavProperties {
   changeView: any
   saveSelected: boolean
+  title: string
 }
 
 export const NavButtonNames: {[property: string]: {id: string, name: string}} = {
-  Saves: {id: 'nav_saves', name: 'Saves'},
-  Dashboard: {id: 'nav_dashboard', name: 'Dashboard'},
-  Characters: {id: 'nav_characters', name: 'Characters'},
-  Quests: {id: 'nav_quests', name: 'Quests'},
-  Zones: {id: 'nav_zones', name: 'Zones'},
+  Saves: {id: 'nav_saves', name: 'SAVES'},
+  Dashboard: {id: 'nav_dashboard', name: 'DASHBOARD'},
+  Characters: {id: 'nav_characters', name: 'CHARACTERS'},
+  Quests: {id: 'nav_quests', name: 'QUESTS'},
+  Zones: {id: 'nav_zones', name: 'ZONES'},
 
 }
 
@@ -23,14 +24,16 @@ const NavComponent = (props: NavProperties) => {
 
   const nav = useMemo(() => {
     let viewButtons = [(
-      <button id={NavButtonNames.Saves.id} onClick={navClicked}>{NavButtonNames.Saves.name}</button>
+      <button className='button nav' id={NavButtonNames.Saves.id} onClick={navClicked}>{NavButtonNames.Saves.name}</button>
     )]
     
     if(props.saveSelected) {
       for(const property of Object.getOwnPropertyNames(NavButtonNames)){
         if(property !== 'Saves'){
           viewButtons.push((
-            <button id={NavButtonNames[property].id} onClick={navClicked}>{NavButtonNames[property].name}</button>
+            <>
+              &nbsp;&nbsp;&nbsp;<button className='button nav' id={NavButtonNames[property].id} onClick={navClicked}>{NavButtonNames[property].name}</button>
+            </>
           ))
         }
       }
@@ -38,11 +41,26 @@ const NavComponent = (props: NavProperties) => {
     return viewButtons
   }, [props.saveSelected, navClicked])
 
-  return (
-    <>
-    {nav}
-    </>
-  )
+  const finalView = useMemo(() => {
+    return (
+      <>
+      <div className='logoImg'>
+        <img src='questers-run-logo.png' alt='Questers Run'></img>
+      </div>
+      <div className='logo'>
+        Quester's Run
+      </div>
+      <div>
+        {props.title.toUpperCase()}
+      </div>
+      <div className='nav'>
+        {nav}
+      </div>
+      </>
+    )
+  }, [props.title])
+
+  return finalView
 }
 
 export default NavComponent
