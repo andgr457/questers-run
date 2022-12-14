@@ -9,6 +9,7 @@ export interface Character {
   stats: CharacterStats
   skills: CharacterSkill[]
   experience: number
+  experienceToNextLevel: number
   money: number
 }
 

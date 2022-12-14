@@ -7,7 +7,6 @@ import NavComponent from '../nav/nav.component'
 import { addThing, getThings, updateThing } from '../../services/crud.service'
 import CharactersComponent from '../character/characters.component'
 import { Character } from '../../interfaces/character.interfaces'
-import { DateTime } from 'luxon'
 
 const GameComponent = () => {
   const [title, setTitle] = useState('')
@@ -17,8 +16,8 @@ const GameComponent = () => {
   const [selectedSave, setSelectedSave]: [string, any] = useState('')
 
   /** Saves */
-  const addNewSave = useCallback((e: Save) => {
-    const loadedSaves = addThing('saves', e)
+  const addSave = useCallback((e: Save) => {
+    const loadedSaves = addThing<Save>('saves', e)
     setSaves(loadedSaves)
   }, [])
 
@@ -31,23 +30,31 @@ const GameComponent = () => {
   }, [])
 
   /** Characters */
+  const addCharacter = useCallback((e: Character) => {
+    const loadedCharacters = addThing<Character>(`${selectedSave}_characters`, e)
+    setCharacters(loadedCharacters)
+  }, [selectedSave])
 
   /** Loading */
   useMemo(() => {
     const loadedSaves = getThings<Save>('saves') ?? []
     setSaves(loadedSaves)
-    if(loadedSaves.length === 0){
-      setView('nav_saves')
-      return
-    }
+    setView('nav_saves')
   }, [changeSave, setView, setSaves])
+
+  useMemo(() => {
+    /** Load Characters */
+    setCharacters(getThings<Character>(`${selectedSave}_characters`))
+    /** Load Quests */
+    /** Load Zones */
+  }, [selectedSave])
 
   const renderView = useMemo(() => {
     switch(view){
       case 'nav_saves': {
         setTitle('Game Saves')
         return (
-          <SavesComponent saves={saves} setView={setView} setSelectedSave={changeSave} addNewSave={addNewSave}></SavesComponent>
+          <SavesComponent saves={saves} setView={setView} setSelectedSave={changeSave} addNewSave={addSave}></SavesComponent>
         )
       }
       case 'nav_dashboard': {
@@ -59,11 +66,18 @@ const GameComponent = () => {
       case 'nav_characters': {
         setTitle(`Characters [${selectedSave}]`)
         return(
-          <CharactersComponent addCharacter={undefined} characters={[]}></CharactersComponent>
+          <CharactersComponent addCharacter={addCharacter} characters={characters}></CharactersComponent>
         )
       }
     }
-  }, [view, addNewSave, saves, changeSave])
+  }, [
+    view, 
+    addSave, 
+    saves, 
+    changeSave,
+    addCharacter,
+    characters
+  ])
 
   const fullView = useMemo(() => {
     return (

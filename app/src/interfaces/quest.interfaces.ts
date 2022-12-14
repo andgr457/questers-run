@@ -1,9 +1,11 @@
+import { Mob } from "./mob.interfaces"
+
 export interface QuestLine {
   id: string
   title: string
   description: string
   levelRequirement: number
-  quests: Quest[]
+  questIds: string[]
 }
 
 export interface Quest {
@@ -13,6 +15,8 @@ export interface Quest {
   title: string
   description: string
   rewards: QuestReward[]
+  mobs: Mob[]
+  mobPropbability: number
   timeLengthDays: number
   timeLengthHours: number
   timeLengthMinutes: number
@@ -27,7 +31,7 @@ export interface QuestReward {
 }
 
 export interface QuestTimer {
-  characterId: string
+  characterIds: string[]
   questId: string
   timeStarted: string
 }
