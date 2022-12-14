@@ -31,7 +31,7 @@ export function addThing<T>(storage: string, thing: any): T[] {
   return things
 }
 
-export function getThings<T>(storage: string): T[] | undefined {
+export function getThings<T>(storage: string): T[] {
   const things = localStorage.getItem(storage)
   if(things === null){
     return []

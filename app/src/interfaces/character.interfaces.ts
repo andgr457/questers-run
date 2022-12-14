@@ -4,8 +4,7 @@ export interface Character {
   id: string
   name: string
   level: number
-  image: string
-  classType: 'warrior' | 'mage' | 'rogue'
+  classType: 'Warrior' | 'Mage' | 'Rogue'
   stats: CharacterStats
   skills: CharacterSkill[]
   experience: number

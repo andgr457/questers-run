@@ -7,6 +7,8 @@ import NavComponent from '../nav/nav.component'
 import { addThing, getThings, updateThing } from '../../services/crud.service'
 import CharactersComponent from '../character/characters.component'
 import { Character } from '../../interfaces/character.interfaces'
+import FooterComponent from '../footer/footer.component'
+import QuestsComponent from '../quests/quests.component'
 
 const GameComponent = () => {
   const [title, setTitle] = useState('')
@@ -60,13 +62,19 @@ const GameComponent = () => {
       case 'nav_dashboard': {
         setTitle(`Dashboard [${selectedSave}]`)
         return (
-          <DashboardComponent></DashboardComponent>
+          <DashboardComponent saveName={selectedSave}></DashboardComponent>
         )
       }
       case 'nav_characters': {
         setTitle(`Characters [${selectedSave}]`)
         return(
           <CharactersComponent addCharacter={addCharacter} characters={characters}></CharactersComponent>
+        )
+      }
+      case 'nav_quests': {
+        setTitle(`Quests [${selectedSave}]`)
+        return(
+          <QuestsComponent></QuestsComponent>
         )
       }
     }
@@ -76,7 +84,8 @@ const GameComponent = () => {
     saves, 
     changeSave,
     addCharacter,
-    characters
+    characters,
+    selectedSave
   ])
 
   const fullView = useMemo(() => {
@@ -91,6 +100,7 @@ const GameComponent = () => {
       <div className='mainContainer'>
         {renderView}
       </div>
+      <FooterComponent></FooterComponent>
       </>
     )
   }, [setView, renderView, selectedSave, title])

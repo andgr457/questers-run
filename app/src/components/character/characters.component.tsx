@@ -7,77 +7,45 @@ interface CharactersProperties {
   addCharacter: any
 }
 
+export const Classes: {[property: string]: {id: string, name: string, img: string}} = {
+  Warrior: {id: 'warrior', name: 'Warrior', img: 'img/classes/icons8-warrior-62.png'},
+  Mage: {id: 'mage', name: 'Mage', img: 'img/classes/icons8-mage-64.png'},
+  Rogue: {id: 'rogue', name: 'Rogue', img: 'img/classes/icons8-rogue-48.png'},
+}
+
 const CharactersComponent = (props: CharactersProperties) => {
-  const [newCharacter, setNewCharacter]: [any, any] = useState(undefined)
+  const [characterName, setCharacterName] = useState(undefined)
+  const [characterClass, setCharacterClass] = useState('Warrior')
 
   const newCharacterNameChanged = useCallback((e: any) => {
-    console.log(e.target.value)
-    const name = e.target.value
-    let character: Character = undefined as any
-    if(typeof newCharacter === 'undefined'){
-      character = {
-        id: `${name}_${DateTime.utc().toMillis()}`,
-        classType: 'warrior',
-        experience: 0,
-        experienceToNextLevel: 0,
-        image: 'warrior.jpeg',
-        level: 1,
-        money: 0,
-        name: name,
-        skills: [],
-        stats: {
-          health: 10,
-          mana: 10,
-          stamina: 10
-        }
-      }
-    } else {
-      character = {
-        ...newCharacter,
-        id: `${name}_${DateTime.utc().toMillis()}`,
-        name: name
-      }
-    }
-    setNewCharacter(character)
-  }, [newCharacter])
+    setCharacterName(e.target.value)
+  }, [])
 
   const newCharacterClassChanged = useCallback((e: any) => {
-    console.log(e.target.value)
-    const clazz = e.target.value
-    let character: Character = undefined as any
-    if(typeof newCharacter === 'undefined'){
-      character = {
-        id: `${clazz}_${DateTime.utc().toMillis()}`,
-        classType: clazz,
-        experience: 0,
-        experienceToNextLevel: 0,
-        image: 'warrior.jpeg',
-        level: 1,
-        money: 0,
-        name: '',
-        skills: [],
-        stats: {
-          health: 10,
-          mana: 10,
-          stamina: 10
-        }
-      }
-    } else {
-      character = {
-        ...newCharacter,
-        class: clazz
-      }
-    }
-    setNewCharacter(character)
-  }, [newCharacter])
+    setCharacterClass(e.target.value)
+  }, [])
 
   const newCharacterButtonClicked = useCallback((e: any) => {
-    if(typeof newCharacter === 'undefined') return
-    if(typeof newCharacter.name === 'undefined' || typeof newCharacter.class === 'undefined') return
-    console.log(newCharacter)
-    props.addCharacter(newCharacter)
-    setNewCharacter(undefined)
-  }, [newCharacter])
+    if(typeof characterName === 'undefined' || typeof characterClass === 'undefined') return
+    const character: Character = {
+      id: `${characterName}_${DateTime.utc().toMillis()}`,
+      classType: characterClass as any,
+      experience: 0,
+      experienceToNextLevel: 0,
+      level: 1,
+      money: 0,
+      name: characterName,
+      skills: [],
+      stats: {
+        health: 10,
+        mana: 10,
+        stamina: 10
+      }
+    }
+    setCharacterName(undefined)
+    setCharacterClass('Warrior')
+    props.addCharacter(character)
+  }, [characterClass, characterName])
 
   const characterList = useMemo(() => {
     if(typeof props.characters === 'undefined' || props.characters.length === 0) {
@@ -101,7 +69,7 @@ const CharactersComponent = (props: CharactersProperties) => {
     for(const character of props.characters){
       characterRows.push((
         <tr>
-          <td>{character.image}</td>
+          <td><img src={`${Classes[character.classType].img}`} alt="Character Image"></img></td>
           <td>{character.name}</td>
           <td>{character.classType}</td>
           <td>{character.level} - {character.experience}/{character.experienceToNextLevel}</td>
@@ -123,18 +91,21 @@ const CharactersComponent = (props: CharactersProperties) => {
   }, [props.characters])
 
   const newCharacterSection = useMemo(() => {
+    const classOptions = []
+    for(const property of Object.getOwnPropertyNames(Classes)){
+      classOptions.push(<option id={Classes[property].id} key={Classes[property].id}>{Classes[property].name}</option>)
+    }
     return (
       <div>
-        <input id='newCharacterNameTxt' type='' placeholder="Enter character name..." onChange={newCharacterNameChanged}></input><hr/>
+        <img src={Classes[characterClass].img} alt='Character Class Image'></img><br/>
+        <input id='newCharacterNameTxt' placeholder="Enter character name..." onChange={newCharacterNameChanged} value={characterName}></input><br/>
         <select id='newCharacterClassSelect' placeholder="Select class" onChange={newCharacterClassChanged}>
-          <option id='warrior'>Warrior</option>
-          <option id='mage'>Mage</option>
-          <option id='rogue'>Rogue</option>
+          {classOptions}
         </select><hr/>
         <button id='newCharacterSaveBtn' onClick={newCharacterButtonClicked}>Save</button>
       </div>
     )
-  }, [newCharacterNameChanged, newCharacterClassChanged, newCharacterButtonClicked])
+  }, [newCharacterNameChanged, newCharacterClassChanged, newCharacterButtonClicked, characterClass, characterName])
 
   return (
     <>
