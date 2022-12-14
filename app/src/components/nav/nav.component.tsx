@@ -6,6 +6,15 @@ interface NavProperties {
   saveSelected: boolean
 }
 
+export const NavButtonNames: {[property: string]: {id: string, name: string}} = {
+  Saves: {id: 'nav_saves', name: 'Saves'},
+  Dashboard: {id: 'nav_dashboard', name: 'Dashboard'},
+  Characters: {id: 'nav_characters', name: 'Characters'},
+  Quests: {id: 'nav_quests', name: 'Quests'},
+  Zones: {id: 'nav_zones', name: 'Zones'},
+
+}
+
 const NavComponent = (props: NavProperties) => {
   const navClicked = useCallback((e: any) => {
     const id = e.target.id
@@ -14,16 +23,17 @@ const NavComponent = (props: NavProperties) => {
 
   const nav = useMemo(() => {
     let viewButtons = [(
-      <button id='nav_saves' onClick={navClicked}>Saves</button>
+      <button id={NavButtonNames.Saves.id} onClick={navClicked}>{NavButtonNames.Saves.name}</button>
     )]
+    
     if(props.saveSelected) {
-      viewButtons.push((
-        <button id='nav_dashboard' onClick={navClicked}>Dashboard</button>
-
-      ))
-      viewButtons.push((
-        <button id='nav_characters' onClick={navClicked}>Characters</button>
-      )) 
+      for(const property of Object.getOwnPropertyNames(NavButtonNames)){
+        if(property !== 'Saves'){
+          viewButtons.push((
+            <button id={NavButtonNames[property].id} onClick={navClicked}>{NavButtonNames[property].name}</button>
+          ))
+        }
+      }
     }
     return viewButtons
   }, [props.saveSelected, navClicked])

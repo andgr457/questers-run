@@ -15,7 +15,6 @@ const SavesComponent = (props: SavesComponentProperties) => {
 
   const newSaveChanged = useCallback((e: any) => {
     setNewSaveName(e.target.value)
-    props.setView('nav_dashboard')
   }, [props])
 
   const newSaveButtonClicked = useCallback((e: any) => {
