@@ -1,7 +1,7 @@
-import { createHash } from "crypto"
 import { DateTime } from "luxon"
 import { useCallback, useMemo, useState } from "react"
 import { Save } from "../../interfaces/game.interfaces"
+import { updateThing } from "../../services/crud.service"
 
 interface SavesComponentProperties {
   setSelectedSave: any
@@ -12,6 +12,8 @@ interface SavesComponentProperties {
 
 const SavesComponent = (props: SavesComponentProperties) => {
   const [newSaveName, setNewSaveName]: [any, any] = useState(undefined)
+  const [selectedFile, setSelectedFile] = useState(undefined)
+  const [importText, setImportText] = useState('')
 
   const newSaveChanged = useCallback((e: any) => {
     setNewSaveName(e.target.value)
@@ -40,15 +42,30 @@ const SavesComponent = (props: SavesComponentProperties) => {
   }, [newSaveName, props])
 
   const saveButtonClicked = useCallback((e: any) => {
-    console.log(e.target.id)
     props.setSelectedSave(e.target.id)
     props.setView('nav_dashboard')
   }, [props])
 
+  const fileSelected = useCallback((e: any) => {
+    setSelectedFile(e.target.files[0])
+  }, [])
+
+  const importFile = useCallback((e: any) => {
+    if(typeof selectedFile === 'undefined') return
+
+    var reader = new FileReader();
+    reader.readAsText(selectedFile, "UTF-8");
+    reader.onload = (evt) => {
+      const data = JSON.parse(evt.target?.result as string)
+      const save = data.save
+      const toons = data.characters
+      updateThing('saves', save)
+      updateThing(`${save.saveName}_characters`, toons)
+      setImportText('Save successfully imported!')
+    }
+  }, [selectedFile])
+
   const renderSaveList = useMemo(() => {
-    const newSaveButton = (
-      <button onClick={newSaveButtonClicked}>Create New Save</button>
-    )
     return (
       <>
       {props.saves?.map(save => {
@@ -62,18 +79,24 @@ const SavesComponent = (props: SavesComponentProperties) => {
       })}
       <hr></hr>
       <div>
-        New Game:
+        New Save
         <div>
           <input type='text' id='newSaveInput' placeholder="Enter save name..." onChange={newSaveChanged}></input>
         </div>
         <hr></hr>
         <div>
-          {newSaveButton}
+          
+          <button onClick={newSaveButtonClicked}>Create New Save</button>
         </div>
+        <hr/>
+        Import Save<br/><br/>
+        <input type="file" onChange={fileSelected}/><br/><br/>
+        <button onClick={importFile}>Import</button><br></br>
+        {importText}
       </div>
       </>
     )
-  }, [props.saves, newSaveButtonClicked, newSaveChanged, saveButtonClicked])
+  }, [props.saves, newSaveButtonClicked, newSaveChanged, saveButtonClicked, importText, importFile, fileSelected])
 
   return (
     <>

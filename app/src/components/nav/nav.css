@@ -1,5 +1,10 @@
 .nav {
   text-align: left;
+  margin-left: 20px;
+}
+
+.nav button {
+  width: 150px;
 }
 
 .logoImg {

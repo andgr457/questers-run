@@ -10,10 +10,10 @@ interface NavProperties {
 export const NavButtonNames: {[property: string]: {id: string, name: string}} = {
   Saves: {id: 'nav_saves', name: 'SAVES'},
   Dashboard: {id: 'nav_dashboard', name: 'DASHBOARD'},
+  ExportSave: {id: 'nav_export_save', name: 'EXPORT SAVE'},
   Characters: {id: 'nav_characters', name: 'CHARACTERS'},
   Quests: {id: 'nav_quests', name: 'QUESTS'},
   Zones: {id: 'nav_zones', name: 'ZONES'},
-
 }
 
 const NavComponent = (props: NavProperties) => {
@@ -53,6 +53,7 @@ const NavComponent = (props: NavProperties) => {
       <div>
         {props.title.toUpperCase()}
       </div>
+      <br/>
       <div className='nav'>
         {nav}
       </div>

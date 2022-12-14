@@ -77,6 +77,35 @@ const GameComponent = () => {
           <QuestsComponent></QuestsComponent>
         )
       }
+      case 'nav_export_save': {
+        setTitle(`Export Save [${selectedSave}]`)
+
+        const save = saves.find(s => s.saveName === selectedSave)
+        const data = {
+          save: save,
+          characters: characters
+        }
+        const url = window.URL.createObjectURL(
+          new Blob([JSON.stringify(data)]),
+        )
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute(
+          'download',
+          `${selectedSave}.json`,
+        )
+        document.body.appendChild(link)
+        link.click()
+        link.parentNode?.removeChild(link);
+      }
+
+      return (
+        <>
+        <div className='card'>
+          Save successfully exported!
+        </div>
+        </>
+      )
     }
   }, [
     view, 
