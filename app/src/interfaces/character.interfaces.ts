@@ -6,6 +6,7 @@ export interface Character {
   level: number
   classType: 'Warrior' | 'Mage' | 'Rogue'
   stats: CharacterStats
+  status: 'Idle' | 'Questing' | 'In the Tavern' | 'Unconscious'
   skills: CharacterSkill[]
   experience: number
   experienceToNextLevel: number

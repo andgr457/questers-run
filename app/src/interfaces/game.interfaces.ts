@@ -15,9 +15,4 @@ export interface Save {
   id: string
   saveName: string
   lastSave: string
-  characters: string
-  skills: string
-  questLinesFile: string
-  mobs: string
-  zones: string
 }

@@ -1,14 +1,14 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Save } from '../../interfaces/game.interfaces'
-import DashboardComponent from '../dashboard/dashboard.component'
 import './game.css'
 import SavesComponent from '../saves/saves.component'
 import NavComponent from '../nav/nav.component'
-import { addThing, getThings, updateThing } from '../../services/crud.service'
+import { addThing, getThings } from '../../services/crud.service'
 import CharactersComponent from '../character/characters.component'
 import { Character } from '../../interfaces/character.interfaces'
 import FooterComponent from '../footer/footer.component'
 import QuestsComponent from '../quests/quests.component'
+import TavernComponent from '../tavern/tavern.component'
 
 const GameComponent = () => {
   const [title, setTitle] = useState('')
@@ -23,9 +23,9 @@ const GameComponent = () => {
     setSaves(loadedSaves)
   }, [])
 
-  const updateCurrentSave = useCallback((e: Save) => {
-    updateThing('saves', e)
-  }, [])
+  // const updateCurrentSave = useCallback((e: Save) => {
+  //   updateThing('saves', e)
+  // }, [])
 
   const changeSave = useCallback((e: string) => {
     setSelectedSave(e)
@@ -42,7 +42,7 @@ const GameComponent = () => {
     const loadedSaves = getThings<Save>('saves') ?? []
     setSaves(loadedSaves)
     setView('nav_saves')
-  }, [changeSave, setView, setSaves])
+  }, [setView, setSaves])
 
   useMemo(() => {
     /** Load Characters */
@@ -59,12 +59,6 @@ const GameComponent = () => {
           <SavesComponent saves={saves} setView={setView} setSelectedSave={changeSave} addNewSave={addSave}></SavesComponent>
         )
       }
-      case 'nav_dashboard': {
-        setTitle(`Dashboard [${selectedSave}]`)
-        return (
-          <DashboardComponent saveName={selectedSave}></DashboardComponent>
-        )
-      }
       case 'nav_characters': {
         setTitle(`Characters [${selectedSave}]`)
         return(
@@ -77,35 +71,40 @@ const GameComponent = () => {
           <QuestsComponent></QuestsComponent>
         )
       }
-      case 'nav_export_save': {
-        setTitle(`Export Save [${selectedSave}]`)
-
-        const save = saves.find(s => s.saveName === selectedSave)
-        const data = {
-          save: save,
-          characters: characters
-        }
-        const url = window.URL.createObjectURL(
-          new Blob([JSON.stringify(data)]),
+      case 'nav_tavern': {
+        setTitle(`Tavern [${selectedSave}]`)
+        return (
+          <TavernComponent></TavernComponent>
         )
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute(
-          'download',
-          `${selectedSave}.json`,
-        )
-        document.body.appendChild(link)
-        link.click()
-        link.parentNode?.removeChild(link);
       }
+      // case 'nav_export_save': {
+      //   setTitle(`Export Save [${selectedSave}]`)
 
-      return (
-        <>
-        <div className='card'>
-          Save successfully exported!
-        </div>
-        </>
-      )
+      //   const save = saves.find(s => s.saveName === selectedSave)
+      //   const data = {
+      //     save: save,
+      //     characters: characters
+      //   }
+      //   const url = window.URL.createObjectURL(
+      //     new Blob([JSON.stringify(data)]),
+      //   )
+      //   const link = document.createElement('a')
+      //   link.href = url
+      //   link.setAttribute(
+      //     'download',
+      //     `${selectedSave}.json`,
+      //   )
+      //   document.body.appendChild(link)
+      //   link.click()
+      //   link.parentNode?.removeChild(link);
+      //   return (
+      //     <>
+      //     <div className='card'>
+      //       Save successfully exported!
+      //     </div>
+      //     </>
+      //   )
+      // }
     }
   }, [
     view, 

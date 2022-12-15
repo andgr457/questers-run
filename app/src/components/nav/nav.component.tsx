@@ -9,8 +9,8 @@ interface NavProperties {
 
 export const NavButtonNames: {[property: string]: {id: string, name: string}} = {
   Saves: {id: 'nav_saves', name: 'SAVES'},
-  Dashboard: {id: 'nav_dashboard', name: 'DASHBOARD'},
-  ExportSave: {id: 'nav_export_save', name: 'EXPORT SAVE'},
+  // ExportSave: {id: 'nav_export_save', name: 'EXPORT SAVE'},
+  Tavern: {id: 'nav_tavern', name: 'TAVERN'},
   Characters: {id: 'nav_characters', name: 'CHARACTERS'},
   Quests: {id: 'nav_quests', name: 'QUESTS'},
   Zones: {id: 'nav_zones', name: 'ZONES'},
@@ -24,7 +24,7 @@ const NavComponent = (props: NavProperties) => {
 
   const nav = useMemo(() => {
     let viewButtons = [(
-      <button className='button nav' id={NavButtonNames.Saves.id} onClick={navClicked}>{NavButtonNames.Saves.name}</button>
+      <button key={`${NavButtonNames.Saves.id}_nav_btn`} className='button nav' id={`${NavButtonNames.Saves.id}_nav_btn`} onClick={navClicked}>{NavButtonNames.Saves.name}</button>
     )]
     
     if(props.saveSelected) {
@@ -32,7 +32,7 @@ const NavComponent = (props: NavProperties) => {
         if(property !== 'Saves'){
           viewButtons.push((
             <>
-              &nbsp;&nbsp;&nbsp;<button className='button nav' id={NavButtonNames[property].id} onClick={navClicked}>{NavButtonNames[property].name}</button>
+              &nbsp;&nbsp;&nbsp;<button key={`${NavButtonNames[property].id}_nav_btn`} className='button nav' id={`${NavButtonNames[property].id}_nav_btn`} onClick={navClicked}>{NavButtonNames[property].name}</button>
             </>
           ))
         }
@@ -59,7 +59,7 @@ const NavComponent = (props: NavProperties) => {
       </div>
       </>
     )
-  }, [props.title])
+  }, [props.title, nav])
 
   return finalView
 }
