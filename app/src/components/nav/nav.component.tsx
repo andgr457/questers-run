@@ -24,7 +24,7 @@ const NavComponent = (props: NavProperties) => {
 
   const nav = useMemo(() => {
     let viewButtons = [(
-      <button key={`${NavButtonNames.Saves.id}_nav_btn`} className='button nav' id={`${NavButtonNames.Saves.id}_nav_btn`} onClick={navClicked}>{NavButtonNames.Saves.name}</button>
+      <button key={`${NavButtonNames.Saves.id}_nav_btn`} className='button nav' id={`${NavButtonNames.Saves.id}`} onClick={navClicked}>{NavButtonNames.Saves.name}</button>
     )]
     
     if(props.saveSelected) {
@@ -32,7 +32,7 @@ const NavComponent = (props: NavProperties) => {
         if(property !== 'Saves'){
           viewButtons.push((
             <>
-              &nbsp;&nbsp;&nbsp;<button key={`${NavButtonNames[property].id}_nav_btn`} className='button nav' id={`${NavButtonNames[property].id}_nav_btn`} onClick={navClicked}>{NavButtonNames[property].name}</button>
+              &nbsp;&nbsp;&nbsp;<button key={`${NavButtonNames[property].id}_nav_btn`} className='button nav' id={`${NavButtonNames[property].id}`} onClick={navClicked}>{NavButtonNames[property].name}</button>
             </>
           ))
         }
