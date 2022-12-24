@@ -1,10 +1,12 @@
 import { DateTime } from "luxon"
 import { useCallback, useMemo, useState } from "react"
 import { Character } from "../../interfaces/character.interfaces"
+import { addThing } from "../../services/crud.service"
 
 interface CharactersProperties {
   characters: Character[]
-  addCharacter: any
+  selectedSave: string
+  setCharacters: any
 }
 
 export const Classes: {[property: string]: {id: string, name: string, img: string, startingStats: {health: number, mana: number, stamina: number}}} = {
@@ -24,6 +26,11 @@ const CharactersComponent = (props: CharactersProperties) => {
   const newCharacterClassChanged = useCallback((e: any) => {
     setCharacterClass(e.target.value)
   }, [])
+
+  const addCharacter = useCallback((e: Character) => {
+    const loadedCharacters = addThing<Character>(`${props.selectedSave}_characters`, e)
+    props.setCharacters(loadedCharacters)
+  }, [props])
 
   const newCharacterButtonClicked = useCallback((e: any) => {
     if(characterName === '' || typeof characterClass === 'undefined') return
@@ -45,7 +52,7 @@ const CharactersComponent = (props: CharactersProperties) => {
     }
     setCharacterName('')
     setCharacterClass('Warrior')
-    props.addCharacter(character)
+    addCharacter(character)
   }, [characterClass, characterName, props])
 
   const characterList = useMemo(() => {
