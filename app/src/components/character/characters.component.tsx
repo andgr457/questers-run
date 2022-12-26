@@ -111,7 +111,7 @@ const CharactersComponent = (props: CharactersProperties) => {
       <div>
         <img src={Classes[characterClass].img} alt='Class'></img><br/>
         Character Name<br/>
-        <input id='newCharacterNameTxt' placeholder="" onChange={newCharacterNameChanged} value={characterName}></input><br/>
+        <input id='newCharacterNameTxt' placeholder="Enter name..." onChange={newCharacterNameChanged} value={characterName}></input><br/>
         Select a Class<br/><select value={characterClass} className="dropdown" id='newCharacterClassSelect' placeholder="Select class" onChange={newCharacterClassChanged}>
           {classOptions}
         </select><hr/>

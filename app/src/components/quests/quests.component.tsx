@@ -10,15 +10,12 @@ interface QuestsProperties {
 }
 
 const QUEST_IDS = {
-  newQuestName: 'id',
+  newQuestId: 'id',
+  newQuestTitle: 'title',
   newQuestDescription: 'description',
   newQuestLevel: 'levelRequirement',
   newQuestMobProbability: 'mobProbability',
   newQuestQuestLine: 'questLineId'
-}
-
-const QUEST_LINE_IDS = {
-
 }
 
 const QuestsComponent = (props: QuestsProperties) => {
@@ -37,51 +34,37 @@ const QuestsComponent = (props: QuestsProperties) => {
     prerequisiteQuestId: undefined
   })
 
-  const [newQuestLine, setNewQuestLine]: [QuestLine, any] = useState({
-    id: '',
-    description: '',
-    questIds: [],
-    title: ''
-  })
-
   const questCards = useMemo(() => {
-    if(props.quests.length === 0 || props.characters.length === 0){
+    const cards: any = []
+
+    return cards
+  }, [props.quests, props.characters, props.questLines])
+
+
+  const newQuestCard = useMemo(() => {
+    if(props.questLines.length === 0){
       return (
         <>
-        There are no quests [{props.quests.length}] or characters [{props.characters.length}]...
+        There are no quest lines to be able to create quests...
         </>
       )
     }
 
-    const cards: any = []
-
-    return cards
-  }, [props.quests, props.characters])
-
-  const newQuestLineCard = useMemo(() => {
-    return (
-      <div>
-
-      </div>
-    )
-  }, [])
-
-  const newQuestCard = useMemo(() => {
     const questName = (<div>
       Quest Name<br></br>
-      <input type='text' id={QUEST_IDS.newQuestName} placeholder="Enter quest name..."></input>
+      <input type='text' id={QUEST_IDS.newQuestTitle} placeholder="Enter title..."></input>
     </div>)
     const questDescription = (<div>
       Quest Description<br></br>
-      <input type='text' id={QUEST_IDS.newQuestDescription} placeholder="Enter quest description..."></input>
+      <input type='text' id={QUEST_IDS.newQuestDescription} placeholder="Enter description..."></input>
     </div>)
     const requiredLevel = (<div>
       Required Level<br></br>
-      <input type='number' id={QUEST_IDS.newQuestLevel} placeholder="Enter required level"></input>
+      <input type='number' id={QUEST_IDS.newQuestLevel} placeholder="Enter required level..."></input>
     </div>)
     const mobPropbability = (<div>
       Mob Probability (0-100) <br></br>
-      <input type='number' id={QUEST_IDS.newQuestMobProbability} placeholder="Enter probability 0-100"></input>
+      <input type='number' id={QUEST_IDS.newQuestMobProbability} placeholder="Enter probability 0-100..."></input>
     </div>)
     const questLineOptions = []
     for(const questLine of props.questLines){
@@ -109,8 +92,6 @@ const QuestsComponent = (props: QuestsProperties) => {
   return(
     <>
     <div className="card">
-      <h2>New Quest Line</h2>
-
       <h2>New Quest</h2>
       {newQuestCard}
       <hr></hr>
