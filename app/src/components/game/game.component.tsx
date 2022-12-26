@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Save } from '../../interfaces/game.interfaces'
 import './game.css'
 import SavesComponent from '../saves/saves.component'
@@ -21,7 +21,7 @@ const GameComponent = () => {
   const [quests, setQuests]: [Quest[], any] = useState([])
   const [questTimers, setQuestTimers]: [QuestTimer[], any] = useState([])
   const [questLines, setQuestLines]: [QuestLine[], any] = useState([])
-  const [audio, setAudio]: any = useState(new Audio("music/alexander-nakarada-medieval-chateau.mp3")); //this will prevent rendering errors on NextJS since NodeJs doesn't recognise HTML tags neither its libs.
+  const [audio]: any = useState(new Audio("music/alexander-nakarada-medieval-chateau.mp3")); //this will prevent rendering errors on NextJS since NodeJs doesn't recognise HTML tags neither its libs.
   const [isPlaying, setIsPlaying] = useState(true)
   const [musicUrl, setMusicUrl] = useState('img/music/icons8-audio-24.png')
   
@@ -98,7 +98,7 @@ const GameComponent = () => {
       case 'nav_questlines': {
         setTitle(`Quest Lines [${selectedSave}]`)
         return (
-          <QuestLinesComponent questLines={questLines}></QuestLinesComponent>
+          <QuestLinesComponent selectedSave={selectedSave} setQuestLines={setQuestLines}  questLines={questLines}></QuestLinesComponent>
         )
       }
       // case 'nav_export_save': {

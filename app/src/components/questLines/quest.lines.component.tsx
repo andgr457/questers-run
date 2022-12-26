@@ -1,8 +1,11 @@
 import { useCallback, useMemo, useState } from "react"
 import { QuestLine } from "../../interfaces/quest.interfaces"
+import { addThing } from "../../services/crud.service"
 
 interface QuestLinesProperties {
+  selectedSave: string
   questLines: QuestLine[]
+  setQuestLines: any
 }
 
 const QUEST_LINE_IDS = {
@@ -19,43 +22,88 @@ const QuestLinesComponent = (props: QuestLinesProperties) => {
   })
 
   const updateNewQuestLine = useCallback((e: any) => {
-    const newQl: QuestLine = {
-      id: 'TODO',
-      description: '',
-      title: ''
+    console.log(e.target.id)
+    console.log(e.target.value)
+    const ql = {
+      ...newQuestLine
     }
     if(e.target.id === QUEST_LINE_IDS.newQuestLineName){
-      newQl.title = e.target.value
+      ql.title = e.target.value
     }
     if(e.target.id === QUEST_LINE_IDS.newQuestLineDescription){
-      newQl.description = e.target.value
+      ql.description = e.target.value
     }
-    setNewQuestLine(newQl)
-  }, [])
+    setNewQuestLine(ql)
+  }, [newQuestLine])
+
+  const saveQuestLineButtonClicked = useCallback((e: any) => {
+    if(newQuestLine.title.trim() === '' || newQuestLine.description.trim() === '') return
+    const loadedQuestLines = addThing<QuestLine>(`${props.selectedSave}_questLines`, newQuestLine)
+    props.setQuestLines(loadedQuestLines)
+    setNewQuestLine({
+      id: '',
+      description: '',
+      title: ''
+    })
+  }, [newQuestLine])
 
   const newQuestLineCard = useMemo(() => {
     const questLineTitle = (<div>
       Quest Line Name<br/>
-      <input id={QUEST_LINE_IDS.newQuestLineName} type='text' placeholder="Enter name..." onChange={updateNewQuestLine}></input>
+      <input id={QUEST_LINE_IDS.newQuestLineName} type='text' placeholder="Enter name..." onChange={updateNewQuestLine} value={newQuestLine.title}></input>
     </div>)
     const questLineDescription = (<div>
       Quest Line Description<br/>
-      <input id={QUEST_LINE_IDS.newQuestLineDescription} type='text' placeholder="Enter description..." onChange={updateNewQuestLine}></input>
+      <input id={QUEST_LINE_IDS.newQuestLineDescription} type='text' placeholder="Enter description..." onChange={updateNewQuestLine} value={newQuestLine.description}></input>
+    </div>)
+    const saveQuestLineButton = (<div>
+      <br/>
+      <button id='saveQuestLine' onClick={saveQuestLineButtonClicked}>Save</button>
     </div>)
     return (
       <div className="card">
         {questLineTitle}
         {questLineDescription}
+        {saveQuestLineButton}
       </div>
     )
-  }, [updateNewQuestLine])
+  }, [updateNewQuestLine, saveQuestLineButtonClicked])
 
   const questLineCards = useMemo(() => {
-    const cards: any = []
-    for(const questLine of props.questLines){
-      
+    if(props.questLines.length === 0){
+      return (
+        <>
+        There are no quest lines, please create one...
+        </>
+      )
     }
-    return cards
+    const headers = (
+      <thead>
+        <tr>
+          <td>Title</td>
+          <td>Description</td>
+        </tr>
+      </thead>
+    )
+    const rows = []
+    for(const questLine of props.questLines){
+      rows.push(
+        <tr>
+          <td>{questLine.title}</td>
+          <td>{questLine.description}</td>
+        </tr>
+      )
+    }
+    const table = (
+      <table>
+        {headers}
+        <tbody>
+          {rows}
+        </tbody>
+      </table>
+    )
+    
+    return table
   }, [props.questLines])
 
 

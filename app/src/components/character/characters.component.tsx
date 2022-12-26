@@ -33,7 +33,7 @@ const CharactersComponent = (props: CharactersProperties) => {
   }, [props])
 
   const newCharacterButtonClicked = useCallback((e: any) => {
-    if(characterName === '' || typeof characterClass === 'undefined') return
+    if(characterName.trim() === '' || typeof characterClass === 'undefined') return
     const character: Character = {
       id: `${characterName}_${DateTime.utc().toMillis()}`,
       classType: characterClass as any,
