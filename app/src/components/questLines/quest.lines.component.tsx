@@ -1,3 +1,4 @@
+import { DateTime } from "luxon"
 import { useCallback, useMemo, useState } from "react"
 import { QuestLine } from "../../interfaces/quest.interfaces"
 import { addThing } from "../../services/crud.service"
@@ -25,7 +26,8 @@ const QuestLinesComponent = (props: QuestLinesProperties) => {
     console.log(e.target.id)
     console.log(e.target.value)
     const ql = {
-      ...newQuestLine
+      ...newQuestLine,
+      id: `${newQuestLine.title}_${DateTime.utc().toMillis()}`
     }
     if(e.target.id === QUEST_LINE_IDS.newQuestLineName){
       ql.title = e.target.value
@@ -40,12 +42,7 @@ const QuestLinesComponent = (props: QuestLinesProperties) => {
     if(newQuestLine.title.trim() === '' || newQuestLine.description.trim() === '') return
     const loadedQuestLines = addThing<QuestLine>(`${props.selectedSave}_questLines`, newQuestLine)
     props.setQuestLines(loadedQuestLines)
-    setNewQuestLine({
-      id: '',
-      description: '',
-      title: ''
-    })
-  }, [newQuestLine])
+  }, [newQuestLine, props])
 
   const newQuestLineCard = useMemo(() => {
     const questLineTitle = (<div>

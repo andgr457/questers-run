@@ -22,8 +22,8 @@ const GameComponent = () => {
   const [questTimers, setQuestTimers]: [QuestTimer[], any] = useState([])
   const [questLines, setQuestLines]: [QuestLine[], any] = useState([])
   const [audio]: any = useState(new Audio("music/alexander-nakarada-medieval-chateau.mp3")); //this will prevent rendering errors on NextJS since NodeJs doesn't recognise HTML tags neither its libs.
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [musicUrl, setMusicUrl] = useState('img/music/icons8-audio-24.png')
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [musicUrl, setMusicUrl] = useState('img/music/icons8-audio-24-disabled.png')
   
   /** Saves */
   const addSave = useCallback((e: Save) => {
