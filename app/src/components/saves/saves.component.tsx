@@ -17,7 +17,9 @@ const SavesComponent = (props: SavesComponentProperties) => {
 
   const newSaveChanged = useCallback((e: any) => {
     setNewSaveName(e.target.value)
-  }, [])
+    props.setSelectedSave(newSaveName)
+    props.setView('nav_characters')
+  }, [props, newSaveName])
 
   const newSaveButtonClicked = useCallback((e: any) => {
     if(typeof newSaveName === 'undefined') return

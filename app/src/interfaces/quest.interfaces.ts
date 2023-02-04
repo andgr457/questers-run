@@ -4,12 +4,11 @@ export interface QuestLine {
   id: string
   title: string
   description: string
-  levelRequirement: number
-  questIds: string[]
 }
 
 export interface Quest {
   id: string
+  questLineId: string
   prerequisiteQuestId?: string
   levelRequirement: number
   title: string
