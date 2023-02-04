@@ -23,8 +23,6 @@ const QuestLinesComponent = (props: QuestLinesProperties) => {
   })
 
   const updateNewQuestLine = useCallback((e: any) => {
-    console.log(e.target.id)
-    console.log(e.target.value)
     const ql = {
       ...newQuestLine,
       id: `${newQuestLine.title}_${DateTime.utc().toMillis()}`
