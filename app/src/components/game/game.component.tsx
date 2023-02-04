@@ -9,6 +9,8 @@ import { Character } from '../../interfaces/character.interfaces'
 import FooterComponent from '../footer/footer.component'
 import QuestsComponent from '../quests/quests.component'
 import TavernComponent from '../tavern/tavern.component'
+import { Quest, QuestLine, QuestTimer } from '../../interfaces/quest.interfaces'
+import QuestLinesComponent from '../questLines/quest.lines.component'
 
 const GameComponent = () => {
   const [title, setTitle] = useState('')
@@ -16,7 +18,13 @@ const GameComponent = () => {
   const [saves, setSaves]: [Save[], any] = useState([])
   const [characters, setCharacters]: [Character[], any] = useState([])
   const [selectedSave, setSelectedSave]: [string, any] = useState('')
-
+  const [quests, setQuests]: [Quest[], any] = useState([])
+  const [questTimers, setQuestTimers]: [QuestTimer[], any] = useState([])
+  const [questLines, setQuestLines]: [QuestLine[], any] = useState([])
+  const [audio]: any = useState(new Audio("music/alexander-nakarada-medieval-chateau.mp3")); //this will prevent rendering errors on NextJS since NodeJs doesn't recognise HTML tags neither its libs.
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [musicUrl, setMusicUrl] = useState('img/music/icons8-audio-24-disabled.png')
+  
   /** Saves */
   const addSave = useCallback((e: Save) => {
     const loadedSaves = addThing<Save>('saves', e)
@@ -28,15 +36,21 @@ const GameComponent = () => {
   // }, [])
 
   const changeSave = useCallback((e: string) => {
+    if(isPlaying){
+      audio.play()
+    }
     setSelectedSave(e)
-  }, [])
+  }, [isPlaying, audio])
 
-  /** Characters */
-  const addCharacter = useCallback((e: Character) => {
-    const loadedCharacters = addThing<Character>(`${selectedSave}_characters`, e)
-    setCharacters(loadedCharacters)
-  }, [selectedSave])
-
+  useMemo(() => {
+    if(isPlaying){
+      audio.loop = true
+      audio.play()
+    }else {
+      audio.pause()
+    }
+  }, [isPlaying, audio])
+  
   /** Loading */
   useMemo(() => {
     const loadedSaves = getThings<Save>('saves') ?? []
@@ -48,6 +62,10 @@ const GameComponent = () => {
     /** Load Characters */
     setCharacters(getThings<Character>(`${selectedSave}_characters`))
     /** Load Quests */
+    setQuests(getThings<Quest>(`${selectedSave}_quests`))
+    setQuestTimers(getThings<QuestTimer>(`${selectedSave}_questTimers`))
+    setQuestLines(getThings<QuestLine>(`${selectedSave}_questLines`))
+
     /** Load Zones */
   }, [selectedSave])
 
@@ -62,19 +80,25 @@ const GameComponent = () => {
       case 'nav_characters': {
         setTitle(`Characters [${selectedSave}]`)
         return(
-          <CharactersComponent addCharacter={addCharacter} characters={characters}></CharactersComponent>
+          <CharactersComponent selectedSave={selectedSave} setCharacters={setCharacters} characters={characters}></CharactersComponent>
         )
       }
       case 'nav_quests': {
         setTitle(`Quests [${selectedSave}]`)
         return(
-          <QuestsComponent></QuestsComponent>
+          <QuestsComponent characters={characters} quests={quests} questTimers={questTimers} questLines={questLines}></QuestsComponent>
         )
       }
       case 'nav_tavern': {
         setTitle(`Tavern [${selectedSave}]`)
         return (
           <TavernComponent></TavernComponent>
+        )
+      }
+      case 'nav_questlines': {
+        setTitle(`Quest Lines [${selectedSave}]`)
+        return (
+          <QuestLinesComponent selectedSave={selectedSave} setQuestLines={setQuestLines}  questLines={questLines}></QuestLinesComponent>
         )
       }
       // case 'nav_export_save': {
@@ -111,14 +135,27 @@ const GameComponent = () => {
     addSave, 
     saves, 
     changeSave,
-    addCharacter,
     characters,
-    selectedSave
+    selectedSave,
+    quests,
+    questTimers,
+    questLines,
+    
   ])
+
+  const toggleMusic = useCallback((e: any) => {
+    setIsPlaying(!isPlaying)
+    if(!isPlaying){
+      setMusicUrl('img/music/icons8-audio-24.png')
+    }else {
+      setMusicUrl('img/music/icons8-audio-24-disabled.png')
+    }
+  }, [isPlaying])
 
   const fullView = useMemo(() => {
     return (
       <>
+      <img src={musicUrl} alt='Enable/Disable Music' onClick={toggleMusic}></img>
       <NavComponent title={title} changeView={setView} saveSelected={selectedSave !== ''}></NavComponent>
       <div className='mainContainer'>
         {renderView}
@@ -126,7 +163,7 @@ const GameComponent = () => {
       <FooterComponent></FooterComponent>
       </>
     )
-  }, [setView, renderView, selectedSave, title])
+  }, [setView, renderView, selectedSave, title, musicUrl, toggleMusic])
 
   return fullView
 }

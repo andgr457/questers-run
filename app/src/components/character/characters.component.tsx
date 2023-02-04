@@ -1,10 +1,12 @@
 import { DateTime } from "luxon"
 import { useCallback, useMemo, useState } from "react"
 import { Character } from "../../interfaces/character.interfaces"
+import { addThing } from "../../services/crud.service"
 
 interface CharactersProperties {
   characters: Character[]
-  addCharacter: any
+  selectedSave: string
+  setCharacters: any
 }
 
 export const Classes: {[property: string]: {id: string, name: string, img: string, startingStats: {health: number, mana: number, stamina: number}}} = {
@@ -25,8 +27,13 @@ const CharactersComponent = (props: CharactersProperties) => {
     setCharacterClass(e.target.value)
   }, [])
 
+  const addCharacter = useCallback((e: Character) => {
+    const loadedCharacters = addThing<Character>(`${props.selectedSave}_characters`, e)
+    props.setCharacters(loadedCharacters)
+  }, [props])
+
   const newCharacterButtonClicked = useCallback((e: any) => {
-    if(characterName === '' || typeof characterClass === 'undefined') return
+    if(characterName.trim() === '' || typeof characterClass === 'undefined') return
     const character: Character = {
       id: `${characterName}_${DateTime.utc().toMillis()}`,
       classType: characterClass as any,
@@ -43,10 +50,11 @@ const CharactersComponent = (props: CharactersProperties) => {
       },
       status: 'Idle'
     }
+    
     setCharacterName('')
     setCharacterClass('Warrior')
-    props.addCharacter(character)
-  }, [characterClass, characterName, props])
+    addCharacter(character)
+  }, [characterClass, characterName, addCharacter])
 
   const characterList = useMemo(() => {
     if(typeof props.characters === 'undefined' || props.characters.length === 0) {
@@ -104,7 +112,7 @@ const CharactersComponent = (props: CharactersProperties) => {
       <div>
         <img src={Classes[characterClass].img} alt='Class'></img><br/>
         Character Name<br/>
-        <input id='newCharacterNameTxt' placeholder="" onChange={newCharacterNameChanged} value={characterName}></input><br/>
+        <input id='newCharacterNameTxt' placeholder="Enter name..." onChange={newCharacterNameChanged} value={characterName}></input><br/>
         Select a Class<br/><select value={characterClass} className="dropdown" id='newCharacterClassSelect' placeholder="Select class" onChange={newCharacterClassChanged}>
           {classOptions}
         </select><hr/>

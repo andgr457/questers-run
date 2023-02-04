@@ -12,8 +12,9 @@ export const NavButtonNames: {[property: string]: {id: string, name: string}} = 
   // ExportSave: {id: 'nav_export_save', name: 'EXPORT SAVE'},
   Tavern: {id: 'nav_tavern', name: 'TAVERN'},
   Characters: {id: 'nav_characters', name: 'CHARACTERS'},
+  QuestLines: {id: 'nav_questlines', name: 'QUEST LINES'},
   Quests: {id: 'nav_quests', name: 'QUESTS'},
-  Zones: {id: 'nav_zones', name: 'ZONES'},
+  Zones: {id: 'nav_zones', name: 'ZONES'}
 }
 
 const NavComponent = (props: NavProperties) => {
@@ -24,12 +25,14 @@ const NavComponent = (props: NavProperties) => {
 
   const nav = useMemo(() => {
     let viewButtons = [(
+      <>
       <button key={`${NavButtonNames.Saves.id}_nav_btn`} className='button nav' id={`${NavButtonNames.Saves.id}`} onClick={navClicked}>{NavButtonNames.Saves.name}</button>
+      </>
     )]
     
     if(props.saveSelected) {
       for(const property of Object.getOwnPropertyNames(NavButtonNames)){
-        if(property !== 'Saves'){
+        if(property !== 'Saves' && property !== 'Music'){
           viewButtons.push((
             <>
               &nbsp;&nbsp;&nbsp;<button key={`${NavButtonNames[property].id}_nav_btn`} className='button nav' id={`${NavButtonNames[property].id}`} onClick={navClicked}>{NavButtonNames[property].name}</button>
