@@ -19,26 +19,26 @@ const QUEST_IDS = {
 }
 
 const QuestsComponent = (props: QuestsProperties) => {
-  const [newQuest, setNewQuest]: [Quest, any] = useState({
-    id: '',
-    questLineId: '',
-    description: '',
-    levelRequirement: 0,
-    mobPropbability: 0,
-    mobs: [],
-    rewards: [],
-    timeLengthDays: 0,
-    timeLengthHours: 0,
-    timeLengthMinutes: 1,
-    title: '',
-    prerequisiteQuestId: undefined
-  })
+  // const [newQuest, setNewQuest]: [Quest, any] = useState({
+  //   id: '',
+  //   questLineId: '',
+  //   description: '',
+  //   levelRequirement: 0,
+  //   mobPropbability: 0,
+  //   mobs: [],
+  //   rewards: [],
+  //   timeLengthDays: 0,
+  //   timeLengthHours: 0,
+  //   timeLengthMinutes: 1,
+  //   title: '',
+  //   prerequisiteQuestId: undefined
+  // })
 
-  const questCards = useMemo(() => {
-    const cards: any = []
+  // const questCards = useMemo(() => {
+  //   const cards: any = []
 
-    return cards
-  }, [props.quests, props.characters, props.questLines])
+  //   return cards
+  // }, [props.quests, props.characters, props.questLines])
 
 
   const newQuestCard = useMemo(() => {
@@ -95,7 +95,7 @@ const QuestsComponent = (props: QuestsProperties) => {
       <h2>New Quest</h2>
       {newQuestCard}
       <hr></hr>
-      {questCards}
+      {/* {questCards} */}
     </div>
     </>
   )

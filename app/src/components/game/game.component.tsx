@@ -40,7 +40,7 @@ const GameComponent = () => {
       audio.play()
     }
     setSelectedSave(e)
-  }, [])
+  }, [isPlaying, audio])
 
   useMemo(() => {
     if(isPlaying){
@@ -49,7 +49,7 @@ const GameComponent = () => {
     }else {
       audio.pause()
     }
-  }, [isPlaying])
+  }, [isPlaying, audio])
   
   /** Loading */
   useMemo(() => {
@@ -135,7 +135,6 @@ const GameComponent = () => {
     addSave, 
     saves, 
     changeSave,
-    selectedSave,
     characters,
     selectedSave,
     quests,

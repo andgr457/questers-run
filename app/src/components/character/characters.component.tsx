@@ -50,10 +50,11 @@ const CharactersComponent = (props: CharactersProperties) => {
       },
       status: 'Idle'
     }
+    
     setCharacterName('')
     setCharacterClass('Warrior')
     addCharacter(character)
-  }, [characterClass, characterName, props])
+  }, [characterClass, characterName, props, addCharacter])
 
   const characterList = useMemo(() => {
     if(typeof props.characters === 'undefined' || props.characters.length === 0) {

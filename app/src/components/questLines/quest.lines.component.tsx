@@ -62,7 +62,7 @@ const QuestLinesComponent = (props: QuestLinesProperties) => {
         {saveQuestLineButton}
       </div>
     )
-  }, [updateNewQuestLine, saveQuestLineButtonClicked])
+  }, [updateNewQuestLine, saveQuestLineButtonClicked, newQuestLine])
 
   const questLineCards = useMemo(() => {
     if(props.questLines.length === 0){
