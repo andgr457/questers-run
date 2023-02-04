@@ -54,7 +54,7 @@ const CharactersComponent = (props: CharactersProperties) => {
     setCharacterName('')
     setCharacterClass('Warrior')
     addCharacter(character)
-  }, [characterClass, characterName, props, addCharacter])
+  }, [characterClass, characterName, addCharacter])
 
   const characterList = useMemo(() => {
     if(typeof props.characters === 'undefined' || props.characters.length === 0) {
