@@ -17,6 +17,7 @@ export interface CharacterStats {
   health: number
   mana: number
   stamina: number
+  dexterity: number
 }
 
 export interface CharacterSkill {

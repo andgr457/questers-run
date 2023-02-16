@@ -49,19 +49,31 @@ input {
 	margin-left: 50px;
 	margin: 20px;
 	background-color: #e8e4e6;
-	color: #0f3433;
+	color: #092020;
 	padding: 5px;
 }
 
-.card table {
+/* .card table {
 	padding: 15px;
 }
 
 .card thead {
 	font-weight: bold;
+
 }
 
 .card td {
 	padding: 5px;
 	text-align: center;
+	overflow: hidden; 
+	text-overflow: ellipsis; 
+	word-wrap: break-word;
+} */
+
+@media only screen and (max-width: 480px) {
+	/* horizontal scrollbar for tables if mobile screen */
+	.tablemobile {
+			overflow-x: auto;
+			display: block;
+	}
 }
