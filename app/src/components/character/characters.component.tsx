@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 import { useCallback, useMemo, useState } from "react"
-import { Character } from "../../interfaces/character.interfaces"
+import { Character, CharacterStats } from "../../interfaces/character.interfaces"
 import { addThing } from "../../services/crud.service"
 
 interface CharactersProperties {
@@ -9,10 +9,10 @@ interface CharactersProperties {
   setCharacters: any
 }
 
-export const Classes: {[property: string]: {id: string, name: string, img: string, startingStats: {health: number, mana: number, stamina: number}}} = {
-  Warrior: {id: 'warrior', name: 'Warrior', img: 'img/classes/icons8-warrior-62.png', startingStats: {health: 10, mana: 5, stamina: 15}},
-  Mage: {id: 'mage', name: 'Mage', img: 'img/classes/icons8-mage-64.png', startingStats: {health: 7, mana: 10, stamina: 10 }},
-  Rogue: {id: 'rogue', name: 'Rogue', img: 'img/classes/icons8-rogue-48.png', startingStats: {health: 7, mana: 5, stamina: 10 }},
+export const Classes: {[property: string]: {id: string, name: string, img: string, startingStats: CharacterStats}} = {
+  Warrior: {id: 'warrior', name: 'Warrior', img: 'img/classes/icons8-warrior-62.png', startingStats: {health: 10, mana: 5, stamina: 15, dexterity: 6}},
+  Mage: {id: 'mage', name: 'Mage', img: 'img/classes/icons8-mage-64.png', startingStats: {health: 7, mana: 10, stamina: 10, dexterity: 3 }},
+  Rogue: {id: 'rogue', name: 'Rogue', img: 'img/classes/icons8-rogue-48.png', startingStats: {health: 7, mana: 5, stamina: 10, dexterity: 10 }},
 }
 
 const CharactersComponent = (props: CharactersProperties) => {
@@ -46,7 +46,8 @@ const CharactersComponent = (props: CharactersProperties) => {
       stats: {
         health: Classes[characterClass].startingStats.health,
         mana: Classes[characterClass].startingStats.mana,
-        stamina: Classes[characterClass].startingStats.stamina
+        stamina: Classes[characterClass].startingStats.stamina,
+        dexterity: Classes[characterClass].startingStats.dexterity
       },
       status: 'Idle'
     }
@@ -64,43 +65,21 @@ const CharactersComponent = (props: CharactersProperties) => {
         </div>
       )
     }
-    const headerRow: any = (
-      <thead>
-        <tr>
-          <td></td>
-          <td>Name</td>
-          <td>Class</td>
-          <td>Level</td>
-          <td>Health/Mana/Stamina</td>
-          <td>Status</td>
-        </tr>
-      </thead>
-    )
-    const characterRows: any[] = []
+
+    const cards: any[] = []
     for(const character of props.characters){
-      characterRows.push((
-        <tr key={`${character.id}_tr`}>
-          <td key={`${character.id}_img`}><img src={`${Classes[character.classType].img}`} alt="Class"></img></td>
-          <td key={`${character.id}_name`}>{character.name}</td>
-          <td key={`${character.id}_class`}>{character.classType}</td>
-          <td key={`${character.id}_level`}>{character.level} - {character.experience}/{character.experienceToNextLevel}</td>
-          <td key={`${character.id}_stats`}>{character.stats.health}/{character.stats.mana}/{character.stats.stamina}</td>
-          <td key={`${character.id}_status`}>{character.status}</td>
-        </tr>
-      ))
+      cards.push(<>
+        <div className='card'>
+          <img src={`${Classes[character.classType].img}`} alt="Class"></img><br></br>
+          <strong>{character.name}</strong> <i>{character.classType}</i> Lvl <strong>{character.level}</strong><br></br>
+          HP: <strong>{character.stats.health}</strong> MP: <strong>{character.stats.mana}</strong> STAM: <strong>{character.stats.stamina}</strong> DEX: <strong>{character.stats.dexterity}</strong><br></br><br></br>
+          <button>Send {character.name} on a Quest</button><br></br><br></br>
+          <button>Send {character.name} to the Tavern</button>
+        </div>
+      </>)
     }
-    const tableBody = (
-      <tbody>
-        {characterRows}
-      </tbody>
-    )
-    const characterTable = (
-      <table>
-        {headerRow}
-        {tableBody}
-      </table>
-    )
-    return characterTable
+
+    return cards
   }, [props.characters])
 
   const newCharacterSection = useMemo(() => {
@@ -112,10 +91,11 @@ const CharactersComponent = (props: CharactersProperties) => {
       <div>
         <img src={Classes[characterClass].img} alt='Class'></img><br/>
         Character Name<br/>
-        <input id='newCharacterNameTxt' placeholder="Enter name..." onChange={newCharacterNameChanged} value={characterName}></input><br/>
+        <input id='newCharacterNameTxt' placeholder="Enter name..." onChange={newCharacterNameChanged} value={characterName}></input><br/><br></br>
         Select a Class<br/><select value={characterClass} className="dropdown" id='newCharacterClassSelect' placeholder="Select class" onChange={newCharacterClassChanged}>
           {classOptions}
-        </select><hr/>
+        </select><br></br><br></br>
+        Starting Stats <br></br> HP: <strong>{Classes[characterClass].startingStats.health}</strong> MP: <strong>{Classes[characterClass].startingStats.mana}</strong> STAM: <strong>{Classes[characterClass].startingStats.stamina}</strong> DEX: <strong>{Classes[characterClass].startingStats.dexterity}</strong> <br></br><br></br>
         <button id='newCharacterSaveBtn' onClick={newCharacterButtonClicked}>Save</button>
       </div>
     )
@@ -124,10 +104,11 @@ const CharactersComponent = (props: CharactersProperties) => {
   return (
     <>
     <div className="card">
-      {characterList}
-      <hr/>
-      New Character
+      <strong>New Character</strong>
       {newCharacterSection}
+      <hr/>
+      <strong>Characters</strong>
+      {characterList}
     </div>
     </>
   )
