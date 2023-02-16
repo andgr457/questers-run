@@ -11,6 +11,8 @@ import QuestsComponent from '../quests/quests.component'
 import TavernComponent from '../tavern/tavern.component'
 import { Quest, QuestLine, QuestTimer } from '../../interfaces/quest.interfaces'
 import QuestLinesComponent from '../questLines/quest.lines.component'
+import { TutorialSave } from '../../defaults/game.defaults'
+import { TutorialQuestLines } from '../../defaults/quests.defaults'
 
 const GameComponent = () => {
   const [title, setTitle] = useState('')
@@ -25,6 +27,13 @@ const GameComponent = () => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [musicUrl, setMusicUrl] = useState('img/music/icons8-audio-24-disabled.png')
   
+  useMemo(() => {
+    addThing<Save>('saves', TutorialSave)
+    for(const tutorialQuestLine of TutorialQuestLines){
+      addThing<QuestLine>(`${TutorialSave.saveName}_questLines`, tutorialQuestLine)
+    }
+  }, [])
+
   /** Saves */
   const addSave = useCallback((e: Save) => {
     const loadedSaves = addThing<Save>('saves', e)

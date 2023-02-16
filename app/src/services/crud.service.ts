@@ -1,10 +1,8 @@
 
 export function updateThing<T>(storage: string, thing: any): T[] {
-  console.log('updateThing')
   const thingData = localStorage.getItem(storage)
   const things: any[] = JSON.parse(thingData ?? '[]')
   if(things.length === 0){
-    console.log('pushed')
     things.push(...thing)
   } else {
     for(let s of things){

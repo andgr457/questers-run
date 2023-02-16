@@ -40,7 +40,7 @@ const CharactersComponent = (props: CharactersProperties) => {
       experience: 0,
       experienceToNextLevel: 0,
       level: 0,
-      money: 0,
+      money: 100,
       name: characterName,
       skills: [],
       stats: {
