@@ -72,33 +72,18 @@ const QuestLinesComponent = (props: QuestLinesProperties) => {
         </>
       )
     }
-    const headers = (
-      <thead>
-        <tr>
-          <td>Title</td>
-          <td>Description</td>
-        </tr>
-      </thead>
-    )
-    const rows = []
+
+    const cards: any[] = []
     for(const questLine of props.questLines){
-      rows.push(
-        <tr>
-          <td>{questLine.title}</td>
-          <td>{questLine.description}</td>
-        </tr>
-      )
+      cards.push(<>
+        <div className='card'>
+          <strong>{questLine.title}</strong><br></br>
+          <div>{questLine.description}</div>
+        </div>
+      </>)
     }
-    const table = (
-      <table>
-        {headers}
-        <tbody>
-          {rows}
-        </tbody>
-      </table>
-    )
-    
-    return table
+
+    return cards
   }, [props.questLines])
 
 
