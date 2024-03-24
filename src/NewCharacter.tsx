@@ -44,6 +44,7 @@ export default function NewCharacter(props: NewCharacterProps) {
             level: 1,
             buffAttack: 1,
             buffDefense: 1,
+            buffCount: 0,
             bags: []
         }
         console.log(character)
@@ -61,7 +62,7 @@ export default function NewCharacter(props: NewCharacterProps) {
             </div>
             <div>
             <p className="block mb-1 font-sans text-base antialiased font-normal leading-relaxed text-gray-700">
-                Bring new life into your world!
+                Breathe new life into your realm!
                 </p>
                 <h6>Name</h6>   
                 <input onChange={handleNameChanged} placeholder="Enter Character Name"

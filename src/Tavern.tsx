@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
-import { ToastContainer, toast } from 'react-toastify';
 import { Character } from './Characters';
+import CharacterComponent from './CharacterComponent';
 
 interface TavernProps {
   showTavern: boolean
@@ -19,6 +19,7 @@ const actions = [
 const Tavern: React.FC<TavernProps> = ({
   showTavern,
   setShowTavern,
+  character,
   handleTavernBuff,
   handleTavernSleep
 }) => {
@@ -44,17 +45,18 @@ const Tavern: React.FC<TavernProps> = ({
     </div>
       <p>Welcome to the tavern! What would you like to do?</p>
       <img className="h-120 w-150 rounded-full" src={`img/tavern/tavern.jpg`} alt="" />
+      <CharacterComponent character={character}></CharacterComponent>
       <Button
           color="green"
           onClick={() => handleTavernSleep()}
           className="mr-2" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
-          Rest +HP
+          Rest +{10 + character?.level ?? 0} HP 
         </Button>
         <Button
           color="blue"
           onClick={() => handleTavernBuff()}
           className="mr-2" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
-          Rest +Attack or +Defense
+          Meditate +1 Attack +1 Defense
         </Button>
 
     </DialogBody>
@@ -65,7 +67,7 @@ const Tavern: React.FC<TavernProps> = ({
       </Button>
     </DialogFooter>
   </Dialog>)
-  }, [showTavern, setShowTavern, handleAction])
+  }, [showTavern, setShowTavern, handleAction, character])
 
   return view
 };

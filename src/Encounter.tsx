@@ -9,6 +9,7 @@ import {
 } from "@material-tailwind/react";
 import { Character, Mob, randomize } from "./Characters";
 import QuickEncounter from "./QuickEncounter";
+import CharacterComponent from './CharacterComponent';
 
 interface EncounterProps {
   character: Character;
@@ -92,10 +93,12 @@ export function Encounter(props: EncounterProps) {
         character.nextLevelExp += 10
         character.level += 1
       }
+
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit} critical damage...`]);
       if (mob.health <= 0) {
+        props.handleEncounterEvent(character, mob);
         props.setShowEncounter(false);
       }
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit} critical damage...`]);
 
     }else {
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} skipped the critical hit event...`]);
@@ -107,33 +110,10 @@ export function Encounter(props: EncounterProps) {
   const view = useMemo(() => {
     return (
       <>
-      <QuickEncounter setResult={handleQuickEncounterResult} quickEncounterShown={showQuickTimeEvent} setShowQuickTimeEvent={setShowQuickTimeEvent}></QuickEncounter>
+      <QuickEncounter characterClass={character.class} setResult={handleQuickEncounterResult} quickEncounterShown={showQuickTimeEvent} setShowQuickTimeEvent={setShowQuickTimeEvent}></QuickEncounter>
         <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>A wild {mob.name} attacks!</DialogHeader>
         <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-          <div className="ml-3">
-            <img className="h-12 w-15 rounded-full" src={`img/classes/${character.class}.png`} alt="" />
-            <p className="text-lg font-lg text-gray-900">{character.name} - {character.level}</p>
-            <p className="text-sm font-sm">{character.class.toLocaleUpperCase()}</p>
-            <Progress 
-                value={+((character.health / character.maxHealth) * 100).toFixed(2)} 
-      
-                placeholder={undefined} 
-                onPointerEnterCapture={undefined} 
-                onPointerLeaveCapture={undefined} 
-                variant="gradient"
-                color={((character.health / character.maxHealth) * 100) <= 50 ? 'red' : 'teal'}
-              />
-              <p className="text-sm font-sm">Health: {((character.health / character.maxHealth) * 100).toFixed(2)}% [{character.health}/{character.maxHealth}]</p>
-              <Progress 
-                value={+((character.exp / character.nextLevelExp) * 100).toFixed(2)} 
-                placeholder={undefined} 
-                onPointerEnterCapture={undefined} 
-                onPointerLeaveCapture={undefined} 
-                variant="gradient"
-                color='purple'
-              />
-          </div>
-
+        <CharacterComponent character={character}></CharacterComponent>
           <div className="ml-3">
             <p className="text-lg font-lg text-gray-900">{mob.name} - {mob.level}</p>
             <p className="text-sm font-sm">{mob.type.toLocaleUpperCase()}</p>
@@ -156,6 +136,9 @@ export function Encounter(props: EncounterProps) {
           </div>
         </DialogBody>
         <DialogFooter placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <Button variant="gradient" color="green" onClick={handleAttackClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+            <span>Attack</span>
+          </Button>
           <Button
             variant="text"
             color="red"
@@ -163,9 +146,7 @@ export function Encounter(props: EncounterProps) {
             className="mr-1" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          >
             <span>Run</span>
           </Button>
-          <Button variant="gradient" color="green" onClick={handleAttackClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-            <span>Attack</span>
-          </Button>
+
         </DialogFooter>
       </>
     );

@@ -45,12 +45,24 @@ export const ATTACKS: Attack[] = [
         name: 'Ice Blast'
     },
     {
+        class: 'Mage',
+        name: 'Fire Ball'
+    },
+    {
         class: 'Warrior',
         name: 'Side Slash'
     },
     {
+        class: 'Warrior',
+        name: 'Power Chop'
+    },
+    {
         class: 'Rogue',
         name: 'Backstab'
+    },
+    {
+        class: 'Rogue',
+        name: 'Kidney Shot'
     }
 ]
 

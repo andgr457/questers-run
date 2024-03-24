@@ -1,11 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
-import { toast } from 'react-toastify';
+import { CharacterClass } from './Characters';
+import { ATTACKS, CLASSES } from './Constants';
 
 interface QuickEncounterProps {
   setShowQuickTimeEvent: React.Dispatch<React.SetStateAction<boolean>>;
   quickEncounterShown: boolean
   setResult: (e: {result: string}) => void
+  characterClass: string
 }
 
 export interface Attack {
@@ -13,12 +15,21 @@ export interface Attack {
     class: string
 }
 
+const generateRandomAttack = (classs: string): string => {
+  const classAttacks: Attack[] = ATTACKS.filter(a => a.class === classs);
+  const randomAttack = classAttacks[Math.floor(Math.random() * classAttacks.length)];
+
+  return randomAttack ? randomAttack.name : '';
+};
+
+
 const QuickEncounter: React.FC<QuickEncounterProps> = ({
   setShowQuickTimeEvent,
   quickEncounterShown,
-  setResult
+  setResult,
+  characterClass
 }) => {
-  const [password, setPassword] = useState<string | undefined>('Slash');
+  const [password, setPassword] = useState<string | undefined>(generateRandomAttack(characterClass));
 
   const handlePasswordChange = useCallback((e: any) => {
     if(e.target.value === password){

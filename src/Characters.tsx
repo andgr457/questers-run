@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Alert, Button, Dialog, Progress } from "@material-tailwind/react"
+import { Alert, Badge, Button, ButtonGroup, Dialog, Progress } from "@material-tailwind/react"
 import { Encounter } from './Encounter'
 import { ToastContainer, toast } from 'react-toastify'
 
@@ -7,6 +7,9 @@ import Tavern from './Tavern'
 import { BAGS, CLASSES, IMG_MAGE_ICON8, IMG_ROGUE_ICON8, IMG_WARRIOR_ICON8, ITEM_SOAP } from './Constants'
 import Bags from './Bags'
 import NewCharacter from './NewCharacter'
+import CharacterComponent from './CharacterComponent'
+import CharacterSaver from './Save'
+import CharacterLoader from './Load'
 
 export interface Character {
   name: string
@@ -17,6 +20,7 @@ export interface Character {
   health: number
   maxHealth: number
   attack: number
+  buffCount: number
   buffAttack: number
   buffDefense: number
   maxBuffs: number
@@ -104,7 +108,7 @@ export interface Image {
 const charactersList: Readonly<Character[]> = [
   {
     name: 'Hayz', level: 20, exp: 0, nextLevelExp: 200, health: 200, maxHealth: 200,
-    attack: 1, buffAttack: 0, buffDefense: 0, maxBuffs: 0,
+    attack: 1, buffAttack: 0, buffDefense: 0, maxBuffs: 1, buffCount: 0,
     class: 'Warrior',
     bags: [
       {...BAGS.find(b => b.name === 'Pillowcase') as Bag, items: [{...ITEM_SOAP}]}
@@ -112,7 +116,7 @@ const charactersList: Readonly<Character[]> = [
   },
   {
     name: 'Lithos', level: 1, exp: 0, nextLevelExp: 100, health: 69, maxHealth: 100,
-    attack: 1, buffAttack: 0, buffDefense: 0, maxBuffs: 0,
+    attack: 1, buffAttack: 0, buffDefense: 0, maxBuffs: 1, buffCount: 0,
     class: 'Mage',
     bags: [
       {...BAGS.find(b => b.name === 'Pillowcase') as Bag}
@@ -120,7 +124,7 @@ const charactersList: Readonly<Character[]> = [
   },
   {
     name: 'Velouria', level: 1, exp: 0, nextLevelExp: 100, health: 25, maxHealth: 100,
-    attack: 1, buffAttack: 0, buffDefense: 0, maxBuffs: 0,
+    attack: 1, buffAttack: 0, buffDefense: 0, maxBuffs: 1, buffCount: 0,
     class: 'Rogue',
     bags: [
       {...BAGS.find(b => b.name === 'Pillowcase') as Bag}
@@ -150,26 +154,6 @@ export default function Characters() {
   const [bags, setBags]: [Bag[], any] = useState([])
   const [showBags, setShowBags]: [boolean, any] = useState(false)
   const [showNewCharacter, setShowNewCharacter]: [boolean, any] = useState(false)
-
-  useEffect(() => {
-    /** Load Characters */
-    applyWelcomeBuffs();
-
-  }, []);
-
-  function getRandomToastMessage() {
-    const randomIndex = Math.floor(Math.random() * welcomeMessages.length);
-    return welcomeMessages[randomIndex];
-  }
-  
-  function applyWelcomeBuffs() {
-    const newCharactersList = charactersList.map(prevCharacter => ({
-      ...prevCharacter,
-      buffAttack: prevCharacter.buffAttack + 1,
-      buffDefense: prevCharacter.buffDefense + 1
-    }));
-    setCharacters(newCharactersList);
-  }
 
   function doCharacterExperience(c: Character, exp: number){
     c.exp += exp
@@ -286,27 +270,33 @@ export default function Characters() {
       }
       return c
     })
-    setShowTavern(false)
     setCharacters(updatedCharacters)
   }, [characters, character, setShowTavern])
 
   const handleTavernBuff = useCallback(() => {
     const updatedCharacters = characters.map(c => {
       if (c.name === character?.name) {
+        if(c.buffCount >= c.maxBuffs){
+          toast(`${c.name} could not meditate any longer.`, { type: 'error' });
+          return c
+        }
         if(randomize(50)){
           c.buffAttack += 1
-          toast(`${character.name} feels stronger and ready for the next challenge! +1 Attack`, { type: 'info' });
-        } else {
+          c.buffCount += 1
+          toast(`${c.name} feels stronger and ready for the next challenge! +1 Attack`, { type: 'info' });
+        } else if(randomize(50)) {
           c.buffDefense += 1
-          toast(`${character.name} feel stronger and ready for the next challenge! +1 Defense`, { type: 'info' });
+          c.buffCount += 1
+          toast(`${c.name} feel stronger and ready for the next challenge! +1 Defense`, { type: 'info' });
+        } else {
+          toast(`${c.name} calmed their mind, but did not receive a blessing.`, { type: 'info' });
         }
         return c
       }
       return c
     })
-    setShowTavern(false)
     setCharacters(updatedCharacters)
-  }, [characters])
+  }, [characters, character])
 
   const handleBagsClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
@@ -329,69 +319,81 @@ export default function Characters() {
     setShowNewCharacter(true)
   }, [])
 
+  const handleLoadCharacters = useCallback((characters: Character[]) => {
+    setCharacters(characters)
+  }, [])
+
+  const getBagItemsCount = (c: Character) => {
+    if(!c) return
+    let count = 0
+    for(const bag of c?.bags){
+      count += bag.items.length
+    }
+    return count
+  }
+
   const view = useMemo(() => {
+    const bagItemCount = getBagItemsCount(character)
     return (
       <>
         <NewCharacter characterNames={characters.map(c => c.name.toLowerCase())} addCharacter={handleAddCharacter} setShowNewCharacter={setShowNewCharacter} showNewCharacter={showNewCharacter}></NewCharacter>
         <Tavern character={character as any} handleTavernSleep={handleTavernSleep} handleTavernBuff={handleTavernBuff as any} showTavern={showTavern} setShowTavern={setShowTavern as any}></Tavern>
-        <Dialog open={encounterShown} handler={setEncounterShown} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <Dialog open={encounterShown} handler={() => {}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           <Encounter doCharacterExperience={doCharacterExperience} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
         </Dialog>
         <Bags bags={bags as any} setShowBags={setShowBags} showBags={showBags}></Bags>
-        <Button onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} placeholder={undefined} onClick={handleNewCharacterClick}>New Character</Button>
-        <ul className="divide-y divide-gray-200">
-          {characters.map((character) => (
-            <li key={character.name} className="py-4">
-            <div className="ml-3">
-              <img className="h-12 w-15 rounded-full" src={`img/classes/${CLASSES?.find(c => c.name === character.class)?.imageName}`} alt="" />
-              <p className="text-lg font-lg text-gray-900">{character.name} - {character.level}</p>
-              <p className="text-sm font-sm">{character.class}</p>
-              <p className="text-sm font-sm">Status: {character.health === 0 ? 'Dead' : 'Alive' }</p>
 
-              <p className="text-sm font-sm">Buffs: [+{character.buffAttack ?? 0 } Attack] [+{character.buffDefense} Defense]</p>
-              <Progress 
-                value={+((character.health / character.maxHealth) * 100).toFixed(2)} 
-      
-                placeholder={undefined} 
-                onPointerEnterCapture={undefined} 
-                onPointerLeaveCapture={undefined} 
-                variant="gradient"
-                color={((character.health / character.maxHealth) * 100) <= 50 ? 'red' : 'teal'}
-              />
-              <p className="text-sm font-sm">Health: {((character.health / character.maxHealth) * 100).toFixed(2)}% [{character.health}/{character.maxHealth}]</p>
-              <Progress 
-                value={+((character.exp / character.nextLevelExp) * 100).toFixed(2)} 
-                placeholder={undefined} 
-                onPointerEnterCapture={undefined} 
-                onPointerLeaveCapture={undefined} 
-                variant="gradient"
-                color='purple'
-              />
-              <p className="text-sm font-sm">Experience: {((character.exp / character.nextLevelExp) * 100).toFixed(2)}% [{character.exp}/{character.nextLevelExp}]</p>
-              <Button disabled={character.health <= 0 || getButtonDisabled(character, 0)} id={`${character.name}___grind`} color='red' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleGrindClick}>
-                Grind
-              </Button>
-              <Button disabled={character.health <= 0 || getButtonDisabled(character, 0)} id={`${character.name}___quest`} color='blue' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleQuestClick}>
-                Quest
-              </Button>
-              <Button disabled={character.health <= 0 || getButtonDisabled(character, 5)} id={`${character.name}___dungeon`} color='amber' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleDungeonClick}>
-                Dungeon [Lvl 5+]
-              </Button>
-              <Button disabled={character.health <= 0 || getButtonDisabled(character, 10)} id={`${character.name}___raid`} color='cyan' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleRaidClick}>
-                Raid [Lvl 10+]
-              </Button>
+        <Button color='amber' onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} placeholder={undefined} onClick={handleNewCharacterClick}>New Character</Button>
+        <CharacterSaver characters={characters}></CharacterSaver>
+        <CharacterLoader onLoad={handleLoadCharacters}></CharacterLoader>
+          {characters.map((c) => (
+            <>
+            <div className="relative flex flex-col mt-6 text-gray-700 bg-white shadow-md rounded-xl w-full sm:w-96">
+              <CharacterComponent character={c}></CharacterComponent>
+              <ButtonGroup placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                <div className="flex divide-x row">
+                <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___grind`} color='red' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleGrindClick}>
+                    Grind
+                  </Button>
+                  <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___quest`} color='blue' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleQuestClick}>
+                    Quest
+                  </Button>
+                  <Button disabled={c.health <= 0 || getButtonDisabled(c, 5)} id={`${c.name}___dungeon`} color='amber' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleDungeonClick}>
+                    Dungeon
+                  </Button>
+                  <Button disabled={c.health <= 0 || getButtonDisabled(c, 10)} id={`${c.name}___raid`} color='cyan' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleRaidClick}>
+                    Raid
+                  </Button>
+                </div>
 
-              <Button id={`${character.name}___tavern`} onClick={handleTavernClick} color='teal' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                Tavern [+{10 + character.level} HP]
-              </Button>
+                </ButtonGroup>
+                <ButtonGroup placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                <div className="flex divide-x row">
+
+                  <Button id={`${c.name}___tavern`} onClick={handleTavernClick} color='teal' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                    Tavern [+ HP]
+                  </Button>
+                  <Badge content={getBagItemsCount(c)}>
+                    <Button id={`${c.name}___bags`} onClick={handleBagsClick} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Bags</Button>
+                  </Badge>
+                  <Button variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Equipment</Button>
+</div>
+                </ButtonGroup>
+              <div className="p-4 sm:p-6">
+                
+              
+
+
 
               <br/> <br/>
-              <Button id={`${character.name}___bags`} onClick={handleBagsClick} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Bags</Button>
-              <Button variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Equipment</Button>
+
+
+              &nbsp;&nbsp;&nbsp;
+              
+              </div>
             </div>
-          </li>
+            </>
           ))}
-        </ul>
       </>
     )
   }, [showNewCharacter, setShowNewCharacter, characters, character, mob, encounterShown, bags, setShowBags, showTavern, showBags, setShowTavern, handleTavernBuff, handleTavernSleep])
