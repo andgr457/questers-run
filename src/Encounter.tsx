@@ -15,6 +15,7 @@ interface EncounterProps {
   mob: Mob;
   handleEncounterEvent: any;
   setShowEncounter: any;
+  doCharacterExperience: any;
 }
 
 export function Encounter(props: EncounterProps) {
@@ -36,29 +37,37 @@ export function Encounter(props: EncounterProps) {
   }, [props, mob, character]);
 
   const handleAttackClicked = useCallback((e: any) => {
+    if(randomize(15)){
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} is up for a critical hit on ${mob.attack}...`]);
+      setShowQuickTimeEvent(true)
+      return
+    }
+
     if (randomize(50)) {
-      const newEvent1 = `${mob.name} was hit for ${character.attack}...`;
-      setEncounterEvents((prevEvents) => [...prevEvents, newEvent1]);
-      mob.health -= character.attack + character.level;
-      character.exp += 5
+      const characterAttack = character.attack + character.buffAttack 
+      setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} was hit for ${characterAttack}...`]);
+      mob.health -= characterAttack;
+      character.exp += 2 * character.level
       if(character.exp >= character.nextLevelExp){
         character.exp = 0
         character.nextLevelExp += 10
         character.level += 1
       }
     } else {
-      const newEvent2 = `${mob.name} missed!`;
-      setEncounterEvents((prevEvents) => [...prevEvents, newEvent2]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} missed!`]);
     }
 
     if (mob.health <= 0) {
+      props.doCharacterExperience(character, (10 + character.level) * mob.level)
+      props.setShowEncounter(false);
+    }
+
+    if(character.health <= 0){
       props.setShowEncounter(false);
     }
 
     if (randomize(50)) {
-      setShowQuickTimeEvent(true)
-      const newEvent3 = `${character.name} was hit for ${mob.attack}...`;
-      setEncounterEvents((prevEvents) => [...prevEvents, newEvent3]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} was hit for ${mob.attack}...`]);
       character.health -= mob.attack;
       console.log(character.health)
       console.log(character.maxHealth)
@@ -67,17 +76,38 @@ export function Encounter(props: EncounterProps) {
         props.setShowEncounter(false)
       }
     } else {
-      const newEvent4 = `${character.name} missed!`;
-      setEncounterEvents((prevEvents) => [...prevEvents, newEvent4]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} missed!`]);
     }
 
     props.handleEncounterEvent(character, mob);
   }, [props, mob, character]);
 
+  const handleQuickEncounterResult = useCallback((e: {result: string}) => {
+    if(e.result === 'Success'){
+      const crit = (character.attack * 2) + character.level
+      mob.health -= crit;
+      character.exp += 5
+      if(character.exp >= character.nextLevelExp){
+        character.exp = 0
+        character.nextLevelExp += 10
+        character.level += 1
+      }
+      if (mob.health <= 0) {
+        props.setShowEncounter(false);
+      }
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit} critical damage...`]);
+
+    }else {
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} skipped the critical hit event...`]);
+
+    }
+
+  }, [])
+
   const view = useMemo(() => {
     return (
       <>
-      <QuickEncounter setShowQuickTimeEvent={setShowQuickTimeEvent} handleFailure={() => setShowQuickTimeEvent(false)} handleSuccess={() => setShowQuickTimeEvent(false)}></QuickEncounter>
+      <QuickEncounter setResult={handleQuickEncounterResult} quickEncounterShown={showQuickTimeEvent} setShowQuickTimeEvent={setShowQuickTimeEvent}></QuickEncounter>
         <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>A wild {mob.name} attacks!</DialogHeader>
         <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           <div className="ml-3">
@@ -139,7 +169,7 @@ export function Encounter(props: EncounterProps) {
         </DialogFooter>
       </>
     );
-  }, [props, mob, character, encounterEvents]);
+  }, [props, mob, character, encounterEvents, quickTimeEventResponses, showQuickTimeEvent, setQuickTimeEventResponses]);
 
   return view;
 }

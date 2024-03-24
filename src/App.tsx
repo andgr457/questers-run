@@ -1,6 +1,8 @@
 import { ToastContainer } from "react-toastify";
-import { StickyNavbar } from "./Game";
+import { Game } from "./Game";
 import 'react-toastify/dist/ReactToastify.css';
+import Characters from './Characters';
+import { Footer } from './Footer';
 function App() {
   return (
     <>
@@ -15,7 +17,11 @@ function App() {
         draggable
         pauseOnHover
         />
-      <StickyNavbar></StickyNavbar>
+      <Game></Game>
+      <div className="mx-auto max-w-screen-md py-12">
+          <Characters></Characters>
+        </div>
+          <Footer></Footer>
     </>
   );
 }

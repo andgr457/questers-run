@@ -1,107 +1,66 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 interface QuickEncounterProps {
   setShowQuickTimeEvent: React.Dispatch<React.SetStateAction<boolean>>;
-  handleSuccess: () => void;
-  handleFailure: () => void;
+  quickEncounterShown: boolean
+  setResult: (e: {result: string}) => void
 }
 
-const attackTerms = [
-  'Fireball',
-  'Slash',
-  'Thunder Strike',
-  'Ice Blast',
-  'Poison Sting',
-  'Earthquake',
-  'Bite',
-  'Dark Pulse',
-];
-
-interface Attack {
+export interface Attack {
     name: string
-    
+    class: string
 }
 
 const QuickEncounter: React.FC<QuickEncounterProps> = ({
   setShowQuickTimeEvent,
-  handleSuccess,
-  handleFailure,
+  quickEncounterShown,
+  setResult
 }) => {
-  const [expectedKey, setExpectedKey] = useState<string>('');
-  const [userInput, setUserInput] = useState<string>('');
-  const [attackTerm1, setAttackTerm1] = useState<string>('');
-  const [attackTerm2, setAttackTerm2] = useState<string>('');
-  const [currentTermIndex, setCurrentTermIndex] = useState<number>(0);
-  const [password, setPassword] = useState<string | undefined>(undefined);
-  const [buffKey, setBuffKey] = useState<string>('w')
+  const [password, setPassword] = useState<string | undefined>('Slash');
 
-  useEffect(() => {
-
-    generateRandomAttackTerms();
-  }, []);
-
-
-  const generateRandomAttackTerms = () => {
-    const randomIndex1 = Math.floor(Math.random() * attackTerms.length);
-    let randomIndex2 = Math.floor(Math.random() * attackTerms.length);
-    
-    // Ensure different attack terms
-    while (randomIndex2 === randomIndex1) {
-      randomIndex2 = Math.floor(Math.random() * attackTerms.length);
+  const handlePasswordChange = useCallback((e: any) => {
+    if(e.target.value === password){
+        setResult({result: 'Success'})
+        setShowQuickTimeEvent(false)
     }
+  }, [password])
 
-    setPassword(`${attackTerms[randomIndex1]} ${attackTerms[randomIndex2]}`)
-  };
+  const handleSkipClick = useCallback((e: any) => {
+    setResult({result: 'Skipped'})
+    setShowQuickTimeEvent(false)
+  }, [])
 
-  const handleKeyPress = useCallback(
-    (event: KeyboardEvent) => {
-      const pressedKey = event.key;
-      if (currentTermIndex === 0 && pressedKey.toLowerCase() === attackTerm1.toLowerCase()) {
-        setUserInput((prevInput) => prevInput + pressedKey);
-        setCurrentTermIndex(1);
-      } else if (currentTermIndex === 1 && pressedKey.toLowerCase() === attackTerm2.toLowerCase()) {
-        setUserInput((prevInput) => prevInput + pressedKey);
-        handleSuccess();
-        setShowQuickTimeEvent(false);
-        toast.success('Success!', { autoClose: 2000 });
-      } else {
-        setUserInput(pressedKey);
-        handleFailure();
-        setShowQuickTimeEvent(false);
-        toast.error('Failure!', { autoClose: 2000 });
-      }
-    },
-    [attackTerm1, attackTerm2, currentTermIndex, handleSuccess, handleFailure, setShowQuickTimeEvent]
-  );
+  const view = useMemo(() => {
+    return (
+        <Dialog open={quickEncounterShown} handler={function (value: any): void {
+              } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+            <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+              <div className="w-96">
+                <div className="relative w-full min-w-[200px]">
+                    <textarea
+                    className="peer h-full min-h-[100px] w-full resize-none rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50"
+                    placeholder={password}
+                    onChange={handlePasswordChange}
+                    ></textarea>
+                    <label
+                    className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-gray-900 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                    {password}
+                    </label>
+                </div>
+                </div>
+            </DialogBody>
+            <DialogFooter placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+              <Button color="blue" onClick={handleSkipClick} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                Skip
+              </Button>
+            </DialogFooter>
+          </Dialog>
+    )
+  }, [setShowQuickTimeEvent, quickEncounterShown, password])
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyPress);
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [handleKeyPress]);
-
-  return (
-    <>
-      <Dialog open={true} handler={function (value: any): void {
-          } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-          <p>Press the key: {expectedKey}</p>
-          <p>Your input: {userInput}</p>
-          <p>Attack Term 1: {attackTerm1}</p>
-          <p>Attack Term 2: {attackTerm2}</p>
-        </DialogBody>
-        <DialogFooter placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-          <Button color="blue" onClick={() => setShowQuickTimeEvent(false)} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-            Skip
-          </Button>
-        </DialogFooter>
-      </Dialog>
-      <ToastContainer position="bottom-right" />
-    </>
-  );
+  return view
 };
 
 export default QuickEncounter;

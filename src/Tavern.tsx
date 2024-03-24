@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
 import { ToastContainer, toast } from 'react-toastify';
+import { Character } from './Characters';
 
 interface TavernProps {
   showTavern: boolean
-  setShowTavern: React.Dispatch<React.SetStateAction<boolean>>;
-  handleClose: () => void;
-  handleSleep: () => void;
-  handleTrade: () => void;
+  setShowTavern: React.Dispatch<React.SetStateAction<boolean>>
+  character: Character
+  handleTavernBuff: () => void
+  handleTavernSleep: () => void
 }
 
 const actions = [
@@ -18,43 +19,55 @@ const actions = [
 const Tavern: React.FC<TavernProps> = ({
   showTavern,
   setShowTavern,
-  handleClose
+  handleTavernBuff,
+  handleTavernSleep
 }) => {
 
-  const handleAction = (action: string) => {
-    setShowTavern(false);
-    handleClose();
-    if (action === 'Sleep') {
-      toast('Rest Here Weary Traveler, For Great Adventures Lie Ahead!', {type: 'success'});
-    } else if (action === 'Buff') {
-      toast('You feel stronger and ready for the next challenge!', {type: 'info'});
-    }
-  };
-
-  return (
-    <>
-      <Dialog open={showTavern} handler={() => {}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-          <p>Welcome to the tavern! What would you like to do?</p>
-          {actions.map((action, index) => (
-            <Button
-              key={index}
-              color="blue"
-              onClick={() => handleAction(action)}
-              className="mr-2" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
-              {action}
-            </Button>
-          ))}
-        </DialogBody>
-        <DialogFooter placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-          <Button color="red" onClick={() => setShowTavern(false)} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-            Close
-          </Button>
-        </DialogFooter>
-      </Dialog>
-      <ToastContainer position="bottom-right" />
-    </>
+  const handleAction = useCallback(
+    (action: string) => {
+      if (action === 'Sleep') {
+        handleTavernSleep()
+      } else if (action === 'Buff') {
+        handleTavernBuff()
+      }
+    },
+    [handleTavernBuff, handleTavernSleep]
   );
+
+  const view = useMemo(() => {
+    return (
+    <Dialog  open={showTavern} handler={() => {setShowTavern(false)}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+    <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+    <div
+      className="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">
+      Tavern
+    </div>
+      <p>Welcome to the tavern! What would you like to do?</p>
+      <img className="h-120 w-150 rounded-full" src={`img/tavern/tavern.jpg`} alt="" />
+      <Button
+          color="green"
+          onClick={() => handleTavernSleep()}
+          className="mr-2" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
+          Rest +HP
+        </Button>
+        <Button
+          color="blue"
+          onClick={() => handleTavernBuff()}
+          className="mr-2" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
+          Rest +Attack or +Defense
+        </Button>
+
+    </DialogBody>
+    <DialogFooter placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+
+      <Button  onClick={() => setShowTavern(false)} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        Leave
+      </Button>
+    </DialogFooter>
+  </Dialog>)
+  }, [showTavern, setShowTavern, handleAction])
+
+  return view
 };
 
 export default Tavern;
