@@ -46,16 +46,11 @@ export function Encounter(props: EncounterProps) {
 
     if (randomize(50)) {
       const characterAttack = character.attack + character.buffAttack 
-      setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} was hit for ${characterAttack}...`]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit ${mob.name} for ${characterAttack}...`]);
       mob.health -= characterAttack;
-      character.exp += 2 * character.level
-      if(character.exp >= character.nextLevelExp){
-        character.exp = 0
-        character.nextLevelExp += 10
-        character.level += 1
-      }
+      props.doCharacterExperience(character, (2 + character.level))
     } else {
-      setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} missed!`]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} missed ${mob.name}!`]);
     }
 
     if (mob.health <= 0) {
@@ -68,7 +63,7 @@ export function Encounter(props: EncounterProps) {
     }
 
     if (randomize(50)) {
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} was hit for ${mob.attack}...`]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${mob.attack}...`]);
       character.health -= mob.attack;
       console.log(character.health)
       console.log(character.maxHealth)
@@ -77,7 +72,7 @@ export function Encounter(props: EncounterProps) {
         props.setShowEncounter(false)
       }
     } else {
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} missed!`]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} missed ${character.name}!`]);
     }
 
     props.handleEncounterEvent(character, mob);
@@ -87,12 +82,7 @@ export function Encounter(props: EncounterProps) {
     if(e.result === 'Success'){
       const crit = (character.attack * 2) + character.level
       mob.health -= crit;
-      character.exp += 5
-      if(character.exp >= character.nextLevelExp){
-        character.exp = 0
-        character.nextLevelExp += 10
-        character.level += 1
-      }
+      props.doCharacterExperience(character, (15 + character.level))
 
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit} critical damage...`]);
       if (mob.health <= 0) {
@@ -102,7 +92,6 @@ export function Encounter(props: EncounterProps) {
 
     }else {
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} skipped the critical hit event...`]);
-
     }
 
   }, [])

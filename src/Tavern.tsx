@@ -53,6 +53,7 @@ const Tavern: React.FC<TavernProps> = ({
           Rest +{10 + character?.level ?? 0} HP 
         </Button>
         <Button
+          disabled={character?.buffCount >= character?.maxBuffs}
           color="blue"
           onClick={() => handleTavernBuff()}
           className="mr-2" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >

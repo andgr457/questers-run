@@ -96,6 +96,17 @@ const troll: Mob = {
   type: 'Dungeon Boss'
 }
 
+const dragon: Mob = {
+  name: 'Dragon',
+  attack: 10,
+  health: 250,
+  buffAttack: 0,
+  buffDefense: 0,
+  level: 15,
+  maxHealth: 250,
+  type: 'Raid Boss'
+}
+
 export interface Bag extends Item {
   slots: number
   items: Item[]
@@ -161,6 +172,7 @@ export default function Characters() {
       c.exp = 0
       c.nextLevelExp += 10
       c.level += 1
+      c.maxBuffs = c.level
       toast(`${c.name} is now level ${c.level}!`, {type: 'success'})
     }
   }
@@ -230,7 +242,7 @@ export default function Characters() {
     const character = dupe.find(c => c.name === name)
     if(typeof character === 'undefined') return
     
-    if(randomize(15)){
+    if(randomize(35)){
       setMob({...troll})
       setCharacter({...character as any})
       setEncounterShown(true)
@@ -243,14 +255,19 @@ export default function Characters() {
 
   const handleRaidClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
-    const updatedCharacters = characters.map(character => {
-      if (character.name === name) {
-        doCharacterExperience(character, 20)
-      }
-      return character
-    })
-
-    setCharacters(updatedCharacters)
+    const dupe = [...characters]
+    const character = dupe.find(c => c.name === name)
+    if(typeof character === 'undefined') return
+    
+    if(randomize(35)){
+      setMob({...dragon})
+      setCharacter({...character as any})
+      setEncounterShown(true)
+    } else {
+      doCharacterExperience(character, 20)
+      doCharacterDamage(character, 1)
+    }
+    setCharacters(dupe)
   }, [characters])
 
   const handleTavernClick = useCallback((e: any) => {
