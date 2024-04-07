@@ -11,10 +11,18 @@ interface TavernProps {
   handleTavernSleep: () => void
 }
 
-const actions = [
-  'Sleep',
-  'Buff'
-];
+const barkeepMessages: string[] = [
+  "Welcome, adventurer! Rest here and regain your strength.",
+  "Ah, a new face in the tavern! Take a seat and rest your weary bones.",
+  "Greetings, traveler! A warm bed and a hearty meal await you.",
+  "Well met, adventurer! Would you like to rest or perhaps enhance your abilities?",
+  "Welcome to our humble tavern! A good night's sleep can work wonders for the soul.",
+  "Greetings, brave soul! Rest and recovery are the keys to a successful journey.",
+  "Ahoy, adventurer! Resting here can heal both body and spirit.",
+  "Welcome, hero! Care for some rest or a drink to boost your morale?",
+  "Greetings, wanderer! A moment of respite can make all the difference.",
+  "Well met, traveler! Here you can find solace, sustenance, and strength for your journey."
+]
 
 const Tavern: React.FC<TavernProps> = ({
   showTavern,
@@ -43,8 +51,7 @@ const Tavern: React.FC<TavernProps> = ({
       className="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">
       Tavern
     </div>
-      <p>Welcome to the tavern! What would you like to do?</p>
-      <img className="h-120 w-150 rounded-full" src={`img/tavern/tavern.jpg`} alt="" />
+      <p>{barkeepMessages[Math.floor(Math.random() * barkeepMessages.length)]}</p>
       <CharacterComponent character={character}></CharacterComponent>
       <Button
           color="green"

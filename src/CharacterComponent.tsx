@@ -22,7 +22,7 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
         </h5>
         <p className="text-center font-sans text-base font-light leading-relaxed text-inherit">
           Buffs [{character.buffCount}/{character.maxBuffs}]<br/>
-          [+{character.buffAttack ?? 0} Attack] [+{character.buffDefense} Defense]<br/>
+          [+{character.buffAttack ?? 0} Attack] [+{character.buffDefense} Defense] [+{character.buffCrit} Critical]<br/>
           [{doEntityAttack(character, character.buffAttack)} Damage] [{doEntityAttack(character, character.buffAttack) * character.buffCrit} Crit Damage]
         </p>
         
@@ -32,7 +32,7 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
             variant="gradient"
             color={((character.health / character.maxHealth) * 100) <= 50 ? 'red' : 'teal'} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
           <p className="text-center mt-1 text-sm font-sm">
-            Health: {((character.health / character.maxHealth) * 100).toFixed(2)}% [{character.health}/{character.maxHealth}]
+            Health: {((character.health / character.maxHealth) * 100).toFixed(2)}% [{character.health.toFixed(2)}/{character.maxHealth}]
           </p>
           
           <Progress 
@@ -40,7 +40,7 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
             variant="gradient"
             color='purple' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
           <p className="text-center mt-1 text-sm font-sm">
-            Experience: {((character.exp / character.nextLevelExp) * 100).toFixed(2)}% [{character.exp}/{character.nextLevelExp}]
+            Experience: {((character.exp / character.nextLevelExp) * 100).toFixed(2)}% [{character.exp.toFixed(2)}/{character.nextLevelExp}]
           </p>
         </div>
       </div>

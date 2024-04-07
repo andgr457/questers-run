@@ -11,8 +11,8 @@ interface NewCharacterProps {
     characterNames: string[]
 }
 export default function NewCharacter(props: NewCharacterProps) {
-    const [name, setName] = useState(getRandomName())
-    const [classs, setClasss] = useState(getRandomClass())
+    const [name, setName] = useState('')
+    const [classs, setClasss] = useState(undefined)
     const [hideError, setHideError] = useState(true)
 
     const handleNameChanged = useCallback((e: any) => {
@@ -36,7 +36,7 @@ export default function NewCharacter(props: NewCharacterProps) {
         
         const character: Character = {
             name,
-            class: classs,
+            class: classs as any,
             attack: foundClass.startAttack,
             maxHealth: foundClass.startHealth,
             health: foundClass.startHealth,
@@ -49,16 +49,22 @@ export default function NewCharacter(props: NewCharacterProps) {
             buffCrit: foundClass.startCrit,
             buffCount: 0,
             bags: [],
-            defense: 1
+            defense: 1,
+            equipment: []
         }
-        console.log(character)
+        setName('')
+        setClasss(undefined)
         props.addCharacter(character)
     }, [name, classs, hideError])
 
     const view = useMemo(() => {
+        if(name === ''){
+            setName(getRandomName())
+            setClasss(getRandomClass() as any)
+            return
+        }
         return (
           <Dialog open={props.showNewCharacter} handler={function (value: any): void {
-            props.setShowNewCharacter(false)
             } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <div className="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">
@@ -69,12 +75,12 @@ export default function NewCharacter(props: NewCharacterProps) {
                 Breathe new life into your realm!
                 </p>
                 <h6>Name</h6>   
-                <input defaultValue={getRandomName()} onChange={handleNameChanged} placeholder="Enter Character Name"
+                <input defaultValue={name} onChange={handleNameChanged} placeholder="Enter Character Name"
                 className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50" />
                 <p hidden={hideError} className='text-red-700'>You cannot create new characters with the same name.</p>
                 <br/><br/>
                 <h6>Class</h6>   
-                <select onChange={handleClassChanged}
+                <select onChange={handleClassChanged} defaultValue={classs}
                     className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
                     {CLASSES.map(c => (
                         <option selected={classs === c.name} value={c.name}>{c.name}</option>

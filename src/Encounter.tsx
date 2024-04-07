@@ -12,6 +12,7 @@ import CharacterComponent from './CharacterComponent';
 import { randomize } from './Characters';
 import { Character, Mob } from './entity/entity.interface';
 import { doEntityAttack } from './entity/entity.service';
+import MobComponent from './MobComponent';
 
 interface EncounterProps {
   character: Character;
@@ -103,31 +104,24 @@ export function Encounter(props: EncounterProps) {
       <>
       <QuickEncounter characterClass={character.class} setResult={handleQuickEncounterResult} quickEncounterShown={showQuickTimeEvent} setShowQuickTimeEvent={setShowQuickTimeEvent}></QuickEncounter>
         <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>A wild {mob.name} attacks!</DialogHeader>
-        <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <CharacterComponent character={character}></CharacterComponent>
-          <div className="ml-3">
-            <p className="text-lg font-lg text-gray-900">{mob.name} - {mob.level}</p>
-            <p className="text-sm font-sm">{mob.type.toLocaleUpperCase()}</p>
-            <Progress 
-                value={+((mob.health / mob.maxHealth) * 100).toFixed(2)} 
-      
-                placeholder={undefined} 
-                onPointerEnterCapture={undefined} 
-                onPointerLeaveCapture={undefined} 
-                variant="gradient"
-                color={((mob.health / mob.maxHealth) * 100) <= 50 ? 'red' : 'teal'}
-              />
-              <p className="text-sm font-sm">Health: {((mob.health / mob.maxHealth) * 100).toFixed(2)}% [{mob.health}/{mob.maxHealth}]</p>
-          </div>
+        <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} className='w-full'>
+        <table>
+          <tr>
+            <td>
+            <CharacterComponent character={character}></CharacterComponent>
 
-          <div className="w-full h-64 overflow-y-auto p-4">
-            {encounterEvents.slice().reverse().map((e, index) => (
-              <p key={index} className="text-sm font-sm">{e}</p>
-            ))}
-          </div>
-        </DialogBody>
-        <DialogFooter placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <Button variant="gradient" color="green" onClick={handleAttackClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+            </td>
+            <td>
+              VS
+            </td>
+            <td>
+            <MobComponent mob={mob}></MobComponent>
+
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={3}>
+            <Button variant="gradient" color="green" onClick={handleAttackClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <span>Attack</span>
           </Button>
           <Button
@@ -137,7 +131,19 @@ export function Encounter(props: EncounterProps) {
             className="mr-1" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          >
             <span>Run</span>
           </Button>
+            </td>
+          </tr>
+        </table>
 
+
+        </DialogBody>
+        <DialogFooter placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        
+        <div className="w-full h-half overflow-y-auto p-4 scrollable">
+            {encounterEvents.slice().reverse().map((e, index) => (
+              <p key={index} className="text-sm font-sm">{e}</p>
+            ))}
+          </div>
         </DialogFooter>
       </>
     );

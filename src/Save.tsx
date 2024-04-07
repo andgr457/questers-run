@@ -1,10 +1,10 @@
-import React from 'react';
-import JSZip from 'jszip';
-import { Character } from './Characters';
-import { Button } from '@material-tailwind/react';
+import React from 'react'
+import JSZip from 'jszip'
+import { Button } from '@material-tailwind/react'
+import { Character } from './entity/entity.interface'
 
 interface CharacterSaverProps {
-  characters: Character[];
+  characters: Character[]
 }
 
 const CharacterSaver: React.FC<CharacterSaverProps> = ({ characters }) => {

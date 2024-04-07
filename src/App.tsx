@@ -18,7 +18,7 @@ function App() {
         pauseOnHover
         />
       <Game></Game>
-      <div className="mx-auto max-w-screen-md py-12">
+      <div >
           <Characters></Characters>
         </div>
           <Footer></Footer>

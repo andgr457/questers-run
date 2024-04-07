@@ -1,58 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Alert, Badge, Button, ButtonGroup, Dialog, Progress } from "@material-tailwind/react"
+import { Badge, Button, ButtonGroup, Dialog, Progress } from "@material-tailwind/react"
 import { Encounter } from './Encounter'
-import { ToastContainer, toast } from 'react-toastify'
-
+import { toast } from 'react-toastify'
 import Tavern from './Tavern'
-import { BAGS, CLASSES, IMG_MAGE_ICON8, IMG_ROGUE_ICON8, IMG_WARRIOR_ICON8, ITEM_SOAP } from './entity/Constants'
-import Bags from './Bags'
 import NewCharacter from './NewCharacter'
 import CharacterComponent from './CharacterComponent'
 import CharacterSaver from './Save'
 import CharacterLoader from './Load'
-import { doCharacterExperience } from './entity/entity.service'
-import { Mob, Item, Character, Bag } from './entity/entity.interface'
-
-const goblin: Mob = {
-  name: 'Goblin',
-  type: 'Hostile Creature',
-  attack: 1,
-  health: 10,
-  maxHealth: 10,
-  level: 1,
-  defense: 1,
-  expGiven: 25
-}
-
-const troll: Mob = {
-  name: 'Troll',
-  attack: 4,
-  health: 50,
-  level: 5,
-  maxHealth: 50,
-  type: 'Dungeon Boss',
-  defense: 2,
-  expGiven: 50
-}
-
-const dragon: Mob = {
-  name: 'Dragon',
-  attack: 10,
-  health: 250,
-  level: 15,
-  maxHealth: 250,
-  type: 'Raid Boss',
-  defense: 5,
-  expGiven: 100
-}
-
-const welcomeMessages = [
-  'Welcome back, adventurer! Your characters have hit the gym and are now stronger than ever!',
-  'Greetings, hero! Your characters have been sharpened and are ready to slice through challenges!',
-  'Ahoy, brave soul! Your characters have been buffed and are now more resilient!',
-  'Hail, mighty warrior! Your characters have been infused with power and are ready to conquer!',
-  'Welcome back, champion! Your characters have been blessed with new buffs and are eager to unleash their might!'
-];
+import { doCharacterExperience, getRandomMob } from './entity/entity.service'
+import { Mob, Character, Bag } from './entity/entity.interface'
+import { MOBS } from './entity/Constants'
+import Bags from './Bags'
 
 export function randomize(chance: number): boolean {
   const randomNumber = Math.random() * 100
@@ -63,7 +21,7 @@ export default function Characters() {
   const [encounterShown, setEncounterShown] = useState(false)
   const [showTavern, setShowTavern] = useState(false)
   const [characters, setCharacters]: [Character[], any] = useState([])
-  const [mob, setMob]: [Mob, any] = useState({...goblin})
+  const [mob, setMob]: [Mob, any] = useState(undefined as any)
   const [character, setCharacter]: [Character, any] = useState(undefined as any)
   const [bags, setBags]: [Bag[], any] = useState([])
   const [showBags, setShowBags]: [boolean, any] = useState(false)
@@ -101,9 +59,9 @@ export default function Characters() {
     const dupe = [...characters]
     const character = dupe.find(c => c.name === name)
     if(typeof character === 'undefined') return
-
-    if(randomize(5)){
-      setMob({...goblin})
+    const mob = getRandomMob('Grind')
+    if(randomize(mob.chanceToShow)){
+      setMob(mob)
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
@@ -120,9 +78,9 @@ export default function Characters() {
     const dupe = [...characters]
     const character = dupe.find(c => c.name === name)
     if(typeof character === 'undefined') return
-    
-    if(randomize(15)){
-      setMob({...goblin})
+    const mob = getRandomMob('Quest')
+    if(randomize(mob.chanceToShow)){
+      setMob(mob)
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
@@ -139,9 +97,9 @@ export default function Characters() {
     const dupe = [...characters]
     const character = dupe.find(c => c.name === name)
     if(typeof character === 'undefined') return
-    
-    if(randomize(35)){
-      setMob({...troll})
+    const mob = getRandomMob('Dungeon')
+    if(randomize(mob.chanceToShow)){
+      setMob(mob)
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
@@ -158,9 +116,9 @@ export default function Characters() {
     const dupe = [...characters]
     const character = dupe.find(c => c.name === name)
     if(typeof character === 'undefined') return
-    
-    if(randomize(35)){
-      setMob({...dragon})
+    const mob = getRandomMob('Raid')
+    if(randomize(mob.chanceToShow)){
+      setMob(mob)
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
@@ -255,23 +213,27 @@ export default function Characters() {
     return count
   }
 
+  const getEquipmentCount = (c: Character) => {
+    if(!c) return
+    return c.equipment.length
+  }
+
   const view = useMemo(() => {
     const bagItemCount = getBagItemsCount(character)
     return (
       <>
         <NewCharacter characterNames={characters.map(c => c.name.toLowerCase())} addCharacter={handleAddCharacter} setShowNewCharacter={setShowNewCharacter} showNewCharacter={showNewCharacter}></NewCharacter>
         <Tavern character={character as any} handleTavernSleep={handleTavernSleep} handleTavernBuff={handleTavernBuff as any} showTavern={showTavern} setShowTavern={setShowTavern as any}></Tavern>
-        <Dialog open={encounterShown} handler={() => {}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <Dialog size='xxl' open={encounterShown} handler={() => {}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           <Encounter doCharacterExperience={doCharacterExperience} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
         </Dialog>
         <Bags bags={bags as any} setShowBags={setShowBags} showBags={showBags}></Bags>
-
         <Button color='amber' onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} placeholder={undefined} onClick={handleNewCharacterClick}>New Character</Button>
         <CharacterSaver characters={characters}></CharacterSaver>
         <CharacterLoader onLoad={handleLoadCharacters}></CharacterLoader>
           {characters.map((c) => (
             <>
-            <div className="relative flex flex-col mt-6 text-gray-700 bg-white shadow-md rounded-xl w-full sm:w-96">
+            <div>
               <CharacterComponent character={c}></CharacterComponent>
               <ButtonGroup placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                 <div className="flex divide-x row">
@@ -299,21 +261,11 @@ export default function Characters() {
                   <Badge content={getBagItemsCount(c)}>
                     <Button id={`${c.name}___bags`} onClick={handleBagsClick} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Bags</Button>
                   </Badge>
+                  <Badge content={getEquipmentCount(c)}>
                   <Button variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Equipment</Button>
+                  </Badge>
 </div>
                 </ButtonGroup>
-              <div className="p-4 sm:p-6">
-                
-              
-
-
-
-              <br/> <br/>
-
-
-              &nbsp;&nbsp;&nbsp;
-              
-              </div>
             </div>
             </>
           ))}

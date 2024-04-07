@@ -39,6 +39,11 @@ export interface Character extends BaseEntity {
   buffCrit: number
   maxBuffs: number
   bags: Bag[]
+  equipment: Equipment[]
+}
+
+export interface Equipment {
+  itemName: string
 }
 
 export interface CharacterClass {
@@ -54,6 +59,9 @@ export interface CharacterClass {
 }
 
 export interface Mob extends BaseEntity {
+  imageName: string
   expGiven: number
   type: string
+  foundIn: string[]
+  chanceToShow: number
 }

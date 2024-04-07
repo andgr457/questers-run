@@ -1,5 +1,5 @@
 import { Attack } from "../QuickEncounter"
-import { CharacterClass, Bag, ItemRarity, Item } from './entity.interface'
+import { CharacterClass, Bag, ItemRarity, Item, Mob } from './entity.interface'
 
 export const IMG_ZZZ__ICON8 = '<a target="_blank" href="https://icons8.com/icon/6374/sleep">Sleep</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>'
 export const IMG_MAGE_ICON8 = '<a target="_blank" href="https://icons8.com/icon/TYJEetqy7xCk/mage">mage</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>'
@@ -147,4 +147,46 @@ export const STOCK_NAMES: string[] = [
     'Aurelia', 'Daelor', 'Thyria', 'Eolande', 'Talon', 'Ilyndra', 'Raelin', 'Caelum', 'Nerion', 'Lunara',
     'Draven', 'Ithilien', 'Seren', 'Elandra', 'Varian', 'Liora', 'Arannis', 'Fenris', 'Talindra', 'Elys',
     'Aerion', 'Lysandra', 'Caelia', 'Thalor', 'Virel', 'Elara', 'Mithral', 'Sylas', 'Talira', 'Zirelia'
+]
+
+export const MOBS: Mob[] = [
+    {
+        name: 'Goblin',
+        type: 'Common',
+        attack: 5,
+        health: 25,
+        maxHealth: 25,
+        level: 1,
+        defense: 1,
+        expGiven: 25,
+        foundIn: ['Grind', 'Quest', 'Dungeon'],
+        imageName: 'goblin.png',
+        chanceToShow: 85
+    },
+    {
+        name: 'Troll',
+        attack: 15,
+        health: 100,
+        level: 5,
+        maxHealth: 100,
+        type: 'Elite',
+        defense: 2,
+        expGiven: 50,
+        chanceToShow: 20,
+        foundIn: ['Quest', 'Dungeon', 'Raid'],
+        imageName: 'troll.png'
+    },
+    {
+        name: 'Dragon',
+        attack: 30,
+        health: 250,
+        level: 15,
+        maxHealth: 250,
+        type: 'Boss',
+        defense: 5,
+        expGiven: 100,
+        foundIn: ['Dungeon', 'Raid'],
+        imageName: 'dragon.png',
+        chanceToShow: 25
+    }
 ]

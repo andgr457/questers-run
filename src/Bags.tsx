@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
-import { Bag } from './Characters';
 import { ITEM_RARITIES } from './entity/Constants';
+import { Bag } from './entity/entity.interface';
 
 interface BagsProps {
   bags: Bag[];
