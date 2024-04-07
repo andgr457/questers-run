@@ -27,10 +27,13 @@ export interface BaseEntity {
   maxHealth: number
   attack: number
   defense: number
+  hitChance: number
 }
 
+export type ClassName = 'Warrior' | 'Mage' | 'Rogue'
+
 export interface Character extends BaseEntity {
-  class: string /** Class Name */
+  class: ClassName
   exp: number
   nextLevelExp: number
   buffCount: number
@@ -40,6 +43,7 @@ export interface Character extends BaseEntity {
   maxBuffs: number
   bags: Bag[]
   equipment: Equipment[]
+  critChance: number
 }
 
 export interface Equipment {
@@ -56,6 +60,8 @@ export interface CharacterClass {
   startDefense: number
   startHealth: number
   startCrit: number
+  startHitChance: number
+  startCritChance: number
 }
 
 export interface Mob extends BaseEntity {

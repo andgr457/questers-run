@@ -1,5 +1,5 @@
 import { MOBS, STOCK_NAMES } from './Constants'
-import { BaseEntity, Character, Mob } from './entity.interface'
+import { BaseEntity, Character, ClassName, Mob } from './entity.interface'
 
 export function getRandomName(): string {
   const randomIndex = Math.floor(Math.random() * STOCK_NAMES.length)
@@ -40,10 +40,25 @@ function doCharacterLevelUp(character: Character): void {
   character.level += 1
   character.nextLevelExp = determineNextLevelExp(character.level)
   character.maxBuffs = character.level
+  character.maxHealth = determineCharacterHealth(character.class, character.level)
+  character.health = character.maxHealth
 }
 
+export function determineCharacterHealth(className: ClassName, level: number): number {
+  let modifier = 1
+  const baseHealth = 15
+  switch(className) {
+    case 'Warrior': modifier = 2
+      break;
+    case 'Mage': modifier = 1.2
+      break;
+    case 'Rogue': modifier = 1.5
+      break;
+  }
+  return baseHealth * modifier
+}
 export function determineNextLevelExp(level: number): number {
-  return (level + .5) * 1000
+  return (level + .5) * 500
 }
 
 /**

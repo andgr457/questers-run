@@ -11,7 +11,7 @@ import QuickEncounter from "./QuickEncounter";
 import CharacterComponent from './CharacterComponent';
 import { randomize } from './Characters';
 import { Character, Mob } from './entity/entity.interface';
-import { doEntityAttack } from './entity/entity.service';
+import { doCharacterExperience, doEntityAttack } from './entity/entity.service';
 import MobComponent from './MobComponent';
 
 interface EncounterProps {
@@ -41,23 +41,24 @@ export function Encounter(props: EncounterProps) {
   }, [props, mob, character]);
 
   const handleAttackClicked = useCallback((e: any) => {
-    if(randomize(15)){
+    if(randomize(character.critChance)){
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} is up for a critical hit on ${mob.name}...`]);
       setShowQuickTimeEvent(true)
       return
     }
 
-    if (randomize(50)) {
+    if (randomize(character.hitChance)) {
       const characterAttack = character.attack + character.buffAttack 
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit ${mob.name} for ${characterAttack}...`]);
       mob.health -= characterAttack;
-      props.doCharacterExperience(character, (2 + character.level))
+      doCharacterExperience(character, (mob.expGiven + character.level))
+      // props.doCharacterExperience(character, (mob.expGiven + character.level))
     } else {
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} missed ${mob.name}!`]);
     }
 
     if (mob.health <= 0) {
-      props.doCharacterExperience(character, (10 + character.level) * mob.level)
+      doCharacterExperience(character, (mob.expGiven + character.level) * (mob.level + .2))
       props.setShowEncounter(false);
     }
 
@@ -65,11 +66,9 @@ export function Encounter(props: EncounterProps) {
       props.setShowEncounter(false);
     }
 
-    if (randomize(50)) {
+    if (randomize(mob.hitChance)) {
       setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${mob.attack}...`]);
       character.health -= mob.attack;
-      console.log(character.health)
-      console.log(character.maxHealth)
       if(character.health <= 0){
         character.health = 0
         props.setShowEncounter(false)
@@ -87,7 +86,7 @@ export function Encounter(props: EncounterProps) {
       mob.health -= crit;
       props.doCharacterExperience(character, (15 + character.level))
 
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit} critical damage...`]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit.toFixed(2)} critical damage...`]);
       if (mob.health <= 0) {
         props.handleEncounterEvent(character, mob);
         props.setShowEncounter(false);
@@ -102,50 +101,48 @@ export function Encounter(props: EncounterProps) {
   const view = useMemo(() => {
     return (
       <>
-      <QuickEncounter characterClass={character.class} setResult={handleQuickEncounterResult} quickEncounterShown={showQuickTimeEvent} setShowQuickTimeEvent={setShowQuickTimeEvent}></QuickEncounter>
-        <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>A wild {mob.name} attacks!</DialogHeader>
-        <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} className='w-full'>
-        <table>
-          <tr>
+    <QuickEncounter characterClass={character.class} setResult={handleQuickEncounterResult} quickEncounterShown={showQuickTimeEvent} setShowQuickTimeEvent={setShowQuickTimeEvent}></QuickEncounter>
+    <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>A wild {mob.name} attacks!</DialogHeader>
+    <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} className='w-full overflow-hidden'>
+    <div className='overflow-y-auto scrollable-y'>
+    <table>
+        <tr>
             <td>
-            <CharacterComponent character={character}></CharacterComponent>
-
+                <CharacterComponent character={character}></CharacterComponent>
             </td>
             <td>
-              VS
+                VS
             </td>
             <td>
-            <MobComponent mob={mob}></MobComponent>
-
+                <MobComponent mob={mob}></MobComponent>
             </td>
-          </tr>
-          <tr>
+        </tr>
+        <tr>
             <td colSpan={3}>
-            <Button variant="gradient" color="green" onClick={handleAttackClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-            <span>Attack</span>
-          </Button>
-          <Button
-            variant="text"
-            color="red"
-            onClick={handleRunClicked}
-            className="mr-1" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          >
-            <span>Run</span>
-          </Button>
+                <Button variant="gradient" color="green" onClick={handleAttackClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                    <span>Attack</span>
+                </Button>
+                <Button
+                    variant="text"
+                    color="red"
+                    onClick={handleRunClicked}
+                    className="mr-1" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                    <span>Run</span>
+                </Button>
             </td>
-          </tr>
-        </table>
+        </tr>
+    </table>
+    <div className="w-full h-80 p-4 bg-yellow-100 overflow-y-auto rounded-lg">
+    {encounterEvents.slice().reverse().map((e, index) => (
+        <p key={index} className="text-sm font-sm">{e}</p>
+    ))}
+</div>
 
+</div>
 
-        </DialogBody>
-        <DialogFooter placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        
-        <div className="w-full h-half overflow-y-auto p-4 scrollable">
-            {encounterEvents.slice().reverse().map((e, index) => (
-              <p key={index} className="text-sm font-sm">{e}</p>
-            ))}
-          </div>
-        </DialogFooter>
-      </>
+    </DialogBody>
+</>
+
     );
   }, [props, mob, character, encounterEvents, quickTimeEventResponses, showQuickTimeEvent, setQuickTimeEventResponses]);
 

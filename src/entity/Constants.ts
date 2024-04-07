@@ -16,7 +16,9 @@ export const CLASSES: CharacterClass[] = [
       startAttack: 3,
       startDefense: 2,
       startHealth: 110,
-      startCrit: 1.5
+      startCrit: 1.5,
+      startHitChance: 85,
+      startCritChance: 20
     },
     {
       name: 'Mage', 
@@ -27,7 +29,9 @@ export const CLASSES: CharacterClass[] = [
       startAttack: 2,
       startDefense: -1,
       startHealth: 90,
-      startCrit: 1.7
+      startCrit: 1.7,
+      startHitChance: 80,
+      startCritChance: 25
     },
     {
       name: 'Rogue', 
@@ -38,7 +42,9 @@ export const CLASSES: CharacterClass[] = [
       startAttack: 4,
       startDefense: -1,
       startHealth: 95,
-      startCrit: 2
+      startCrit: 2,
+      startHitChance: 95,
+      startCritChance: 50
     }
   ]
 
@@ -159,9 +165,11 @@ export const MOBS: Mob[] = [
         level: 1,
         defense: 1,
         expGiven: 25,
-        foundIn: ['Grind', 'Quest', 'Dungeon'],
+        foundIn: ['Quest', 'Dungeon'],
         imageName: 'goblin.png',
-        chanceToShow: 85
+        chanceToShow: 85,
+        hitChance: 50,
+
     },
     {
         name: 'Troll',
@@ -173,8 +181,9 @@ export const MOBS: Mob[] = [
         defense: 2,
         expGiven: 50,
         chanceToShow: 20,
-        foundIn: ['Quest', 'Dungeon', 'Raid'],
-        imageName: 'troll.png'
+        foundIn: ['Dungeon', 'Raid'],
+        imageName: 'troll.png',
+        hitChance: 75
     },
     {
         name: 'Dragon',
@@ -187,6 +196,7 @@ export const MOBS: Mob[] = [
         expGiven: 100,
         foundIn: ['Dungeon', 'Raid'],
         imageName: 'dragon.png',
-        chanceToShow: 25
+        chanceToShow: 25,
+        hitChance: 80
     }
 ]
