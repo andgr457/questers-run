@@ -4,7 +4,7 @@ import { Encounter } from './Encounter'
 import { ToastContainer, toast } from 'react-toastify'
 
 import Tavern from './Tavern'
-import { BAGS, CLASSES, IMG_MAGE_ICON8, IMG_ROGUE_ICON8, IMG_WARRIOR_ICON8, ITEM_SOAP } from './Constants'
+import { BAGS, CLASSES, IMG_MAGE_ICON8, IMG_ROGUE_ICON8, IMG_WARRIOR_ICON8, ITEM_SOAP } from './entity/Constants'
 import Bags from './Bags'
 import NewCharacter from './NewCharacter'
 import CharacterComponent from './CharacterComponent'

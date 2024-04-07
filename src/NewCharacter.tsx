@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogBody, DialogFooter } from '@material-tailwind/react'
 import { useCallback, useMemo, useState } from 'react'
-import { CLASSES } from './Constants'
+import { CLASSES } from './entity/Constants'
 import { Character, CharacterClass } from './entity/entity.interface'
 
 interface NewCharacterProps {

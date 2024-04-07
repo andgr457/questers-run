@@ -1,7 +1,7 @@
 import React from 'react';
 import { Progress } from '@material-tailwind/react';
 import { Character } from './Characters';
-import { CLASSES } from './Constants';
+import { CLASSES } from './entity/Constants';
 
 interface CharacterProps {
   character: Character;
