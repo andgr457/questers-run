@@ -78,22 +78,23 @@ export default function Characters() {
   }
 
   const handleEncounterEvent = (updatedCharacter: Character, updatedMob: Mob) => {
-    setCharacters(() => {
-      return characters.map(character => {
-        if (character.name === updatedCharacter.name) {
-          return { ...updatedCharacter };
-        }
-        return character;
-      });
-    });
     if(updatedMob.health <= 0){
       updatedMob.health = 0
       toast(`${updatedCharacter.name} took out a ${mob.name}!`, {type: 'success'})
     } else if(updatedCharacter.health <= 0){
       toast(`${updatedCharacter.name} passed out...`, {type: 'error'})
     }
-    setMob({ ...updatedMob });
-  };
+
+    setMob({ ...updatedMob })
+    setCharacters(() => {
+      return characters.map(character => {
+        if (character.name === updatedCharacter.name) {
+          return { ...updatedCharacter }
+        }
+        return character;
+      })
+    })
+  }
 
   const handleGrindClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
@@ -106,8 +107,9 @@ export default function Characters() {
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
-      if(doCharacterExperience(character, 1))
-      doCharacterExperience(character, 1)
+      if(doCharacterExperience(character, 1 * (character.level + .5)) === true){
+        toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
+      }
       doCharacterDamage(character, 1)
     }
     setCharacters(dupe)
@@ -124,7 +126,9 @@ export default function Characters() {
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
-      doCharacterExperience(character, 5)
+      if(doCharacterExperience(character, 5 * (character.level + .5)) === true){
+        toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
+      }
       doCharacterDamage(character, 1)
     }
     setCharacters(dupe)
@@ -141,7 +145,9 @@ export default function Characters() {
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
-      doCharacterExperience(character, 10)
+      if(doCharacterExperience(character, 10 * (character.level + .5)) === true){
+        toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
+      }
       doCharacterDamage(character, 1)
     }
     setCharacters(dupe)
@@ -158,7 +164,9 @@ export default function Characters() {
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
-      doCharacterExperience(character, 20)
+      if(doCharacterExperience(character, 20 * (character.level + .5)) === true){
+        toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
+      }
       doCharacterDamage(character, 1)
     }
     setCharacters(dupe)
@@ -177,7 +185,6 @@ export default function Characters() {
         if(c.health > c.maxHealth){
           c.health = c.maxHealth
         }
-        toast(`Rest Here Weary ${character.name}, For Great Adventures Lie Ahead! +${10 + character.level} HP`, { type: 'success' });
       }
       return c
     })
@@ -199,6 +206,10 @@ export default function Characters() {
           c.buffDefense += 1
           c.buffCount += 1
           toast(`${c.name} feel stronger and ready for the next challenge! +1 Defense`, { type: 'info' });
+        } else if(randomize(50)){
+          c.buffCrit += .1
+          c.buffCount += 1
+          toast(`${c.name} feel stronger and ready for the next challenge! +1 Defense`, { type: 'info' });
         } else {
           toast(`${c.name} calmed their mind, but did not receive a blessing.`, { type: 'info' });
         }
@@ -206,6 +217,7 @@ export default function Characters() {
       }
       return c
     })
+    setShowTavern(false)
     setCharacters(updatedCharacters)
   }, [characters, character])
 

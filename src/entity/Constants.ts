@@ -15,7 +15,8 @@ export const CLASSES: CharacterClass[] = [
       attacks: 'Warrior',
       startAttack: 3,
       startDefense: 2,
-      startHealth: 110
+      startHealth: 110,
+      startCrit: 1.5
     },
     {
       name: 'Mage', 
@@ -25,7 +26,8 @@ export const CLASSES: CharacterClass[] = [
       attacks: 'Mage',
       startAttack: 2,
       startDefense: -1,
-      startHealth: 90
+      startHealth: 90,
+      startCrit: 1.7
     },
     {
       name: 'Rogue', 
@@ -35,7 +37,8 @@ export const CLASSES: CharacterClass[] = [
       attacks: 'Rogue',
       startAttack: 4,
       startDefense: -1,
-      startHealth: 95
+      startHealth: 95,
+      startCrit: 2
     }
   ]
 
@@ -137,3 +140,11 @@ export const ITEM_RARITIES: ItemRarity[] = [
     
 ]
 export const ITEM_SOAP: Item = {name: 'Soap', baseValue: 1, rarity: 'Basic', description: 'This mystical bar of cleanliness promises to wash away your trouble... Maybe a few enemies if you can get a grip on it!'}
+
+export const STOCK_NAMES: string[] = [
+    'Thalindor', 'Eliria', 'Grommash', 'Lysandra', 'Calenon', 'Neridia', 'Thundar', 'Seraphina', 'Zephyrus', 'Lyria',
+    'Faelar', 'Aeris', 'Valthor', 'Elysium', 'Maelis', 'Darian', 'Liora', 'Elandrial', 'Sylvara', 'Valen',
+    'Aurelia', 'Daelor', 'Thyria', 'Eolande', 'Talon', 'Ilyndra', 'Raelin', 'Caelum', 'Nerion', 'Lunara',
+    'Draven', 'Ithilien', 'Seren', 'Elandra', 'Varian', 'Liora', 'Arannis', 'Fenris', 'Talindra', 'Elys',
+    'Aerion', 'Lysandra', 'Caelia', 'Thalor', 'Virel', 'Elara', 'Mithral', 'Sylas', 'Talira', 'Zirelia'
+]

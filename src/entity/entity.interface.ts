@@ -36,6 +36,7 @@ export interface Character extends BaseEntity {
   buffCount: number
   buffAttack: number
   buffDefense: number
+  buffCrit: number
   maxBuffs: number
   bags: Bag[]
 }
@@ -49,6 +50,7 @@ export interface CharacterClass {
   startAttack: number
   startDefense: number
   startHealth: number
+  startCrit: number
 }
 
 export interface Mob extends BaseEntity {

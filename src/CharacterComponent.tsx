@@ -1,7 +1,8 @@
-import React from 'react';
-import { Progress } from '@material-tailwind/react';
-import { Character } from './Characters';
-import { CLASSES } from './entity/Constants';
+import React from 'react'
+import { Progress } from '@material-tailwind/react'
+import { CLASSES } from './entity/Constants'
+import { Character } from './entity/entity.interface'
+import { doEntityAttack } from './entity/entity.service';
 
 interface CharacterProps {
   character: Character;
@@ -20,8 +21,9 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
           {character.name} - {character.class} - Level {character.level}
         </h5>
         <p className="text-center font-sans text-base font-light leading-relaxed text-inherit">
-          Buffs [{character.buffCount}/{character.maxBuffs}]: 
-          [+{character.buffAttack ?? 0} Attack] [+{character.buffDefense} Defense]
+          Buffs [{character.buffCount}/{character.maxBuffs}]<br/>
+          [+{character.buffAttack ?? 0} Attack] [+{character.buffDefense} Defense]<br/>
+          [{doEntityAttack(character, character.buffAttack)} Damage] [{doEntityAttack(character, character.buffAttack) * character.buffCrit} Crit Damage]
         </p>
         
         <div className="mt-4">

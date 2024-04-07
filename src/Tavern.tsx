@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
-import { Character } from './Characters';
 import CharacterComponent from './CharacterComponent';
+import { Character } from './entity/entity.interface';
 
 interface TavernProps {
   showTavern: boolean
@@ -57,7 +57,7 @@ const Tavern: React.FC<TavernProps> = ({
           color="blue"
           onClick={() => handleTavernBuff()}
           className="mr-2" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
-          Meditate +1 Attack +1 Defense
+          Meditate +1 Attack +1 Defense +0.1 Crit
         </Button>
 
     </DialogBody>

@@ -1,4 +1,17 @@
-import { Character } from './entity.interface'
+import { STOCK_NAMES } from './Constants'
+import { BaseEntity, Character } from './entity.interface'
+
+export function getRandomName(): string {
+  const randomIndex = Math.floor(Math.random() * STOCK_NAMES.length)
+  return STOCK_NAMES[randomIndex]
+}
+
+export function getRandomClass(): string {
+  const randomIndex = Math.floor(Math.random() * 3)
+  console.log(randomIndex)
+  //TODO: MAGE is always being selected
+  return ['Warrior', 'Mage', 'Rogue'][randomIndex] 
+}
 
 /**
  * Adds experience points to a character and levels them up if they reach the next level experience points required.
@@ -25,12 +38,18 @@ function doCharacterLevelUp(character: Character): void {
   character.maxBuffs = character.level
 }
 
-function determineNextLevelExp(level: number): number {
+export function determineNextLevelExp(level: number): number {
   return (level + .5) * 1000
 }
 
-export function doEntityAttack(): void {
-
+/**
+ * Calculates the attack damage of an entity.
+ * @param {BaseEntity} entity The entity attacking.
+ * @returns {number} Damage of the attack.
+ */
+export function doEntityAttack(entity: BaseEntity, buffAttack?: number): number {
+  const buff = buffAttack ?? 0
+  return (entity.attack + buff) * entity.level
 }
 
 export function doEntityDamage(): void {

@@ -2,6 +2,7 @@ import { Button, Dialog, DialogBody, DialogFooter } from '@material-tailwind/rea
 import { useCallback, useMemo, useState } from 'react'
 import { CLASSES } from './entity/Constants'
 import { Character, CharacterClass } from './entity/entity.interface'
+import { determineNextLevelExp, getRandomClass, getRandomName } from './entity/entity.service'
 
 interface NewCharacterProps {
     addCharacter: (character: Character) => void
@@ -10,8 +11,8 @@ interface NewCharacterProps {
     characterNames: string[]
 }
 export default function NewCharacter(props: NewCharacterProps) {
-    const [name, setName] = useState('')
-    const [classs, setClasss] = useState('Warrior')
+    const [name, setName] = useState(getRandomName())
+    const [classs, setClasss] = useState(getRandomClass())
     const [hideError, setHideError] = useState(true)
 
     const handleNameChanged = useCallback((e: any) => {
@@ -41,10 +42,11 @@ export default function NewCharacter(props: NewCharacterProps) {
             health: foundClass.startHealth,
             maxBuffs: 1,
             exp: 0,
-            nextLevelExp: 1500,
+            nextLevelExp: determineNextLevelExp(1),
             level: 1,
-            buffAttack: 1,
-            buffDefense: 1,
+            buffAttack: 0,
+            buffDefense: 0,
+            buffCrit: foundClass.startCrit,
             buffCount: 0,
             bags: [],
             defense: 1
@@ -67,7 +69,7 @@ export default function NewCharacter(props: NewCharacterProps) {
                 Breathe new life into your realm!
                 </p>
                 <h6>Name</h6>   
-                <input onChange={handleNameChanged} placeholder="Enter Character Name"
+                <input defaultValue={getRandomName()} onChange={handleNameChanged} placeholder="Enter Character Name"
                 className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50" />
                 <p hidden={hideError} className='text-red-700'>You cannot create new characters with the same name.</p>
                 <br/><br/>
@@ -75,7 +77,7 @@ export default function NewCharacter(props: NewCharacterProps) {
                 <select onChange={handleClassChanged}
                     className="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
                     {CLASSES.map(c => (
-                        <option value={c.name}>{c.name}</option>
+                        <option selected={classs === c.name} value={c.name}>{c.name}</option>
                     ))}
                     
                 </select>
@@ -84,7 +86,9 @@ export default function NewCharacter(props: NewCharacterProps) {
                         <>
                             <br/><p className="block mb-1 font-sans text-base antialiased font-normal leading-relaxed text-gray-700">{c.name}</p>
                             <p>{c.description}</p>
-                            <p className="block mb-1 font-sans text-base antialiased font-normal leading-relaxed text-gray-700">Starts with {c.startHealth} health, {c.startAttack} attack, and {c.startDefense} defense.</p>
+                            <p className="block mb-1 font-sans text-base antialiased font-normal leading-relaxed text-gray-700">
+                                Starts with {c.startHealth} health, {c.startAttack} attack, {c.startDefense} defense, and {c.startCrit} critical modifier.
+                            </p>
 
                         </>
 

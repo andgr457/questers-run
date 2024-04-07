@@ -11,6 +11,7 @@ import QuickEncounter from "./QuickEncounter";
 import CharacterComponent from './CharacterComponent';
 import { randomize } from './Characters';
 import { Character, Mob } from './entity/entity.interface';
+import { doEntityAttack } from './entity/entity.service';
 
 interface EncounterProps {
   character: Character;
@@ -81,7 +82,7 @@ export function Encounter(props: EncounterProps) {
 
   const handleQuickEncounterResult = useCallback((e: {result: string}) => {
     if(e.result === 'Success'){
-      const crit = (character.attack * 2) + character.level
+      const crit = doEntityAttack(character, character.buffAttack) * character.buffCrit
       mob.health -= crit;
       props.doCharacterExperience(character, (15 + character.level))
 
