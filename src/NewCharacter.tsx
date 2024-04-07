@@ -1,7 +1,8 @@
 import { Button, Dialog, DialogBody, DialogFooter } from '@material-tailwind/react'
 import { useCallback, useMemo, useState } from 'react'
-import { Character, CharacterClass } from './Characters'
 import { CLASSES } from './Constants'
+import { Character, CharacterClass } from './entity/entity.interface'
+
 interface NewCharacterProps {
     addCharacter: (character: Character) => void
     showNewCharacter: boolean
@@ -40,12 +41,13 @@ export default function NewCharacter(props: NewCharacterProps) {
             health: foundClass.startHealth,
             maxBuffs: 1,
             exp: 0,
-            nextLevelExp: 100,
+            nextLevelExp: 1500,
             level: 1,
             buffAttack: 1,
             buffDefense: 1,
             buffCount: 0,
-            bags: []
+            bags: [],
+            defense: 1
         }
         console.log(character)
         props.addCharacter(character)

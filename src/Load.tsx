@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react';
-import JSZip from 'jszip';
-import { Character } from './Characters';
-import { Button } from '@material-tailwind/react';
-
+import React, { useCallback } from 'react'
+import JSZip from 'jszip'
+import { Button } from '@material-tailwind/react'
+import { Character } from './entity/entity.interface'
 
 interface CharacterLoaderProps {
   onLoad: (characters: Character[]) => void;

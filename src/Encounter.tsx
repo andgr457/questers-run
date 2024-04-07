@@ -7,9 +7,10 @@ import {
   DialogFooter,
   Progress,
 } from "@material-tailwind/react";
-import { Character, Mob, randomize } from "./Characters";
 import QuickEncounter from "./QuickEncounter";
 import CharacterComponent from './CharacterComponent';
+import { randomize } from './Characters';
+import { Character, Mob } from './entity/entity.interface';
 
 interface EncounterProps {
   character: Character;
@@ -39,7 +40,7 @@ export function Encounter(props: EncounterProps) {
 
   const handleAttackClicked = useCallback((e: any) => {
     if(randomize(15)){
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} is up for a critical hit on ${mob.attack}...`]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} is up for a critical hit on ${mob.name}...`]);
       setShowQuickTimeEvent(true)
       return
     }

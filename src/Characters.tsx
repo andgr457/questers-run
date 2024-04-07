@@ -10,69 +10,8 @@ import NewCharacter from './NewCharacter'
 import CharacterComponent from './CharacterComponent'
 import CharacterSaver from './Save'
 import CharacterLoader from './Load'
-
-export interface Character {
-  name: string
-  level: number
-  exp: number
-  nextLevelExp: number
-  class: string /** Class Name */
-  health: number
-  maxHealth: number
-  attack: number
-  buffCount: number
-  buffAttack: number
-  buffDefense: number
-  maxBuffs: number
-  bags: Bag[]
-}
-
-export interface CharacterClass {
-  name: string
-  description: string
-  imageName: string
-  credit: string
-  attacks: string
-  startAttack: number
-  startDefense: number
-  startHealth: number
-}
-
-export interface Item {
-  name: string
-  description: string
-  baseValue: number
-  rarity: string // matches with ItemRarity
-  quantity?: number
-  buffHealth?: number
-  buffAttack?: number
-  buffDefense?: number
-}
-
-export interface ItemRarity {
-  name: string
-  /* starting from 1 - value * 1.25 **/
-  valueModifier: number
-}
-
-export interface CharacterBag {
-
-}
-
-export interface CharacterEquip {
-
-}
-
-export interface Mob {
-  name: string
-  type: string
-  level: number
-  health: number
-  maxHealth: number,
-  attack: number
-  buffAttack: number
-  buffDefense: number
-}
+import { doCharacterExperience } from './entity/entity.service'
+import { Mob, Item, Character, Bag } from './entity/entity.interface'
 
 const goblin: Mob = {
   name: 'Goblin',
@@ -81,67 +20,31 @@ const goblin: Mob = {
   health: 10,
   maxHealth: 10,
   level: 1,
-  buffAttack: 0,
-  buffDefense: 1
+  defense: 1,
+  expGiven: 25
 }
 
 const troll: Mob = {
   name: 'Troll',
   attack: 4,
   health: 50,
-  buffAttack: 1,
-  buffDefense: 3,
   level: 5,
   maxHealth: 50,
-  type: 'Dungeon Boss'
+  type: 'Dungeon Boss',
+  defense: 2,
+  expGiven: 50
 }
 
 const dragon: Mob = {
   name: 'Dragon',
   attack: 10,
   health: 250,
-  buffAttack: 0,
-  buffDefense: 0,
   level: 15,
   maxHealth: 250,
-  type: 'Raid Boss'
+  type: 'Raid Boss',
+  defense: 5,
+  expGiven: 100
 }
-
-export interface Bag extends Item {
-  slots: number
-  items: Item[]
-}
-
-export interface Image {
-
-}
-
-const charactersList: Readonly<Character[]> = [
-  {
-    name: 'Hayz', level: 20, exp: 0, nextLevelExp: 200, health: 200, maxHealth: 200,
-    attack: 1, buffAttack: 0, buffDefense: 0, maxBuffs: 1, buffCount: 0,
-    class: 'Warrior',
-    bags: [
-      {...BAGS.find(b => b.name === 'Pillowcase') as Bag, items: [{...ITEM_SOAP}]}
-    ]
-  },
-  {
-    name: 'Lithos', level: 1, exp: 0, nextLevelExp: 100, health: 69, maxHealth: 100,
-    attack: 1, buffAttack: 0, buffDefense: 0, maxBuffs: 1, buffCount: 0,
-    class: 'Mage',
-    bags: [
-      {...BAGS.find(b => b.name === 'Pillowcase') as Bag}
-    ]
-  },
-  {
-    name: 'Velouria', level: 1, exp: 0, nextLevelExp: 100, health: 25, maxHealth: 100,
-    attack: 1, buffAttack: 0, buffDefense: 0, maxBuffs: 1, buffCount: 0,
-    class: 'Rogue',
-    bags: [
-      {...BAGS.find(b => b.name === 'Pillowcase') as Bag}
-    ]
-  }
-]
 
 const welcomeMessages = [
   'Welcome back, adventurer! Your characters have hit the gym and are now stronger than ever!',
@@ -166,17 +69,6 @@ export default function Characters() {
   const [showBags, setShowBags]: [boolean, any] = useState(false)
   const [showNewCharacter, setShowNewCharacter]: [boolean, any] = useState(false)
 
-  function doCharacterExperience(c: Character, exp: number){
-    c.exp += exp
-    if(c.exp >= c.nextLevelExp){
-      c.exp = 0
-      c.nextLevelExp += 10
-      c.level += 1
-      c.maxBuffs = c.level
-      toast(`${c.name} is now level ${c.level}!`, {type: 'success'})
-    }
-  }
-
   function doCharacterDamage(c: Character, damage: number){
     c.health -= damage
     if(c.health <= 0){
@@ -194,12 +86,13 @@ export default function Characters() {
         return character;
       });
     });
-    setMob({ ...updatedMob });
     if(updatedMob.health <= 0){
+      updatedMob.health = 0
       toast(`${updatedCharacter.name} took out a ${mob.name}!`, {type: 'success'})
     } else if(updatedCharacter.health <= 0){
       toast(`${updatedCharacter.name} passed out...`, {type: 'error'})
     }
+    setMob({ ...updatedMob });
   };
 
   const handleGrindClick = useCallback((e: any) => {
@@ -213,6 +106,7 @@ export default function Characters() {
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
+      if(doCharacterExperience(character, 1))
       doCharacterExperience(character, 1)
       doCharacterDamage(character, 1)
     }
