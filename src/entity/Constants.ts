@@ -6,6 +6,13 @@ export const IMG_MAGE_ICON8 = '<a target="_blank" href="https://icons8.com/icon/
 export const IMG_ROGUE_ICON8 = '<a target="_blank" href="https://icons8.com/icon/ZqDbnyVTvEPy/rogue">Rogue</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>'
 export const IMG_WARRIOR_ICON8 = '<a target="_blank" href="https://icons8.com/icon/7Us820vzFood/warrior">Warrior</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>'
 
+export enum MODES {
+  GRIND = 'Grind',
+  QUEST = 'Quest',
+  DUNGEON = 'Dungeon',
+  RAID = 'Raid'
+}
+
 export const CLASSES: CharacterClass[] = [
     {
       name: 'Warrior', 
@@ -171,9 +178,9 @@ export const MOBS: Mob[] = [
         level: 1,
         defense: 1,
         expGiven: 25,
-        foundIn: ['Quest', 'Dungeon'],
+        foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
         imageName: 'goblin.png',
-        chanceToShow: 85,
+        chanceToShow: 30,
         hitChance: 40,
 
     },
@@ -186,9 +193,9 @@ export const MOBS: Mob[] = [
         level: 2,
         defense: 2,
         expGiven: 40,
-        foundIn: ['Grind', 'Quest', 'Dungeon'],
+        foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
         imageName: 'theif.png',
-        chanceToShow: 75,
+        chanceToShow: 30,
         hitChance: 50,
     },
     {
@@ -200,8 +207,8 @@ export const MOBS: Mob[] = [
         type: 'Elite',
         defense: 2,
         expGiven: 50,
-        chanceToShow: 20,
-        foundIn: ['Dungeon', 'Raid'],
+        chanceToShow: 30,
+        foundIn: [MODES.QUEST, MODES.DUNGEON, MODES.RAID],
         imageName: 'troll.png',
         hitChance: 75
     },
@@ -211,12 +218,12 @@ export const MOBS: Mob[] = [
         health: 250,
         level: 15,
         maxHealth: 250,
-        type: 'Boss',
+        type: 'Rare',
         defense: 5,
         expGiven: 100,
-        foundIn: ['Dungeon', 'Raid'],
+        foundIn: [MODES.RAID],
         imageName: 'dragon.png',
-        chanceToShow: 25,
+        chanceToShow: 50,
         hitChance: 80
     }
 ]

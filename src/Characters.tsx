@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Badge, Button, ButtonGroup, Dialog, Progress } from "@material-tailwind/react"
+import React, { useCallback, useMemo, useState } from 'react'
+import { Badge, Button, Dialog } from "@material-tailwind/react"
 import { Encounter } from './Encounter'
 import { toast } from 'react-toastify'
 import Tavern from './Tavern'
@@ -9,8 +9,8 @@ import CharacterSaver from './Save'
 import CharacterLoader from './Load'
 import { doCharacterExperience, getRandomMob } from './entity/entity.service'
 import { Mob, Character, Bag } from './entity/entity.interface'
-import { MOBS } from './entity/Constants'
 import Bags from './Bags'
+import PlayerComponent from './PlayerComponent'
 
 export function randomize(chance: number): boolean {
   const randomNumber = Math.random() * 100
@@ -228,6 +228,8 @@ export default function Characters() {
           <Encounter doCharacterExperience={doCharacterExperience} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
         </Dialog>
         <Bags bags={bags as any} setShowBags={setShowBags} showBags={showBags}></Bags>
+        
+        <PlayerComponent player={{exp: 0, level: 1, nextLevelExp: 750}}></PlayerComponent>
         <Button color='amber' onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} placeholder={undefined} onClick={handleNewCharacterClick}>New Character</Button>
         <CharacterSaver characters={characters}></CharacterSaver>
         <CharacterLoader onLoad={handleLoadCharacters}></CharacterLoader>

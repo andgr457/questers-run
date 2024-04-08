@@ -1,3 +1,9 @@
+export interface Player {
+  level: number
+  exp: number
+  nextLevelExp: number
+}
+
 export interface Bag extends Item {
   slots: number
   items: Item[]

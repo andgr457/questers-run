@@ -22,7 +22,7 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
         </h5>
         <p className="text-center font-sans text-base font-light leading-relaxed text-inherit">
           Buffs [{character.buffCount}/{character.maxBuffs}]<br/>
-          [+{character.buffAttack ?? 0} Attack] [+{character.buffDefense} Defense] [+{character.buffCrit} Critical]<br/>
+          [+{character.buffAttack.toFixed(2)} Attack] [+{character.buffDefense.toFixed(2)} Defense] [+{character.buffCrit.toFixed(2)} Critical]<br/>
           [{doEntityAttack(character, character.buffAttack)} Damage] [{(doEntityAttack(character, character.buffAttack) * character.buffCrit).toFixed(2)} Crit Damage]
         </p>
         
