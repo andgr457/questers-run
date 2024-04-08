@@ -155,11 +155,17 @@ export const STOCK_NAMES: string[] = [
     'Aerion', 'Lysandra', 'Caelia', 'Thalor', 'Virel', 'Elara', 'Mithral', 'Sylas', 'Talira', 'Zirelia'
 ]
 
+export const TypeColors = {
+    'Common': 'gray',
+    'Elite': 'green',
+    'Boss': 'purple'
+}
+
 export const MOBS: Mob[] = [
     {
         name: 'Goblin',
         type: 'Common',
-        attack: 5,
+        attack: 3,
         health: 25,
         maxHealth: 25,
         level: 1,
@@ -168,8 +174,22 @@ export const MOBS: Mob[] = [
         foundIn: ['Quest', 'Dungeon'],
         imageName: 'goblin.png',
         chanceToShow: 85,
-        hitChance: 50,
+        hitChance: 40,
 
+    },
+    {
+        name: 'Theif',
+        type: 'Common',
+        attack: 5,
+        health: 30,
+        maxHealth: 30,
+        level: 2,
+        defense: 2,
+        expGiven: 40,
+        foundIn: ['Grind', 'Quest', 'Dungeon'],
+        imageName: 'theif.png',
+        chanceToShow: 75,
+        hitChance: 50,
     },
     {
         name: 'Troll',
