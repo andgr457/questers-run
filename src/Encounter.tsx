@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -6,26 +6,27 @@ import {
   DialogBody,
   DialogFooter,
   Progress,
-} from "@material-tailwind/react";
-import QuickEncounter from "./QuickEncounter";
-import CharacterComponent from './CharacterComponent';
-import { randomize } from './Characters';
-import { Character, Mob } from './entity/entity.interface';
-import { doCharacterExperience, doEntityAttack } from './entity/entity.service';
-import MobComponent from './MobComponent';
+} from '@material-tailwind/react'
+import QuickEncounter from './QuickEncounter'
+import CharacterComponent from './CharacterComponent'
+import { randomize } from './Characters'
+import { Character, Mob, Player } from './entity/entity.interface'
+import { doCharacterExperience, doEntityAttack } from './entity/entity.service'
+import MobComponent from './MobComponent'
 
 interface EncounterProps {
-  character: Character;
-  mob: Mob;
-  handleEncounterEvent: any;
-  setShowEncounter: any;
-  doCharacterExperience: any;
+  character: Character
+  mob: Mob
+  player: Player
+  handleEncounterEvent: any
+  setShowEncounter: any
 }
 
 export function Encounter(props: EncounterProps) {
-  const [character, setCharacter] = useState<Character>({ ...props.character });
-  const [mob, setMob] = useState<Mob>({ ...props.mob });
-  const [encounterEvents, setEncounterEvents] = useState<string[]>([]);
+  const [character, setCharacter] = useState<Character>({ ...props.character })
+  const [mob, setMob] = useState<Mob>({ ...props.mob })
+  const [player, setPlayer] = useState<Player>({...props.player})
+  const [encounterEvents, setEncounterEvents] = useState<string[]>([])
   const [showQuickTimeEvent, setShowQuickTimeEvent] = useState(false)
   const [quickTimeEventResponses, setQuickTimeEventResponses] = useState([])
 
@@ -51,14 +52,13 @@ export function Encounter(props: EncounterProps) {
       const characterAttack = character.attack + character.buffAttack 
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit ${mob.name} for ${characterAttack}...`]);
       mob.health -= characterAttack;
-      doCharacterExperience(character, (mob.expGiven + character.level))
-      // props.doCharacterExperience(character, (mob.expGiven + character.level))
+      doCharacterExperience(player, character, (mob.expGiven + character.level))
     } else {
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} missed ${mob.name}!`]);
     }
 
     if (mob.health <= 0) {
-      doCharacterExperience(character, (mob.expGiven + character.level) * (mob.level + .2))
+      doCharacterExperience(player, character, (mob.expGiven + character.level) * (mob.level + .2))
       props.setShowEncounter(false);
     }
 
@@ -84,7 +84,7 @@ export function Encounter(props: EncounterProps) {
     if(e.result === 'Success'){
       const crit = doEntityAttack(character, character.buffAttack) * character.buffCrit
       mob.health -= crit;
-      props.doCharacterExperience(character, (15 + character.level))
+      doCharacterExperience(player, character, (15 + character.level))
 
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit.toFixed(2)} critical damage...`]);
       if (mob.health <= 0) {
@@ -119,22 +119,22 @@ export function Encounter(props: EncounterProps) {
         </tr>
         <tr>
             <td colSpan={3}>
-                <Button variant="gradient" color="green" onClick={handleAttackClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                <Button variant='gradient' color='green' onClick={handleAttackClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                     <span>Attack</span>
                 </Button>
                 <Button
-                    variant="text"
-                    color="red"
+                    variant='text'
+                    color='red'
                     onClick={handleRunClicked}
-                    className="mr-1" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                    className='mr-1' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                     <span>Run</span>
                 </Button>
             </td>
         </tr>
     </table>
-    <div className="w-full h-80 p-4 bg-yellow-100 overflow-y-auto rounded-lg">
+    <div className='w-full h-80 p-4 bg-yellow-100 overflow-y-auto rounded-lg'>
     {encounterEvents.slice().reverse().map((e, index) => (
-        <p key={index} className="text-sm font-sm">{e}</p>
+        <p key={index} className='text-sm font-sm'>{e}</p>
     ))}
 </div>
 

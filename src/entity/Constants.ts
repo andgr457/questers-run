@@ -65,6 +65,14 @@ export const ATTACKS: Attack[] = [
         name: 'Fire Ball'
     },
     {
+        class: 'Mage',
+        name: 'Mana Ray'
+    },
+    {
+        class: 'Mage',
+        name: 'Nova Bubble'
+    },
+    {
         class: 'Warrior',
         name: 'Side Slash'
     },
@@ -73,12 +81,28 @@ export const ATTACKS: Attack[] = [
         name: 'Power Chop'
     },
     {
+        class: 'Warrior',
+        name: 'Hilt Smash'
+    },
+    {
+        class: 'Warrior',
+        name: 'Enraged Jab'
+    },
+    {
         class: 'Rogue',
         name: 'Backstab'
     },
     {
         class: 'Rogue',
         name: 'Kidney Shot'
+    },
+    {
+        class: 'Rogue',
+        name: 'Stealth Gib'
+    },
+    {
+        class: 'Rogue',
+        name: 'Long Rend'
     }
 ]
 

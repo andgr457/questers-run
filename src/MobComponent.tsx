@@ -13,7 +13,7 @@ const MobComponent: React.FC<MobProps> = ({ mob }) => {
     <div className="relative flex flex-col mt-6 text-gray-700 bg-white shadow-md rounded-xl w-full sm:w-96">
       <div className="p-4 sm:p-6">
         <img 
-          className="h-16 w-16 rounded-full mx-auto mb-4" 
+          className="h-20 w-20 mx-auto mb-4" 
           src={`img/mobs/${MOBS?.find(m => m.name === mob.name)?.imageName}`} 
           alt="" 
         />

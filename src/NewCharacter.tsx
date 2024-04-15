@@ -2,7 +2,7 @@ import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@materia
 import { useCallback, useMemo, useState } from 'react'
 import { CLASSES } from './entity/Constants'
 import { Character, CharacterClass } from './entity/entity.interface'
-import { determineNextLevelExp, getRandomClass, getRandomName } from './entity/entity.service'
+import { determineCharacterNextLevelExp, getRandomClass, getRandomName } from './entity/entity.service'
 
 interface NewCharacterProps {
     addCharacter: (character: Character) => void
@@ -42,7 +42,7 @@ export default function NewCharacter(props: NewCharacterProps) {
             health: foundClass.startHealth,
             maxBuffs: 1,
             exp: 0,
-            nextLevelExp: determineNextLevelExp(1),
+            nextLevelExp: determineCharacterNextLevelExp(1),
             level: 1,
             buffAttack: 0,
             buffDefense: 0,

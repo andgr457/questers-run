@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button, Input } from '@material-tailwind/react';
 import { ATTACKS, CLASSES } from './entity/Constants';
 
@@ -28,7 +28,11 @@ const QuickEncounter: React.FC<QuickEncounterProps> = ({
   setResult,
   characterClass
 }) => {
-  const [passPhrase, setPassPhrase] = useState<string | undefined>(generateRandomAttack(characterClass));
+  const [passPhrase, setPassPhrase] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    setPassPhrase(generateRandomAttack(characterClass))
+  }, [quickEncounterShown, characterClass])
 
   const handlePassPhraseChange = useCallback((e: any) => {
     if(e.target.value === passPhrase){
@@ -43,6 +47,7 @@ const QuickEncounter: React.FC<QuickEncounterProps> = ({
   }, [])
 
   const view = useMemo(() => {
+    if(!passPhrase) return
     return (
         <Dialog open={quickEncounterShown} handler={function (value: any): void {
               } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Badge, Button, Dialog } from "@material-tailwind/react"
 import { Encounter } from './Encounter'
 import { toast } from 'react-toastify'
@@ -6,9 +6,9 @@ import Tavern from './Tavern'
 import NewCharacter from './NewCharacter'
 import CharacterComponent from './CharacterComponent'
 import CharacterSaver from './Save'
-import CharacterLoader from './Load'
-import { doCharacterExperience, getRandomMob } from './entity/entity.service'
-import { Mob, Character, Bag } from './entity/entity.interface'
+import Loader from './Load'
+import { determinePlayerNextLevelExp, doCharacterExperience, getRandomMob } from './entity/entity.service'
+import { Mob, Character, Bag, Player } from './entity/entity.interface'
 import Bags from './Bags'
 import PlayerComponent from './PlayerComponent'
 
@@ -26,6 +26,7 @@ export default function Characters() {
   const [bags, setBags]: [Bag[], any] = useState([])
   const [showBags, setShowBags]: [boolean, any] = useState(false)
   const [showNewCharacter, setShowNewCharacter]: [boolean, any] = useState(false)
+  const [player, setPlayer]: [Player, any] = useState({exp: 0, level: 1, nextLevelExp: determinePlayerNextLevelExp(1)})
 
   function doCharacterDamage(c: Character, damage: number){
     c.health -= damage
@@ -35,7 +36,7 @@ export default function Characters() {
     }
   }
 
-  const handleEncounterEvent = (updatedCharacter: Character, updatedMob: Mob) => {
+  const handleEncounterEvent = (updatedCharacter: Character, updatedMob: Mob, updatedPlayer: Player) => {
     if(updatedMob.health <= 0){
       updatedMob.health = 0
       toast(`${updatedCharacter.name} took out a ${mob.name}!`, {type: 'success'})
@@ -52,6 +53,7 @@ export default function Characters() {
         return character;
       })
     })
+    setPlayer(player)
   }
 
   const handleGrindClick = useCallback((e: any) => {
@@ -65,12 +67,13 @@ export default function Characters() {
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
-      if(doCharacterExperience(character, 1 * (character.level + .5)) === true){
+      if(doCharacterExperience(player, character, 1 * (character.level + .5)) === true){
         toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
       }
       doCharacterDamage(character, 1)
     }
     setCharacters(dupe)
+    setPlayer(player)
   }, [characters])
 
   const handleQuestClick = useCallback((e: any) => {
@@ -84,12 +87,13 @@ export default function Characters() {
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
-      if(doCharacterExperience(character, 5 * (character.level + .5)) === true){
+      if(doCharacterExperience(player, character, 5 * (character.level + .5)) === true){
         toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
       }
       doCharacterDamage(character, 1)
     }
     setCharacters(dupe)
+    setPlayer(player)
   }, [characters])
 
   const handleDungeonClick = useCallback((e: any) => {
@@ -103,12 +107,13 @@ export default function Characters() {
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
-      if(doCharacterExperience(character, 10 * (character.level + .5)) === true){
+      if(doCharacterExperience(player, character, 10 * (character.level + .5)) === true){
         toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
       }
       doCharacterDamage(character, 1)
     }
     setCharacters(dupe)
+    setPlayer(player)
   }, [characters])
 
   const handleRaidClick = useCallback((e: any) => {
@@ -122,12 +127,13 @@ export default function Characters() {
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
-      if(doCharacterExperience(character, 20 * (character.level + .5)) === true){
+      if(doCharacterExperience(player, character, 20 * (character.level + .5)) === true){
         toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
       }
       doCharacterDamage(character, 1)
     }
     setCharacters(dupe)
+    setPlayer(player)
   }, [characters])
 
   const handleTavernClick = useCallback((e: any) => {
@@ -200,8 +206,9 @@ export default function Characters() {
     setShowNewCharacter(true)
   }, [])
 
-  const handleLoadCharacters = useCallback((characters: Character[]) => {
-    setCharacters(characters)
+  const handleLoadCharacters = useCallback((c: Character[], p: Player) => {
+    setCharacters(c)
+    setPlayer(p)
   }, [])
 
   const getBagItemsCount = (c: Character) => {
@@ -225,14 +232,14 @@ export default function Characters() {
         <NewCharacter characterNames={characters.map(c => c.name.toLowerCase())} addCharacter={handleAddCharacter} setShowNewCharacter={setShowNewCharacter} showNewCharacter={showNewCharacter}></NewCharacter>
         <Tavern character={character as any} handleTavernSleep={handleTavernSleep} handleTavernBuff={handleTavernBuff as any} showTavern={showTavern} setShowTavern={setShowTavern as any}></Tavern>
         <Dialog size='xxl' open={encounterShown} handler={() => {}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-          <Encounter doCharacterExperience={doCharacterExperience} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
+          <Encounter player={player} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
         </Dialog>
         <Bags bags={bags as any} setShowBags={setShowBags} showBags={showBags}></Bags>
         
-        <PlayerComponent player={{exp: 0, level: 1, nextLevelExp: 750}}></PlayerComponent>
+        <PlayerComponent player={player}></PlayerComponent>
         <Button color='amber' onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} placeholder={undefined} onClick={handleNewCharacterClick}>New Character</Button>
-        <CharacterSaver characters={characters}></CharacterSaver>
-        <CharacterLoader onLoad={handleLoadCharacters}></CharacterLoader>
+        <CharacterSaver characters={characters} player={player}></CharacterSaver>
+        <Loader onLoad={handleLoadCharacters}></Loader>
         <div className='flex flex-wrap'>
         {characters.map((c) => (
         <>
@@ -274,7 +281,7 @@ export default function Characters() {
 </div>
       </>
     )
-  }, [showNewCharacter, setShowNewCharacter, characters, character, mob, encounterShown, bags, setShowBags, showTavern, showBags, setShowTavern, handleTavernBuff, handleTavernSleep])
+  }, [player, showNewCharacter, setShowNewCharacter, characters, character, mob, encounterShown, bags, setShowBags, showTavern, showBags, setShowTavern, handleTavernBuff, handleTavernSleep])
 
   return view
 }
