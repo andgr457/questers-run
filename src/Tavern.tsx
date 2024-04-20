@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
 import CharacterComponent from './CharacterComponent';
 import { Character } from './entity/entity.interface';
@@ -31,18 +31,6 @@ const Tavern: React.FC<TavernProps> = ({
   handleTavernBuff,
   handleTavernSleep
 }) => {
-
-  const handleAction = useCallback(
-    (action: string) => {
-      if (action === 'Sleep') {
-        handleTavernSleep()
-      } else if (action === 'Buff') {
-        handleTavernBuff()
-      }
-    },
-    [handleTavernBuff, handleTavernSleep]
-  );
-
   const view = useMemo(() => {
     return (
     <Dialog  open={showTavern} handler={() => {setShowTavern(false)}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
@@ -75,7 +63,7 @@ const Tavern: React.FC<TavernProps> = ({
       </Button>
     </DialogFooter>
   </Dialog>)
-  }, [showTavern, setShowTavern, handleAction, character])
+  }, [showTavern, character, setShowTavern, handleTavernSleep, handleTavernBuff])
 
   return view
 };

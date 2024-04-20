@@ -42,7 +42,7 @@ function doCharacterLevelUp(character: Character): void {
   character.level += 1
   character.nextLevelExp = determineCharacterNextLevelExp(character.level)
   character.maxBuffs = character.level
-  character.maxHealth = determineCharacterHealth(character.class, character.level)
+  character.maxHealth = determineCharacterHealth(character.class)
   character.health = character.maxHealth
 }
 
@@ -61,7 +61,7 @@ function doPlayerLevelUp(player: Player): void {
   player.nextLevelExp = determinePlayerNextLevelExp(player.level)
 }
 
-export function determineCharacterHealth(className: ClassName, level: number): number {
+export function determineCharacterHealth(className: ClassName): number {
   let modifier = 1
   const baseHealth = 15
   switch(className) {

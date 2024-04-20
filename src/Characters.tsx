@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Badge, Button, Dialog } from "@material-tailwind/react"
 import { Encounter } from './Encounter'
 import { toast } from 'react-toastify'
@@ -36,7 +36,7 @@ export default function Characters() {
     }
   }
 
-  const handleEncounterEvent = (updatedCharacter: Character, updatedMob: Mob, updatedPlayer: Player) => {
+  const handleEncounterEvent = useCallback((updatedCharacter: Character, updatedMob: Mob) => {
     if(updatedMob.health <= 0){
       updatedMob.health = 0
       toast(`${updatedCharacter.name} took out a ${mob.name}!`, {type: 'success'})
@@ -54,7 +54,7 @@ export default function Characters() {
       })
     })
     setPlayer(player)
-  }
+  }, [characters, mob?.name, player])
 
   const handleGrindClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
@@ -74,7 +74,7 @@ export default function Characters() {
     }
     setCharacters(dupe)
     setPlayer(player)
-  }, [characters])
+  }, [characters, player])
 
   const handleQuestClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
@@ -94,7 +94,7 @@ export default function Characters() {
     }
     setCharacters(dupe)
     setPlayer(player)
-  }, [characters])
+  }, [characters, player])
 
   const handleDungeonClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
@@ -114,7 +114,7 @@ export default function Characters() {
     }
     setCharacters(dupe)
     setPlayer(player)
-  }, [characters])
+  }, [characters, player])
 
   const handleRaidClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
@@ -134,7 +134,7 @@ export default function Characters() {
     }
     setCharacters(dupe)
     setPlayer(player)
-  }, [characters])
+  }, [characters, player])
 
   const handleTavernClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
@@ -153,7 +153,7 @@ export default function Characters() {
       return c
     })
     setCharacters(updatedCharacters)
-  }, [characters, character, setShowTavern])
+  }, [characters, character])
 
   const handleTavernBuff = useCallback(() => {
     const updatedCharacters = characters.map(c => {
@@ -202,7 +202,7 @@ export default function Characters() {
     toast(`${c.name} has joined the realm!`, {type: 'success'})
   }, [characters]) 
 
-  const handleNewCharacterClick = useCallback((e: any) => {
+  const handleNewCharacterClick = useCallback(() => {
     setShowNewCharacter(true)
   }, [])
 
@@ -226,7 +226,6 @@ export default function Characters() {
   }
 
   const view = useMemo(() => {
-    const bagItemCount = getBagItemsCount(character)
     return (
       <>
         <NewCharacter characterNames={characters.map(c => c.name.toLowerCase())} addCharacter={handleAddCharacter} setShowNewCharacter={setShowNewCharacter} showNewCharacter={showNewCharacter}></NewCharacter>
@@ -281,7 +280,7 @@ export default function Characters() {
 </div>
       </>
     )
-  }, [player, showNewCharacter, setShowNewCharacter, characters, character, mob, encounterShown, bags, setShowBags, showTavern, showBags, setShowTavern, handleTavernBuff, handleTavernSleep])
+  }, [characters, handleAddCharacter, showNewCharacter, character, handleTavernSleep, handleTavernBuff, showTavern, encounterShown, player, mob, handleEncounterEvent, bags, showBags, handleNewCharacterClick, handleLoadCharacters, handleGrindClick, handleQuestClick, handleDungeonClick, handleRaidClick, handleTavernClick, handleBagsClick])
 
   return view
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Progress } from '@material-tailwind/react'
-import { CLASSES, MOBS } from './entity/Constants'
+import { MOBS } from './entity/Constants'
 import { Mob } from './entity/entity.interface'
 import { doEntityAttack } from './entity/entity.service';
 

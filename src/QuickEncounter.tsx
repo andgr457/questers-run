@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button, Input } from '@material-tailwind/react';
-import { ATTACKS, CLASSES } from './entity/Constants';
+import { ATTACKS } from './entity/Constants';
 
 interface QuickEncounterProps {
   setShowQuickTimeEvent: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,17 +39,17 @@ const QuickEncounter: React.FC<QuickEncounterProps> = ({
         setResult({result: 'Success'})
         setShowQuickTimeEvent(false)
     }
-  }, [passPhrase])
+  }, [passPhrase, setResult, setShowQuickTimeEvent])
 
-  const handleSkipClick = useCallback((e: any) => {
+  const handleSkipClick = useCallback(() => {
     setResult({result: 'Skipped'})
     setShowQuickTimeEvent(false)
-  }, [])
+  }, [setResult, setShowQuickTimeEvent])
 
   const view = useMemo(() => {
     if(!passPhrase) return
     return (
-        <Dialog open={quickEncounterShown} handler={function (value: any): void {
+        <Dialog open={quickEncounterShown} handler={function (): void {
               } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <div>
@@ -63,7 +63,7 @@ const QuickEncounter: React.FC<QuickEncounterProps> = ({
             </DialogFooter>
           </Dialog>
     )
-  }, [setShowQuickTimeEvent, quickEncounterShown, passPhrase])
+  }, [passPhrase, quickEncounterShown, handlePassPhraseChange, handleSkipClick])
 
   return view
 };

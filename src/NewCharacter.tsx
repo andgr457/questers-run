@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react'
+import { Button, Dialog, DialogBody, DialogHeader } from '@material-tailwind/react'
 import { useCallback, useMemo, useState } from 'react'
 import { CLASSES } from './entity/Constants'
 import { Character, CharacterClass } from './entity/entity.interface'
@@ -28,9 +28,9 @@ export default function NewCharacter(props: NewCharacterProps) {
 
     const handleClassChanged = useCallback((e: any) => {
         setClasss(e.target.value)
-    }, [props])
+    }, [])
 
-    const handleSaveClick = useCallback((e: any) => {
+    const handleSaveClick = useCallback(() => {
         if(name.trim() === '' || !hideError) return
         const foundClass: CharacterClass = CLASSES.find(c => c.name === classs) as any
         
@@ -57,7 +57,7 @@ export default function NewCharacter(props: NewCharacterProps) {
         setName('')
         setClasss(undefined)
         props.addCharacter(character)
-    }, [name, classs, hideError])
+    }, [name, hideError, classs, props])
 
     const view = useMemo(() => {
         if(name === ''){
@@ -67,7 +67,7 @@ export default function NewCharacter(props: NewCharacterProps) {
         }
         const selectedClass = CLASSES.find(c => c.name === classs)
         return (
-          <Dialog open={props.showNewCharacter} handler={function (value: any): void {
+          <Dialog open={props.showNewCharacter} handler={function (): void {
             } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                 New Character
@@ -120,7 +120,7 @@ export default function NewCharacter(props: NewCharacterProps) {
             </DialogBody>
           </Dialog>
         )
-      }, [props, handleNameChanged, hideError, setHideError, handleSaveClick])
+      }, [name, props, handleNameChanged, hideError, handleClassChanged, classs, handleSaveClick])
     
       return view
 }

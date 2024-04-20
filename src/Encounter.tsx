@@ -1,11 +1,8 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   Button,
-  Dialog,
   DialogHeader,
   DialogBody,
-  DialogFooter,
-  Progress,
 } from '@material-tailwind/react'
 import QuickEncounter from './QuickEncounter'
 import CharacterComponent from './CharacterComponent'
@@ -23,14 +20,13 @@ interface EncounterProps {
 }
 
 export function Encounter(props: EncounterProps) {
-  const [character, setCharacter] = useState<Character>({ ...props.character })
-  const [mob, setMob] = useState<Mob>({ ...props.mob })
-  const [player, setPlayer] = useState<Player>({...props.player})
+  const [character] = useState<Character>({ ...props.character })
+  const [mob] = useState<Mob>({ ...props.mob })
+  const [player] = useState<Player>({...props.player})
   const [encounterEvents, setEncounterEvents] = useState<string[]>([])
   const [showQuickTimeEvent, setShowQuickTimeEvent] = useState(false)
-  const [quickTimeEventResponses, setQuickTimeEventResponses] = useState([])
 
-  const handleRunClicked = useCallback((e: any) => {
+  const handleRunClicked = useCallback(() => {
     if (randomize(50)) {
       props.setShowEncounter(false);
     } else {
@@ -41,7 +37,7 @@ export function Encounter(props: EncounterProps) {
     }
   }, [props, mob, character]);
 
-  const handleAttackClicked = useCallback((e: any) => {
+  const handleAttackClicked = useCallback(() => {
     if(randomize(character.critChance)){
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} is up for a critical hit on ${mob.name}...`]);
       setShowQuickTimeEvent(true)
@@ -78,7 +74,7 @@ export function Encounter(props: EncounterProps) {
     }
 
     props.handleEncounterEvent(character, mob);
-  }, [props, mob, character]);
+  }, [props, mob, character, player]);
 
   const handleQuickEncounterResult = useCallback((e: {result: string}) => {
     if(e.result === 'Success'){
@@ -96,7 +92,7 @@ export function Encounter(props: EncounterProps) {
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} skipped the critical hit event...`]);
     }
 
-  }, [])
+  }, [character, mob, player, props])
 
   const view = useMemo(() => {
     return (
@@ -144,7 +140,7 @@ export function Encounter(props: EncounterProps) {
 </>
 
     );
-  }, [props, mob, character, encounterEvents, quickTimeEventResponses, showQuickTimeEvent, setQuickTimeEventResponses]);
+  }, [character, handleQuickEncounterResult, showQuickTimeEvent, mob, handleAttackClicked, handleRunClicked, encounterEvents]);
 
   return view;
 }
