@@ -1,10 +1,11 @@
 import { Attack } from "../QuickEncounter"
 import { CharacterClass, Bag, ItemRarity, Item, Mob } from './entity.interface'
 
-export const IMG_ZZZ__ICON8 = '<a target="_blank" href="https://icons8.com/icon/6374/sleep">Sleep</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>'
-export const IMG_MAGE_ICON8 = '<a target="_blank" href="https://icons8.com/icon/TYJEetqy7xCk/mage">mage</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>'
-export const IMG_ROGUE_ICON8 = '<a target="_blank" href="https://icons8.com/icon/ZqDbnyVTvEPy/rogue">Rogue</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>'
-export const IMG_WARRIOR_ICON8 = '<a target="_blank" href="https://icons8.com/icon/7Us820vzFood/warrior">Warrior</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>'
+export const IMG_ZZZ__ICON8 = 'https://icons8.com/icon/6374/sleep'
+export const IMG_MAGE_ICON8 = 'https://icons8.com/icon/TYJEetqy7xCk/mage'
+export const IMG_ROGUE_ICON8 = 'https://icons8.com/icon/ZqDbnyVTvEPy/rogue'
+export const IMG_WARRIOR_ICON8 = 'https://icons8.com/icon/7Us820vzFood/warrior'
+// export const IMG_WARRIOR_ICON8 = '<a target="_blank" href="https://icons8.com/icon/7Us820vzFood/warrior">Warrior</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>'
 
 export enum MODES {
   GRIND = 'Grind',
@@ -189,7 +190,8 @@ export const STOCK_NAMES: string[] = [
 export const TypeColors = {
     'Common': 'gray',
     'Elite': 'green',
-    'Boss': 'purple'
+    'Boss': 'purple',
+    'Rare': 'gold'
 }
 
 export const MOBS: Mob[] = [

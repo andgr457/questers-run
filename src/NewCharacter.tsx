@@ -67,7 +67,7 @@ export default function NewCharacter(props: NewCharacterProps) {
         }
         const selectedClass = CLASSES.find(c => c.name === classs)
         return (
-          <Dialog open={props.showNewCharacter} handler={function (): void {
+          <Dialog size='xxl' open={props.showNewCharacter} handler={function (): void {
             } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                 New Character

@@ -7,26 +7,32 @@ import NewCharacter from './NewCharacter'
 import CharacterComponent from './CharacterComponent'
 import CharacterSaver from './Save'
 import Loader from './Load'
-import { determinePlayerNextLevelExp, doCharacterExperience, getRandomMob } from './entity/entity.service'
+import { doCharacterExperience, getRandomMob } from './entity/entity.service'
 import { Mob, Character, Bag, Player } from './entity/entity.interface'
 import Bags from './Bags'
-import PlayerComponent from './PlayerComponent'
 
 export function randomize(chance: number): boolean {
   const randomNumber = Math.random() * 100
   return randomNumber < chance
 }
 
-export default function Characters() {
-  const [encounterShown, setEncounterShown] = useState(false)
-  const [showTavern, setShowTavern] = useState(false)
-  const [characters, setCharacters]: [Character[], any] = useState([])
+interface CharactersProps {
+  setPlayer: (player: Player) => void
+  player: Player
+  setCharacters: (characters: Character[]) => void
+  characters: Character[]
+}
+
+export default function Characters(props: CharactersProps) {
+  const [bags, setBags]: [Bag[], any] = useState([])
   const [mob, setMob]: [Mob, any] = useState(undefined as any)
   const [character, setCharacter]: [Character, any] = useState(undefined as any)
-  const [bags, setBags]: [Bag[], any] = useState([])
+  
+  const [encounterShown, setEncounterShown] = useState(false)
+  const [showTavern, setShowTavern] = useState(false)
   const [showBags, setShowBags]: [boolean, any] = useState(false)
   const [showNewCharacter, setShowNewCharacter]: [boolean, any] = useState(false)
-  const [player, setPlayer]: [Player, any] = useState({exp: 0, level: 1, nextLevelExp: determinePlayerNextLevelExp(1)})
+  
 
   function doCharacterDamage(c: Character, damage: number){
     c.health -= damage
@@ -36,7 +42,8 @@ export default function Characters() {
     }
   }
 
-  const handleEncounterEvent = useCallback((updatedCharacter: Character, updatedMob: Mob) => {
+  const handleEncounterEvent = useCallback((updatedCharacter: Character, updatedMob: Mob, updatedPlayer: Player) => {
+    if(!mob) return
     if(updatedMob.health <= 0){
       updatedMob.health = 0
       toast(`${updatedCharacter.name} took out a ${mob.name}!`, {type: 'success'})
@@ -45,23 +52,21 @@ export default function Characters() {
     }
 
     setMob({ ...updatedMob })
-    setCharacters(() => {
-      return characters.map(character => {
+    props.setCharacters(props.characters.map(character => {
         if (character.name === updatedCharacter.name) {
           return { ...updatedCharacter }
         }
         return character;
       })
-    })
-    setPlayer(player)
-  }, [characters, mob?.name, player])
+    )
+    props.setPlayer({...updatedPlayer})
+  }, [mob, props])
 
-  const handleGrindClick = useCallback((e: any) => {
-    const name = e.target.id.split('___')[0]
+const grind = useCallback((name: string, subject: string, characters: Character[], player: Player) => {
     const dupe = [...characters]
     const character = dupe.find(c => c.name === name)
     if(typeof character === 'undefined') return
-    const mob = getRandomMob('Grind')
+    const mob = getRandomMob(subject)
     if(randomize(mob.chanceToShow)){
       setMob(mob)
       setCharacter({...character as any})
@@ -72,78 +77,34 @@ export default function Characters() {
       }
       doCharacterDamage(character, 1)
     }
-    setCharacters(dupe)
-    setPlayer(player)
-  }, [characters, player])
+    props.setCharacters(dupe)
+    props.setPlayer(player)
+}, [props])
+
+  const handleGrindClick = useCallback((e: any) => {
+    grind(e.target.id.split('___')[0], 'Grind', props.characters, props.player)
+  }, [grind, props.characters, props.player])
 
   const handleQuestClick = useCallback((e: any) => {
-    const name = e.target.id.split('___')[0]
-    const dupe = [...characters]
-    const character = dupe.find(c => c.name === name)
-    if(typeof character === 'undefined') return
-    const mob = getRandomMob('Quest')
-    if(randomize(mob.chanceToShow)){
-      setMob(mob)
-      setCharacter({...character as any})
-      setEncounterShown(true)
-    } else {
-      if(doCharacterExperience(player, character, 5 * (character.level + .5)) === true){
-        toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
-      }
-      doCharacterDamage(character, 1)
-    }
-    setCharacters(dupe)
-    setPlayer(player)
-  }, [characters, player])
+    grind(e.target.id.split('___')[0], 'Quest', props.characters, props.player)
+  }, [grind, props.characters, props.player])
 
   const handleDungeonClick = useCallback((e: any) => {
-    const name = e.target.id.split('___')[0]
-    const dupe = [...characters]
-    const character = dupe.find(c => c.name === name)
-    if(typeof character === 'undefined') return
-    const mob = getRandomMob('Dungeon')
-    if(randomize(mob.chanceToShow)){
-      setMob(mob)
-      setCharacter({...character as any})
-      setEncounterShown(true)
-    } else {
-      if(doCharacterExperience(player, character, 10 * (character.level + .5)) === true){
-        toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
-      }
-      doCharacterDamage(character, 1)
-    }
-    setCharacters(dupe)
-    setPlayer(player)
-  }, [characters, player])
+    grind(e.target.id.split('___')[0], 'Dungeon', props.characters, props.player)
+  }, [grind, props.characters, props.player])
 
   const handleRaidClick = useCallback((e: any) => {
-    const name = e.target.id.split('___')[0]
-    const dupe = [...characters]
-    const character = dupe.find(c => c.name === name)
-    if(typeof character === 'undefined') return
-    const mob = getRandomMob('Raid')
-    if(randomize(mob.chanceToShow)){
-      setMob(mob)
-      setCharacter({...character as any})
-      setEncounterShown(true)
-    } else {
-      if(doCharacterExperience(player, character, 20 * (character.level + .5)) === true){
-        toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
-      }
-      doCharacterDamage(character, 1)
-    }
-    setCharacters(dupe)
-    setPlayer(player)
-  }, [characters, player])
+    grind(e.target.id.split('___')[0], 'Raid', props.characters, props.player)
+  }, [grind, props.characters, props.player])
 
   const handleTavernClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
-    setCharacter(characters.find(c => c.name === name) as any)
+    setCharacter(props.characters.find(c => c.name === name) as any)
     setShowTavern(true)
-  }, [characters])
+  }, [props.characters])
 
   const handleTavernSleep = useCallback(() => {
-    const updatedCharacters = characters.map(c => {
+    const updatedCharacters = props.characters.map(c => {
       if (c.name === character?.name) {
         c.health += 10 + character.level
         if(c.health > c.maxHealth){
@@ -152,11 +113,12 @@ export default function Characters() {
       }
       return c
     })
-    setCharacters(updatedCharacters)
-  }, [characters, character])
+    props.setCharacters(updatedCharacters)
+  }, [props, character])
 
   const handleTavernBuff = useCallback(() => {
-    const updatedCharacters = characters.map(c => {
+    if(!character) return
+    const updatedCharacters = props.characters.map(c => {
       if (c.name === character?.name) {
         if(c.buffCount >= c.maxBuffs){
           toast(`${c.name} could not meditate any longer.`, { type: 'error' });
@@ -182,34 +144,34 @@ export default function Characters() {
       return c
     })
     setShowTavern(false)
-    setCharacters(updatedCharacters)
-  }, [characters, character])
+    props.setCharacters(updatedCharacters)
+  }, [props, character])
 
   const handleBagsClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
-    setBags(characters.find(c => c.name === name)?.bags as Bag[])
+    setBags(props.characters.find(c => c.name === name)?.bags as Bag[])
     setShowBags(true)
-  }, [characters])
+  }, [props.characters])
 
   const getButtonDisabled = (c: Character, levelRequirement: number) => {
     return c.level < levelRequirement
   }
 
   const handleAddCharacter = useCallback((c: Character) => {
-    const newCharacters = [...characters, c]
+    const newCharacters = [...props.characters, c]
     setShowNewCharacter(false)
-    setCharacters(newCharacters)
+    props.setCharacters(newCharacters)
     toast(`${c.name} has joined the realm!`, {type: 'success'})
-  }, [characters]) 
+  }, [props]) 
 
   const handleNewCharacterClick = useCallback(() => {
     setShowNewCharacter(true)
   }, [])
 
   const handleLoadCharacters = useCallback((c: Character[], p: Player) => {
-    setCharacters(c)
-    setPlayer(p)
-  }, [])
+    props.setCharacters(c)
+    props.setPlayer(p)
+  }, [props])
 
   const getBagItemsCount = (c: Character) => {
     if(!c) return
@@ -228,24 +190,24 @@ export default function Characters() {
   const view = useMemo(() => {
     return (
       <>
-        <NewCharacter characterNames={characters.map(c => c.name.toLowerCase())} addCharacter={handleAddCharacter} setShowNewCharacter={setShowNewCharacter} showNewCharacter={showNewCharacter}></NewCharacter>
+        <NewCharacter characterNames={props.characters.map(c => c.name.toLowerCase())} addCharacter={handleAddCharacter} setShowNewCharacter={setShowNewCharacter} showNewCharacter={showNewCharacter}></NewCharacter>
         <Tavern character={character as any} handleTavernSleep={handleTavernSleep} handleTavernBuff={handleTavernBuff as any} showTavern={showTavern} setShowTavern={setShowTavern as any}></Tavern>
         <Dialog size='xxl' open={encounterShown} handler={() => {}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-          <Encounter player={player} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
+          <Encounter player={props.player} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
         </Dialog>
         <Bags bags={bags as any} setShowBags={setShowBags} showBags={showBags}></Bags>
         
-        <PlayerComponent player={player}></PlayerComponent>
         <Button color='amber' onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} placeholder={undefined} onClick={handleNewCharacterClick}>New Character</Button>
-        <CharacterSaver characters={characters} player={player}></CharacterSaver>
+        <CharacterSaver characters={props.characters} player={props.player}></CharacterSaver>
         <Loader onLoad={handleLoadCharacters}></Loader>
         <div className='flex flex-wrap'>
-        {characters.map((c) => (
+        {props.characters.map((c: Character) => (
         <>
         <div>
 
         <CharacterComponent character={c}></CharacterComponent>
         <div>
+        <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
         <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___grind`} color='red' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleGrindClick}>
               Grind
           </Button>
@@ -258,6 +220,8 @@ export default function Characters() {
           <Button disabled={c.health <= 0 || getButtonDisabled(c, 10)} id={`${c.name}___raid`} color='cyan' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleRaidClick}>
               Raid
           </Button>
+         </ul>
+       
         </div>
         <div>
         <Button id={`${c.name}___tavern`} onClick={handleTavernClick} color='teal' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
@@ -280,7 +244,7 @@ export default function Characters() {
 </div>
       </>
     )
-  }, [characters, handleAddCharacter, showNewCharacter, character, handleTavernSleep, handleTavernBuff, showTavern, encounterShown, player, mob, handleEncounterEvent, bags, showBags, handleNewCharacterClick, handleLoadCharacters, handleGrindClick, handleQuestClick, handleDungeonClick, handleRaidClick, handleTavernClick, handleBagsClick])
+  }, [props.characters])
 
   return view
 }
