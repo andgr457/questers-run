@@ -21,7 +21,7 @@ const Classes: React.FC = () => {
                 <div key={propertyName}>
                   {propertyName.toUpperCase()}: <br/><strong>{c[propertyName]}</strong>
                   <br/>
-                  <br/>
+
                 </div>
               ))}
               <hr/>
