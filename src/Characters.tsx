@@ -244,7 +244,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
 </div>
       </>
     )
-  }, [props.characters])
+  }, [bags, character, encounterShown, handleAddCharacter, handleBagsClick, handleDungeonClick, handleEncounterEvent, handleGrindClick, handleLoadCharacters, handleNewCharacterClick, handleQuestClick, handleRaidClick, handleTavernBuff, handleTavernClick, handleTavernSleep, mob, props.characters, props.player, showBags, showNewCharacter, showTavern])
 
   return view
 }

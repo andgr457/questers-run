@@ -5,10 +5,10 @@ import { CLASSES } from './entity/Constants';
 const Classes: React.FC = () => {
   return (
     
-        <div>
-          <h1><strong>Classes</strong></h1>
+        <div className='pad-10'>
+          <div className='text-xl text-center'><strong>Classes</strong></div>
           {CLASSES.map((c) => (
-            <div key={c.name}>
+            <div key={c.name} className='pad-10 text-center align-middle'>
               <img src={`img/classes/${c.imageName}`} alt={`${c.name?.toUpperCase()}`} />
               <a target="_blank" href={c.credit} rel="noreferrer">
                 {c.name}
@@ -19,9 +19,12 @@ const Classes: React.FC = () => {
               </a>
               {Object.getOwnPropertyNames(c).map((propertyName) => (
                 <div key={propertyName}>
-                  {propertyName}: {c[propertyName]}
+                  {propertyName.toUpperCase()}: <br/><strong>{c[propertyName]}</strong>
+                  <br/>
+                  <br/>
                 </div>
               ))}
+              <hr/>
             </div>
           ))}
           

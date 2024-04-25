@@ -6,7 +6,7 @@ const Mobs: React.FC = () => {
   return (
     
         <div>
-          <h1><strong>Mobs</strong></h1>
+          <div className='text-xl'><strong>Mobs</strong></div>
           {MOBS.map((m) => (
             <div key={m.name}>
               <img src={`img/mobs/${m.imageName}`} alt={`${m.name?.toUpperCase()}`} />
@@ -19,7 +19,7 @@ const Mobs: React.FC = () => {
               </a>
               {Object.getOwnPropertyNames(m).map((propertyName) => (
                 <div key={propertyName}>
-                  {propertyName}: {m[propertyName]}
+                  {propertyName.toUpperCase()}: <strong>{m[propertyName]}</strong>
                 </div>
               ))}
             </div>
