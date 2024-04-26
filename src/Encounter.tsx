@@ -33,9 +33,9 @@ export function Encounter(props: EncounterProps) {
       const newEvent = `${character.name} failed to run away!`;
       setEncounterEvents((prevEvents) => [...prevEvents, newEvent]);
       character.health -= mob.attack;
-      props.handleEncounterEvent(character, mob);
+      props.handleEncounterEvent(character, mob, player);
     }
-  }, [props, mob, character]);
+  }, [props, mob, character, player]);
 
   const handleAttackClicked = useCallback(() => {
     if(randomize(character.critChance)){
@@ -82,7 +82,7 @@ export function Encounter(props: EncounterProps) {
       mob.health -= crit;
       doCharacterExperience(player, character, (15 + character.level))
 
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit.toFixed(2)} critical damage...`]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit?.toFixed(2)} critical damage...`]);
       if (mob.health <= 0) {
         props.handleEncounterEvent(character, mob);
         props.setShowEncounter(false);

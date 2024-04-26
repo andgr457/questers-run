@@ -42,7 +42,7 @@ const Mobs: React.FC = () => {
                   className="font-normal leading-none opacity-70" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                >
                    {propertyName}
                 </Typography>
-                     {propertyName}</th>
+                </th>
                   ))}
           </tr>
         </thead>
