@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import {
   Navbar,
   MobileNav,
@@ -8,7 +8,11 @@ import {
   IconButton,
 } from "@material-tailwind/react";
  
-export function Game() {
+interface NavMenuProps {
+  setScreen: (screen: string) => void
+}
+
+export function NavMenu(props: NavMenuProps) {
   const [openNav, setOpenNav] = React.useState(false);
  
   React.useEffect(() => {
@@ -17,47 +21,20 @@ export function Game() {
       () => window.innerWidth >= 960 && setOpenNav(false),
     );
   }, []);
+
+  const handleClicked = useCallback((e) => {
+    props.setScreen(e.target.id)
+  }, [props])
  
-  const navList = (
-    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Typography
-              as="li"
-              variant="small"
-              color="blue-gray"
-              className="p-1 font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}      >
-        <a href="#" className="flex items-center">
-          Characters
-        </a>
-      </Typography>
-      <Typography
-              as="li"
-              variant="small"
-              color="blue-gray"
-              className="p-1 font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}      >
-        <a href="#" className="flex items-center">
-          Account
-        </a>
-      </Typography>
-      <Typography
-              as="li"
-              variant="small"
-              color="blue-gray"
-              className="p-1 font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}      >
-        <a href="#" className="flex items-center">
-          Blocks
-        </a>
-      </Typography>
-      <Typography
-              as="li"
-              variant="small"
-              color="blue-gray"
-              className="p-1 font-normal" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}      >
-        <a href="#" className="flex items-center">
-          Docs
-        </a>
-      </Typography>
+  const navList = useMemo(() => {
+    return <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+      <Button id={'clicker'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Clicker</Button>
+      <Button id={'classes'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Classes</Button>
+      <Button id={'mobs'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Mobs</Button>
+      <Button id={'items'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Items</Button>
+      <Button id={'shoppe'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Shoppe</Button>
     </ul>
-  );
+}, [handleClicked]);
  
   return (
         <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>

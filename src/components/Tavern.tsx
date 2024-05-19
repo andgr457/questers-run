@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
 import CharacterComponent from './CharacterComponent';
-import { Character } from './entity/entity.interface';
+import { Character } from '../entity/entity.interface';
 
 interface TavernProps {
   showTavern: boolean

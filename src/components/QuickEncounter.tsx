@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button, Input } from '@material-tailwind/react';
-import { ATTACKS } from './entity/Constants';
+import { ATTACKS } from '../entity/Constants';
 
 interface QuickEncounterProps {
   setShowQuickTimeEvent: React.Dispatch<React.SetStateAction<boolean>>;

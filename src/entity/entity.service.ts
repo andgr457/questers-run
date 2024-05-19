@@ -1,6 +1,16 @@
 import { MOBS, STOCK_NAMES } from './Constants'
 import { BaseEntity, Character, ClassName, Mob, Player } from './entity.interface'
 
+export function camelToReadable(camelCaseStr: string): string {
+  // Step 1: Insert a space before each uppercase letter
+  let readableStr = camelCaseStr.replace(/([a-z])([A-Z])/g, '$1 $2');
+  
+  // Step 2: Capitalize the first letter
+  readableStr = readableStr.charAt(0).toUpperCase() + readableStr.slice(1);
+  
+  return readableStr;
+}
+
 export function getRandomName(): string {
   const randomIndex = Math.floor(Math.random() * STOCK_NAMES.length)
   return STOCK_NAMES[randomIndex]
@@ -26,8 +36,8 @@ const MAX_PLAYER_LEVEL = 10
  * @returns {boolean} [true] if the character leveled up, otherwise [false], or [false] if the character is max level.
  */
 export function doCharacterExperience(player: Player, character: Character, amount: number): boolean {
-  if(character.level >= MAX_CHARACTER_LEVEL) return false
   doPlayerExperience(player, amount)
+  if(character.level >= MAX_CHARACTER_LEVEL) return false
 
   character.exp += amount
   if(character.exp >= character.nextLevelExp){
@@ -75,11 +85,11 @@ export function determineCharacterHealth(className: ClassName): number {
   return baseHealth * modifier
 }
 export function determineCharacterNextLevelExp(level: number): number {
-  return (level + .5) * 500
+  return (level + .5) * 50
 }
 
 export function determinePlayerNextLevelExp(level: number): number {
-  return (level + .5) * 1500
+  return (level + .5) * 150
 }
 
 /**

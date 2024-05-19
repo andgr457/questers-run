@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogBody, DialogHeader } from '@material-tailwind/react'
 import { useCallback, useMemo, useState } from 'react'
-import { CLASSES } from './entity/Constants'
-import { Character, CharacterClass } from './entity/entity.interface'
-import { determineCharacterNextLevelExp, getRandomClass, getRandomName } from './entity/entity.service'
+import { CLASSES } from '../entity/Constants'
+import { Character, CharacterClass } from '../entity/entity.interface'
+import { determineCharacterNextLevelExp, getRandomName, getRandomClass } from '../entity/entity.service'
 
 interface NewCharacterProps {
     addCharacter: (character: Character) => void
@@ -67,7 +67,7 @@ export default function NewCharacter(props: NewCharacterProps) {
         }
         const selectedClass = CLASSES.find(c => c.name === classs)
         return (
-          <Dialog open={props.showNewCharacter} handler={function (): void {
+          <Dialog size='xxl' open={props.showNewCharacter} handler={function (): void {
             } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
             <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                 New Character
