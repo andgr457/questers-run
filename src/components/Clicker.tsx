@@ -7,23 +7,23 @@ import NewCharacter from './NewCharacter'
 import CharacterComponent from './CharacterComponent'
 import CharacterSaver from './Save'
 import Loader from './Load'
-import { doCharacterExperience, getRandomMob } from './entity/entity.service'
-import { Mob, Character, Bag, Player } from './entity/entity.interface'
 import Bags from './Bags'
+import { Player, Character, Bag, Mob } from '../entity/entity.interface'
+import { getRandomMob, doCharacterExperience } from '../entity/entity.service'
 
 export function randomize(chance: number): boolean {
   const randomNumber = Math.random() * 100
   return randomNumber < chance
 }
 
-interface CharactersProps {
+interface ClickerProps {
   setPlayer: (player: Player) => void
   player: Player
   setCharacters: (characters: Character[]) => void
   characters: Character[]
 }
 
-export default function Characters(props: CharactersProps) {
+export default function Clicker(props: ClickerProps) {
   const [bags, setBags]: [Bag[], any] = useState([])
   const [mob, setMob]: [Mob, any] = useState(undefined as any)
   const [character, setCharacter]: [Character, any] = useState(undefined as any)
@@ -51,7 +51,6 @@ export default function Characters(props: CharactersProps) {
       toast(`${updatedCharacter.name} passed out...`, {type: 'error'})
     }
 
-    setMob({ ...updatedMob })
     props.setCharacters(props.characters.map(character => {
         if (character.name === updatedCharacter.name) {
           return { ...updatedCharacter }
@@ -67,12 +66,23 @@ const grind = useCallback((name: string, subject: string, characters: Character[
     const character = dupe.find(c => c.name === name)
     if(typeof character === 'undefined') return
     const mob = getRandomMob(subject)
+    let subjectExperience = 0
+    switch(subject){
+      case 'Grind': subjectExperience = 5
+        break
+      case 'Quest': subjectExperience = 10
+        break
+      case 'Dungeon': subjectExperience = 20
+        break
+      case 'Raid': subjectExperience = 50
+        break
+    }
     if(randomize(mob.chanceToShow)){
       setMob(mob)
       setCharacter({...character as any})
       setEncounterShown(true)
     } else {
-      if(doCharacterExperience(player, character, 1 * (character.level + .5)) === true){
+      if(doCharacterExperience(player, character, 1 * (character.level + .5 + subjectExperience)) === true){
         toast(`${character.name} is now level ${character.level}!`, {type: 'success'})
       }
       doCharacterDamage(character, 1)

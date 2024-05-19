@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import JSZip from 'jszip'
-import { Character, Player } from './entity/entity.interface'
+import { Character, Player } from '../entity/entity.interface';
 
 interface LoaderProps {
   onLoad: (characters: Character[], player: Player) => void

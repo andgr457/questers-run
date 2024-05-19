@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogBody, DialogHeader } from '@material-tailwind/react'
 import { useCallback, useMemo, useState } from 'react'
-import { CLASSES } from './entity/Constants'
-import { Character, CharacterClass } from './entity/entity.interface'
-import { determineCharacterNextLevelExp, getRandomClass, getRandomName } from './entity/entity.service'
+import { CLASSES } from '../entity/Constants'
+import { Character, CharacterClass } from '../entity/entity.interface'
+import { determineCharacterNextLevelExp, getRandomName, getRandomClass } from '../entity/entity.service'
 
 interface NewCharacterProps {
     addCharacter: (character: Character) => void

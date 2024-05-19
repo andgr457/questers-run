@@ -1,19 +1,19 @@
 import { ToastContainer } from "react-toastify"
-import { NavMenu } from "./NavMenu"
 import 'react-toastify/dist/ReactToastify.css'
-import Characters from './Characters'
-import { Footer } from './Footer'
 import { useEffect, useMemo, useState } from 'react'
-import Home from './Home'
-import Credits from './Credits'
-import Classes from './Classes'
-import Mobs from './Mobs'
 import { Character, Player } from './entity/entity.interface'
 import { determinePlayerNextLevelExp } from './entity/entity.service'
-import PlayerComponent from './PlayerComponent'
+import Clicker from "./components/Clicker"
+import Classes from "./components/Classes"
+import Credits from "./components/Credits"
+import { Footer } from "./components/Footer"
+import Home from "./components/Home"
+import Mobs from "./components/Mobs"
+import { NavMenu } from "./components/NavMenu"
+import PlayerComponent from "./components/PlayerComponent"
 
 function App() {
-  const [screen, setScreen] = useState('characters')
+  const [screen, setScreen] = useState('clicker')
   const [viewComonent, setViewComponent] = useState(<Home></Home>)
   const [player, setPlayer]: [Player, (player: Player) => void] = useState({exp: 0, level: 1, nextLevelExp: determinePlayerNextLevelExp(1)})
   const [characters, setCharacters]: [Character[], (characters: Character[]) => void] = useState([])
@@ -22,8 +22,8 @@ function App() {
     let comp
     console.log('screen', screen)
 
-    if(screen === 'characters'){
-      comp = <Characters setCharacters={setCharacters} setPlayer={setPlayer} player={player} characters={characters}></Characters>
+    if(screen === 'clicker'){
+      comp = <Clicker setCharacters={setCharacters} setPlayer={setPlayer} player={player} characters={characters}></Clicker>
     } else if(screen === 'credits'){
       comp = <Credits></Credits>
     } else if(screen === 'classes'){

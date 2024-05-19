@@ -6,10 +6,10 @@ import {
 } from '@material-tailwind/react'
 import QuickEncounter from './QuickEncounter'
 import CharacterComponent from './CharacterComponent'
-import { randomize } from './Characters'
-import { Character, Mob, Player } from './entity/entity.interface'
-import { doCharacterExperience, doEntityAttack } from './entity/entity.service'
+import { randomize } from './Clicker'
 import MobComponent from './MobComponent'
+import { Character, Mob, Player } from '../entity/entity.interface';
+import { doCharacterExperience, doEntityAttack } from '../entity/entity.service';
 
 interface EncounterProps {
   character: Character
@@ -38,14 +38,13 @@ export function Encounter(props: EncounterProps) {
   }, [props, mob, character, player]);
 
   const handleAttackClicked = useCallback(() => {
-    if(randomize(character.critChance)){
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} is up for a critical hit on ${mob.name}...`]);
-      setShowQuickTimeEvent(true)
-      return
-    }
-
     if (randomize(character.hitChance)) {
-      const characterAttack = character.attack + character.buffAttack 
+      let crit = 0
+      if(randomize(character.critChance)){
+        crit = doEntityAttack(character, character.buffAttack) * character.buffCrit
+        setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} critically hit for ${crit} on ${mob.name}...`])
+      }
+      const characterAttack = character.attack + character.buffAttack + crit
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit ${mob.name} for ${characterAttack}...`]);
       mob.health -= characterAttack;
       doCharacterExperience(player, character, (mob.expGiven + character.level))
@@ -64,7 +63,7 @@ export function Encounter(props: EncounterProps) {
 
     if (randomize(mob.hitChance)) {
       setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${mob.attack}...`]);
-      character.health -= mob.attack;
+      character.health -= Math.max(mob.attack - (character.defense + character.buffDefense), 0);
       if(character.health <= 0){
         character.health = 0
         props.setShowEncounter(false)
@@ -73,7 +72,7 @@ export function Encounter(props: EncounterProps) {
       setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} missed ${character.name}!`]);
     }
 
-    props.handleEncounterEvent(character, mob);
+    props.handleEncounterEvent(character, mob, player);
   }, [props, mob, character, player]);
 
   const handleQuickEncounterResult = useCallback((e: {result: string}) => {
@@ -84,7 +83,7 @@ export function Encounter(props: EncounterProps) {
 
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit?.toFixed(2)} critical damage...`]);
       if (mob.health <= 0) {
-        props.handleEncounterEvent(character, mob);
+        props.handleEncounterEvent(character, mob, player);
         props.setShowEncounter(false);
       }
 

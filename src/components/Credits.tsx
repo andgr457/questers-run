@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { CLASSES, MOBS } from './entity/Constants';
+import { CLASSES, MOBS } from '../entity/Constants';
 
 export default function Credits() {
   useEffect(() => {

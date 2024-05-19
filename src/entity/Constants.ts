@@ -1,4 +1,4 @@
-import { Attack } from "../QuickEncounter"
+import { Attack } from '../components/QuickEncounter'
 import { CharacterClass, Bag, ItemRarity, Item, Mob } from './entity.interface'
 
 export const IMG_ZZZ__ICON8 = 'https://icons8.com/icon/6374/sleep'
@@ -206,8 +206,8 @@ export const MOBS: Mob[] = [
         expGiven: 25,
         foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
         imageName: 'goblin.png',
-        chanceToShow: 30,
-        hitChance: 40,
+        chanceToShow: 5,
+        hitChance: 33,
 
     },
     {
@@ -221,35 +221,35 @@ export const MOBS: Mob[] = [
         expGiven: 40,
         foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
         imageName: 'theif.png',
-        chanceToShow: 30,
-        hitChance: 50,
+        chanceToShow: 7,
+        hitChance: 45,
     },
     {
         name: 'Troll',
-        attack: 15,
-        health: 100,
+        attack: 10,
+        health: 50,
         level: 5,
         maxHealth: 100,
         type: 'Elite',
         defense: 2,
         expGiven: 50,
-        chanceToShow: 30,
-        foundIn: [MODES.QUEST, MODES.DUNGEON, MODES.RAID],
+        chanceToShow: 3,
+        foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
         imageName: 'troll.png',
-        hitChance: 75
+        hitChance: 35
     },
     {
         name: 'Dragon',
-        attack: 30,
-        health: 250,
+        attack: 15,
+        health: 100,
         level: 15,
         maxHealth: 250,
         type: 'Rare',
         defense: 5,
         expGiven: 100,
-        foundIn: [MODES.RAID],
+        foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
         imageName: 'dragon.png',
-        chanceToShow: 50,
-        hitChance: 80
+        chanceToShow: 1,
+        hitChance: 40
     }
 ]
