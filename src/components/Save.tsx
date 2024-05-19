@@ -1,7 +1,7 @@
 import React from 'react'
 import JSZip from 'jszip'
 import { Button } from '@material-tailwind/react'
-import { Character, Player } from './entity/entity.interface'
+import { Character, Player } from '../entity/entity.interface'
 
 interface CharacterSaverProps {
   characters: Character[]
