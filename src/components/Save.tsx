@@ -27,7 +27,7 @@ const CharacterSaver: React.FC<CharacterSaverProps> = ({ characters, player }) =
   };
 
   return (
-    <Button color={'green'} onClick={handleDownload} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+    <Button onClick={handleDownload} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
       Save
     </Button>
   );

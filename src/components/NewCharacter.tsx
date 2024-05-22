@@ -1,8 +1,9 @@
 import { Button, Dialog, DialogBody, DialogHeader } from '@material-tailwind/react'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CLASSES } from '../entity/Constants'
 import { Character, CharacterClass } from '../entity/entity.interface'
 import { determineCharacterNextLevelExp, getRandomName, getRandomClass } from '../entity/entity.service'
+import CharacterComponent from './CharacterComponent'
 
 interface NewCharacterProps {
     addCharacter: (character: Character) => void
@@ -14,6 +15,7 @@ export default function NewCharacter(props: NewCharacterProps) {
     const [name, setName] = useState('')
     const [classs, setClasss] = useState(undefined)
     const [hideError, setHideError] = useState(true)
+    const [previewCharacter, setPreviewCharacter] = useState(undefined)
 
     const handleNameChanged = useCallback((e: any) => {
         const input = e.target.value
@@ -30,6 +32,33 @@ export default function NewCharacter(props: NewCharacterProps) {
         setClasss(e.target.value)
     }, [])
 
+    useEffect(() => {
+        if(name.trim() === '' || !hideError) return
+        const foundClass: CharacterClass = CLASSES.find(c => c.name === classs) as any
+        
+        const character: Character = {
+            name,
+            class: classs as any,
+            attack: foundClass.startAttack,
+            maxHealth: foundClass.startHealth,
+            health: foundClass.startHealth,
+            maxBuffs: 1,
+            exp: 0,
+            nextLevelExp: determineCharacterNextLevelExp(1),
+            level: 1,
+            buffAttack: foundClass.startAttack,
+            buffDefense: foundClass.startDefense,
+            buffCrit: foundClass.startCrit,
+            buffCount: 0,
+            bags: [],
+            defense: 1,
+            equipment: [],
+            hitChance: foundClass.startHitChance,
+            critChance: foundClass.startCritChance
+        }
+        setPreviewCharacter(character)
+    }, [name, classs])
+
     const handleSaveClick = useCallback(() => {
         if(name.trim() === '' || !hideError) return
         const foundClass: CharacterClass = CLASSES.find(c => c.name === classs) as any
@@ -44,8 +73,8 @@ export default function NewCharacter(props: NewCharacterProps) {
             exp: 0,
             nextLevelExp: determineCharacterNextLevelExp(1),
             level: 1,
-            buffAttack: 0,
-            buffDefense: 0,
+            buffAttack: foundClass.startAttack,
+            buffDefense: foundClass.startDefense,
             buffCrit: foundClass.startCrit,
             buffCount: 0,
             bags: [],
@@ -74,7 +103,7 @@ export default function NewCharacter(props: NewCharacterProps) {
             </DialogHeader>
             <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
       
-            <div>
+            <div >
             <p>
                 Breathe new life into your realm!
                 </p>
@@ -108,19 +137,15 @@ export default function NewCharacter(props: NewCharacterProps) {
                 className="block mb-1 font-sans text-base antialiased font-normal leading-relaxed text-gray-700">
                 {selectedClass.name}
               </p>
-                <p>{selectedClass.description}</p>
-                <hr/>
-                <p>Health: <strong>{selectedClass.startHealth}</strong></p>
-                <p>Attack: <strong>{selectedClass.startAttack}</strong> Defense: <strong>{selectedClass.startDefense}</strong></p>
-                <p>Crit Damage: <strong>{selectedClass.startCrit}</strong> Crit Chance: <strong>{selectedClass.startCritChance}</strong></p>
-                <p>Hit Chance: <strong>{selectedClass.startHitChance}</strong></p>
+                <p className='text-xs'>{selectedClass.description}</p>
               </div>
+              <CharacterComponent character={previewCharacter}></CharacterComponent>
 
             </div>
             </DialogBody>
           </Dialog>
         )
-      }, [name, props, handleNameChanged, hideError, handleClassChanged, classs, handleSaveClick])
+      }, [name, props, handleNameChanged, hideError, handleClassChanged, classs, handleSaveClick, previewCharacter])
     
       return view
 }

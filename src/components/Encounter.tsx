@@ -6,7 +6,7 @@ import {
 } from '@material-tailwind/react'
 import QuickEncounter from './QuickEncounter'
 import CharacterComponent from './CharacterComponent'
-import { randomize } from './Clicker'
+import { randomize } from './clicker/Clicker'
 import MobComponent from './MobComponent'
 import { Character, Mob, Player } from '../entity/entity.interface';
 import { doCharacterExperience, doEntityAttack } from '../entity/entity.service';
@@ -30,40 +30,50 @@ export function Encounter(props: EncounterProps) {
     if (randomize(50)) {
       props.setShowEncounter(false);
     } else {
-      const newEvent = `${character.name} failed to run away!`;
-      setEncounterEvents((prevEvents) => [...prevEvents, newEvent]);
-      character.health -= mob.attack;
+      if (randomize(mob.hitChance)) {
+        setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${mob.attack}...`]);
+        character.health -= doEntityAttack(mob, 0 - (character.buffDefense + character.defense));
+        if(character.health <= 0){
+          character.health = 0
+          props.setShowEncounter(false)
+        }
+      } else {
+        setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} missed ${character.name}!`]);
+      }
+  
       props.handleEncounterEvent(character, mob, player);
     }
   }, [props, mob, character, player]);
 
   const handleAttackClicked = useCallback(() => {
     if (randomize(character.hitChance)) {
-      let crit = 0
-      if(randomize(character.critChance)){
-        crit = doEntityAttack(character, character.buffAttack) * character.buffCrit
-        setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} critically hit for ${crit} on ${mob.name}...`])
+      let characterAttack = 0
+      if(randomize(character.critChance + character.buffCrit)){
+        characterAttack = doEntityAttack(character, character.buffAttack) * character.buffCrit
+        setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} critically hit for ${characterAttack.toFixed(2)} on ${mob.name}...`])
+      } else {
+        characterAttack = doEntityAttack(character, character.buffAttack)
+        setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit ${mob.name} for ${characterAttack.toFixed(2)}...`]);
       }
-      const characterAttack = character.attack + character.buffAttack + crit
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit ${mob.name} for ${characterAttack}...`]);
       mob.health -= characterAttack;
-      doCharacterExperience(player, character, (mob.expGiven + character.level))
     } else {
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} missed ${mob.name}!`]);
     }
 
     if (mob.health <= 0) {
-      doCharacterExperience(player, character, (mob.expGiven + character.level) * (mob.level + .2))
-      props.setShowEncounter(false);
+      doCharacterExperience(player, character, mob.expGiven * mob.level)
+      props.setShowEncounter(false)
     }
 
     if(character.health <= 0){
-      props.setShowEncounter(false);
+      character.health = 0
+      props.setShowEncounter(false)
     }
 
     if (randomize(mob.hitChance)) {
-      setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${mob.attack}...`]);
-      character.health -= Math.max(mob.attack - (character.defense + character.buffDefense), 0);
+      const damage = doEntityAttack(mob, 0 - (character.buffDefense + character.defense))
+      setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${damage}...`]);
+      character.health -= damage
       if(character.health <= 0){
         character.health = 0
         props.setShowEncounter(false)
@@ -79,7 +89,7 @@ export function Encounter(props: EncounterProps) {
     if(e.result === 'Success'){
       const crit = doEntityAttack(character, character.buffAttack) * character.buffCrit
       mob.health -= crit;
-      doCharacterExperience(player, character, (15 + character.level))
+      doCharacterExperience(player, character, mob.expGiven)
 
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit?.toFixed(2)} critical damage...`]);
       if (mob.health <= 0) {
@@ -100,15 +110,12 @@ export function Encounter(props: EncounterProps) {
     <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>A wild {mob.name} attacks!</DialogHeader>
     <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} className='w-full overflow-hidden'>
     <div className='overflow-y-auto scrollable-y'>
-    <table>
+    <table style={{width: '100%'}}>
         <tr>
-            <td>
+            <td style={{width: '50%'}}>
                 <CharacterComponent character={character}></CharacterComponent>
             </td>
-            <td>
-                VS
-            </td>
-            <td>
+            <td style={{width: '50%'}}>
                 <MobComponent mob={mob}></MobComponent>
             </td>
         </tr>

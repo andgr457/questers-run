@@ -3,7 +3,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useEffect, useMemo, useState } from 'react'
 import { Character, Player } from './entity/entity.interface'
 import { determinePlayerNextLevelExp } from './entity/entity.service'
-import Clicker from "./components/Clicker"
+import Clicker from "./components/clicker/Clicker"
 import Classes from "./components/Classes"
 import Credits from "./components/Credits"
 import { Footer } from "./components/Footer"

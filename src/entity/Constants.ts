@@ -23,7 +23,7 @@ export const CLASSES: CharacterClass[] = [
       attacks: 'Warrior',
       startAttack: 3,
       startDefense: 2,
-      startHealth: 110,
+      startHealth: 20,
       startCrit: 1.5,
       startHitChance: 85,
       startCritChance: 20
@@ -36,7 +36,7 @@ export const CLASSES: CharacterClass[] = [
       attacks: 'Mage',
       startAttack: 2,
       startDefense: -1,
-      startHealth: 90,
+      startHealth: 10,
       startCrit: 1.7,
       startHitChance: 80,
       startCritChance: 25
@@ -49,7 +49,7 @@ export const CLASSES: CharacterClass[] = [
       attacks: 'Rogue',
       startAttack: 4,
       startDefense: -1,
-      startHealth: 95,
+      startHealth: 15,
       startCrit: 2,
       startHitChance: 95,
       startCritChance: 50
@@ -206,7 +206,7 @@ export const MOBS: Mob[] = [
         expGiven: 25,
         foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
         imageName: 'goblin.png',
-        chanceToShow: 5,
+        chanceToShow: 10,
         hitChance: 33,
 
     },
@@ -221,7 +221,7 @@ export const MOBS: Mob[] = [
         expGiven: 40,
         foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
         imageName: 'theif.png',
-        chanceToShow: 7,
+        chanceToShow: 15,
         hitChance: 45,
     },
     {
@@ -229,27 +229,27 @@ export const MOBS: Mob[] = [
         attack: 10,
         health: 50,
         level: 5,
-        maxHealth: 100,
+        maxHealth: 50,
         type: 'Elite',
         defense: 2,
-        expGiven: 50,
-        chanceToShow: 3,
-        foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
+        expGiven: 65,
+        chanceToShow: 10,
+        foundIn: [MODES.QUEST, MODES.DUNGEON, MODES.RAID],
         imageName: 'troll.png',
         hitChance: 35
     },
     {
         name: 'Dragon',
         attack: 15,
-        health: 100,
+        health: 150,
         level: 15,
-        maxHealth: 250,
+        maxHealth: 150,
         type: 'Rare',
         defense: 5,
         expGiven: 100,
-        foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
+        foundIn: [MODES.DUNGEON, MODES.RAID],
         imageName: 'dragon.png',
-        chanceToShow: 1,
+        chanceToShow: 60,
         hitChance: 40
     }
 ]

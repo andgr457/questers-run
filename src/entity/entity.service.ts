@@ -1,5 +1,5 @@
 import { MOBS, STOCK_NAMES } from './Constants'
-import { BaseEntity, Character, ClassName, Mob, Player } from './entity.interface'
+import { BaseEntity, Character, Mob, Player } from './entity.interface'
 
 export function camelToReadable(camelCaseStr: string): string {
   // Step 1: Insert a space before each uppercase letter
@@ -41,7 +41,9 @@ export function doCharacterExperience(player: Player, character: Character, amou
 
   character.exp += amount
   if(character.exp >= character.nextLevelExp){
+    const leftOverExp = Math.max(character.exp - character.nextLevelExp, 0)
     doCharacterLevelUp(character)
+    character.exp += leftOverExp
     return true
   }
   return false
@@ -52,7 +54,7 @@ function doCharacterLevelUp(character: Character): void {
   character.level += 1
   character.nextLevelExp = determineCharacterNextLevelExp(character.level)
   character.maxBuffs = character.level
-  character.maxHealth = determineCharacterHealth(character.class)
+  character.maxHealth = determineCharacterHealth(character)
   character.health = character.maxHealth
 }
 
@@ -61,7 +63,9 @@ export function doPlayerExperience(player: Player, amount: number): void {
 
   player.exp += amount
   if(player.exp >= player.nextLevelExp){
+    const leftOverExp = Math.max(player.exp - player.nextLevelExp, 0)
     doPlayerLevelUp(player)
+    player.exp += leftOverExp
   }
 }
 
@@ -71,18 +75,18 @@ function doPlayerLevelUp(player: Player): void {
   player.nextLevelExp = determinePlayerNextLevelExp(player.level)
 }
 
-export function determineCharacterHealth(className: ClassName): number {
+export function determineCharacterHealth(character: Character): number {
   let modifier = 1
-  const baseHealth = 15
-  switch(className) {
-    case 'Warrior': modifier = 2
+  switch(character.class) {
+    case 'Warrior': modifier = .2
       break;
-    case 'Mage': modifier = 1.2
+    case 'Mage': modifier = .1
       break;
-    case 'Rogue': modifier = 1.5
+    case 'Rogue': modifier = .15
       break;
   }
-  return baseHealth * modifier
+  const amount = character.maxHealth * modifier
+  return character.maxHealth + amount
 }
 export function determineCharacterNextLevelExp(level: number): number {
   return (level + .5) * 50
@@ -99,7 +103,7 @@ export function determinePlayerNextLevelExp(level: number): number {
  */
 export function doEntityAttack(entity: BaseEntity, buffAttack?: number): number {
   const buff = buffAttack ?? 0
-  return (entity.attack + buff) * entity.level
+  return entity.attack + buff
 }
 
 export function doEntityDamage(): void {

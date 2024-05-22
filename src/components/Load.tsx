@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import JSZip from 'jszip'
 import { Character, Player } from '../entity/entity.interface';
+import { Button } from '@material-tailwind/react';
 
 interface LoaderProps {
   onLoad: (characters: Character[], player: Player) => void
@@ -30,20 +31,19 @@ const Loader: React.FC<LoaderProps> = ({ onLoad }) => {
   }, [onLoad]);
 
   return (
-    <button
-        className="select-none rounded-lg bg-blue-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-        type="button"
-      >
-        <label className="cursor-pointer">
-        Load
-        <input
-          type="file"
-          className="hidden"
-          accept=".zip"
-          onChange={handleFileChange}
-        />
-      </label>
-      </button>
+    <Button 
+
+    placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+    <label className="cursor-pointer">
+            Load
+            <input
+              type="file"
+              className="hidden"
+              accept=".zip"
+              onChange={handleFileChange}
+            />
+          </label>
+  </Button>
   );
 };
 
