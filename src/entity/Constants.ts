@@ -24,6 +24,7 @@ export const CLASSES: CharacterClass[] = [
       startAttack: 3,
       startDefense: 2,
       startHealth: 20,
+      startMana: 0,
       startCrit: 1.5,
       startHitChance: 85,
       startCritChance: 20
@@ -37,6 +38,7 @@ export const CLASSES: CharacterClass[] = [
       startAttack: 2,
       startDefense: -1,
       startHealth: 10,
+      startMana: 10,
       startCrit: 1.7,
       startHitChance: 80,
       startCritChance: 25
@@ -50,9 +52,24 @@ export const CLASSES: CharacterClass[] = [
       startAttack: 4,
       startDefense: -1,
       startHealth: 15,
+      startMana: 0,
       startCrit: 2,
       startHitChance: 95,
       startCritChance: 50
+    },
+    {
+        name: 'Shaman',
+        description: 'A mystical shaman draped in ceremonial robes, channeling the ancient energies of nature with unparalleled wisdom, standing as the steadfast guardian of life and spirit.',
+        imageName: 'rogue.png',
+        credit: IMG_ROGUE_ICON8,
+        attacks: 'Shaman',
+        startAttack: 3,
+        startDefense: -1,
+        startHealth: 10,
+        startMana: 10,
+        startCrit: 1.7,
+        startHitChance: 80,
+        startCritChance: 25
     }
   ]
 
@@ -184,7 +201,10 @@ export const STOCK_NAMES: string[] = [
     'Faelar', 'Aeris', 'Valthor', 'Elysium', 'Maelis', 'Darian', 'Liora', 'Elandrial', 'Sylvara', 'Valen',
     'Aurelia', 'Daelor', 'Thyria', 'Eolande', 'Talon', 'Ilyndra', 'Raelin', 'Caelum', 'Nerion', 'Lunara',
     'Draven', 'Ithilien', 'Seren', 'Elandra', 'Varian', 'Liora', 'Arannis', 'Fenris', 'Talindra', 'Elys',
-    'Aerion', 'Lysandra', 'Caelia', 'Thalor', 'Virel', 'Elara', 'Mithral', 'Sylas', 'Talira', 'Zirelia'
+    'Aerion', 'Lysandra', 'Caelia', 'Thalor', 'Virel', 'Elara', 'Mithral', 'Sylas', 'Talira', 'Zirelia',
+    'Arvandor', 'Calindra', 'Zephyra', 'Eryndor', 'Thalara', 'Glyndor', 'Meloria', 'Xandros', 'Feralyn', 'Nymeria',
+    'Tavaris', 'Oriana', 'Valoria', 'Zenithra', 'Galadriel', 'Korinth', 'Mythoria', 'Aldoria', 'Orinthal', 'Sylthar',
+    'Ferelda', 'Ilarion', 'Kendar', 'Yvresse', 'Elowen', 'Vandor', 'Xelara', 'Thorian', 'Ylandra', 'Zelphyr'
 ]
 
 export const TypeColors = {
@@ -201,6 +221,8 @@ export const MOBS: Mob[] = [
         attack: 3,
         health: 25,
         maxHealth: 25,
+        mana: 0,
+        maxMana: 0,
         level: 1,
         defense: 1,
         expGiven: 25,
@@ -216,6 +238,8 @@ export const MOBS: Mob[] = [
         attack: 5,
         health: 30,
         maxHealth: 30,
+        mana: 0,
+        maxMana: 0,
         level: 2,
         defense: 2,
         expGiven: 40,
@@ -225,11 +249,29 @@ export const MOBS: Mob[] = [
         hitChance: 45,
     },
     {
+        name: 'Wolf',
+        type: 'Common',
+        attack: 5,
+        health: 30,
+        maxHealth: 30,
+        mana: 0,
+        maxMana: 0,
+        level: 2,
+        defense: 2,
+        expGiven: 40,
+        foundIn: [MODES.GRIND, MODES.QUEST, MODES.DUNGEON, MODES.RAID],
+        imageName: 'golbin.png',
+        chanceToShow: 15,
+        hitChance: 45,
+    },
+    {
         name: 'Troll',
         attack: 10,
         health: 50,
-        level: 5,
+        level: 3,
         maxHealth: 50,
+        mana: 0,
+        maxMana: 0,
         type: 'Elite',
         defense: 2,
         expGiven: 65,
@@ -242,8 +284,10 @@ export const MOBS: Mob[] = [
         name: 'Dragon',
         attack: 15,
         health: 150,
-        level: 15,
+        level: 4,
         maxHealth: 150,
+        mana: 30,
+        maxMana: 30,
         type: 'Rare',
         defense: 5,
         expGiven: 100,

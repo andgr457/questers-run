@@ -202,7 +202,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
         <CharacterSaver characters={props.characters} player={props.player}></CharacterSaver>
         <Loader onLoad={handleLoadCharacters}></Loader>
       </div>
-      <div>
+      <div style={{paddingTop: '15px'}}>
         {props.characters.map((c: Character) => (
         <>
         <div>

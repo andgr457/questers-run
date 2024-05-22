@@ -31,6 +31,8 @@ export interface BaseEntity {
   level: number
   health: number
   maxHealth: number
+  mana: number
+  maxMana: number
   attack: number
   defense: number
   hitChance: number
@@ -65,6 +67,7 @@ export interface CharacterClass {
   startAttack: number
   startDefense: number
   startHealth: number
+  startMana: number
   startCrit: number
   startHitChance: number
   startCritChance: number

@@ -11,7 +11,7 @@ export default function PlayerComponent(props: PlayerProps) {
 
   return (
     <>
-      <div>
+      <div className='sticky'>
         <Progress 
             value={+((props.player.exp / props.player.nextLevelExp) * 100)?.toFixed(2)}
             variant="gradient"

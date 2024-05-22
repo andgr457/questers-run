@@ -10,22 +10,28 @@ interface CharacterProps {
 
 const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
   return (
-    <div className=''>
-      <img 
-        className='h-16 w-16 mx-auto mb-4' 
-        src={`img/classes/${CLASSES?.find(clz => clz.name === character.class)?.imageName}`} 
-        alt='' 
-      />
-      <h5 className='text-center mb-2 font-sans text-xl font-semibold leading-snug text-blue-gray-900'>
-        {character.name} - {character.class} - Level {character.level}
-      </h5>
-      <p className='text-center font-sans text-base text-xs font-light leading-relaxed text-inherit'>
-        Buffs [{character.buffCount}/{character.maxBuffs}]
-        [+{character.buffAttack.toFixed(2)} Attack] [+{character.buffDefense.toFixed(2)} Defense] [+{character.buffCrit.toFixed(2)} Critical]<br/>
-        Stats [{doEntityAttack(character, character.buffAttack)} Damage] [{(doEntityAttack(character, character.buffAttack) * character.buffCrit).toFixed(2)} Crit Damage]
-        [{character.critChance + character.buffCrit}% Crit Chance] [{character.hitChance}% Hit Chance]
-
-      </p>
+    <div style={{padding: '15px'}}>
+      <table>
+        <tr>
+          <td style={{minWidth: '16px'}}>
+            <p style={{textAlign: 'center'}}><strong>{character.name}</strong><br/>{character.class} </p>
+              <img 
+              className='h-16 w-16 mx-auto mb-4' 
+              src={`img/classes/${CLASSES?.find(clz => clz.name === character.class)?.imageName}`} 
+              alt='' 
+            />
+            <p style={{textAlign: 'center'}}>Level {character.level}</p>
+          </td>
+          <td>
+            <div style={{marginLeft: '15px', textAlign: 'left', alignItems: 'unset'}}>
+              <p style={{color: `${character.buffCount < character.maxBuffs ? 'green' : ''}` }}>Buffs [{character.buffCount}/{character.maxBuffs}] [+{character.buffAttack.toFixed(2)} Attack] [+{character.buffDefense.toFixed(2)} Defense] [+{character.buffCrit.toFixed(2)} Critical]</p>
+              
+              [{doEntityAttack(character, character.buffAttack)} Dmg] [{(doEntityAttack(character, character.buffAttack) * character.buffCrit).toFixed(2)} Crit Dmg]
+              [{character.critChance + character.buffCrit}% Crit] [{character.hitChance}% Hit]
+            </div>
+          </td>
+        </tr>
+      </table>
       
       <div className='mt-4'>
         <Progress 
@@ -35,6 +41,20 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
         <p className='text-center mt-1 text-sm font-sm'>
           Health: {((character.health / character.maxHealth) * 100).toFixed(2)}% [{character.health.toFixed(2)}/{character.maxHealth.toFixed(2)}]
         </p>
+
+        {character.mana > 0 ? 
+        <div>
+          <Progress 
+            value={+((character.mana / character.maxMana) * 100).toFixed(2)}
+            variant='gradient'
+            color='blue' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
+          <p className='text-center mt-1 text-sm font-sm'>
+            Mana: {((character.mana / character.maxMana) * 100).toFixed(2)}% [{character.mana.toFixed(2)}/{character.maxMana.toFixed(2)}]
+          </p>
+        </div>
+          : ''
+      }
+        
         
         <Progress 
           value={+((character.exp / character.nextLevelExp) * 100).toFixed(2)}
