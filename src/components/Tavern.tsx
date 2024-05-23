@@ -141,7 +141,7 @@ const Tavern: React.FC<TavernProps> = ({
       className="text-center font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">
       Tavern
     </div>
-      <p className="text-center font-sans text-1xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-400">{tavernMessage}</p>
+      <p className="text-center text-xs font-sans text-1xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-400">{tavernMessage}</p>
       <div>
         <CharacterComponent character={character}></CharacterComponent>
       </div>
