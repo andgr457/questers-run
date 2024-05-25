@@ -35,10 +35,10 @@ export class PlayerClass implements Player {
         maxItems: 10
       }
       this.currency = {
-        copper: {imageName: 'copper.png', name: 'Copper', value: 0},
-        silver: {imageName: 'silver.png', name: 'Silver', value: 0},
-        gold: {imageName: 'gold.png', name: 'Gold', value: 0},
-        platinum: {imageName: 'platinum.png', name: 'Platinum', value: 0},
+        copper: 0,
+        gold: 0,
+        platinum: 0,
+        silver: 0
       }
     }
   }

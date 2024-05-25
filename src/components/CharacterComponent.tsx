@@ -18,6 +18,10 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
       alt='' 
     />
     <p style={{textAlign: 'center'}}>Level {character.level}</p>
+    <p style={{textAlign: 'center'}}>
+    {character.currency.copper} <span style={{color: '#B87333'}}>Copper</span> | {character.currency.silver} <span style={{color: '#646464'}}>Silver</span> | {character.currency.gold} <span style={{color: '#A38A00'}}>Gold</span> | {character.currency.platinum} <span style={{color: '#A9A9A9'}}>Platinum</span>    
+      </p>
+
     <Progress 
           value={+((character.health / character.maxHealth) * 100).toFixed(2)}
           variant='gradient'
@@ -54,7 +58,6 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
               [{character.critChance + character.buffCrit}% Crit [{character.critChance} + {character.buffCrit}]] [{character.hitChance}% Hit]
             </div>
             <div className='mt-4'>
-       
       </div>
 
     </div>
