@@ -1,9 +1,10 @@
 import { Button, Dialog, DialogBody, DialogHeader } from '@material-tailwind/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CLASSES } from '../entity/Constants'
-import { Character, CharacterClass } from '../entity/entity.interface'
 import { determineCharacterNextLevelExp, getRandomName, getRandomClass } from '../entity/entity.service'
 import CharacterComponent from './CharacterComponent'
+import { Character } from '../entity/character'
+import { CharacterClass } from '../entity/classes'
 
 interface NewCharacterProps {
     addCharacter: (character: Character) => void
@@ -52,7 +53,15 @@ export default function NewCharacter(props: NewCharacterProps) {
             buffDefense: foundClass.startDefense,
             buffCrit: foundClass.startCrit,
             buffCount: 0,
-            bags: [],
+            inventory: {
+               title: 'Inventory',
+               maxTabs: 1,
+               tabs: [{
+                title: 'Pillow Case',
+                items: [{name: 'Healing Potion', quantity: 5}],
+                maxItems: 10
+               }] 
+            },
             defense: 1,
             equipment: [],
             hitChance: foundClass.startHitChance,
@@ -81,7 +90,15 @@ export default function NewCharacter(props: NewCharacterProps) {
             buffDefense: foundClass.startDefense,
             buffCrit: foundClass.startCrit,
             buffCount: 0,
-            bags: [],
+            inventory: {
+              title: 'Inventory',
+              maxTabs: 1,
+              tabs: [{
+                  title: 'Pillow Case',
+                  items: [{name: 'Healing Potion', quantity: 5}],
+                  maxItems: 10
+              }] 
+             },
             defense: 1,
             equipment: [],
             hitChance: foundClass.startHitChance,

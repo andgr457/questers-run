@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
 import CharacterComponent from './CharacterComponent';
-import { Character } from '../entity/entity.interface';
 import { randomize } from './clicker/Clicker';
 import './Tavern.css'
+import { Character } from '../entity/character';
 
 interface TavernProps {
   showTavern: boolean

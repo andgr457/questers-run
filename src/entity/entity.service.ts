@@ -1,5 +1,9 @@
-import { MOBS, STOCK_NAMES } from './Constants'
-import { BaseEntity, Character, Mob, Player } from './entity.interface'
+import { MOBS } from './Constants'
+import { BaseEntity } from './base.entity';
+import { Character } from './character';
+import { Mob } from './mob';
+import { PlayerClass } from './player';
+import { RECOMMEND_NAMES } from './stock';
 
 export function camelToReadable(camelCaseStr: string): string {
   // Step 1: Insert a space before each uppercase letter
@@ -12,8 +16,8 @@ export function camelToReadable(camelCaseStr: string): string {
 }
 
 export function getRandomName(): string {
-  const randomIndex = Math.floor(Math.random() * STOCK_NAMES.length)
-  return STOCK_NAMES[randomIndex]
+  const randomIndex = Math.floor(Math.random() * RECOMMEND_NAMES.length)
+  return RECOMMEND_NAMES[randomIndex]
 }
 
 export function getRandomClass(): string {
@@ -38,15 +42,14 @@ export function getRandomMob(location: string, characterLevel: number): Mob {
 }
 
 const MAX_CHARACTER_LEVEL = 50
-const MAX_PLAYER_LEVEL = 10
 /**
  * Adds experience points to a character and levels them up if they reach the next level experience points required.
  * @param {Character} Character to apply experience points to.
  * @param {number} amount Experience points to allocate.
  * @returns {boolean} [true] if the character leveled up, otherwise [false], or [false] if the character is max level.
  */
-export function doCharacterExperience(player: Player, character: Character, amount: number): boolean {
-  doPlayerExperience(player, amount)
+export function doCharacterExperience(player: PlayerClass, character: Character, amount: number): boolean {
+  player.doPlayerExperience(amount)
   if(character.level >= MAX_CHARACTER_LEVEL) return false
 
   character.exp += amount
@@ -68,22 +71,22 @@ function doCharacterLevelUp(character: Character): void {
   character.health = character.maxHealth
 }
 
-export function doPlayerExperience(player: Player, amount: number): void {
-  if(player.level >= MAX_PLAYER_LEVEL) return
+// export function doPlayerExperience(player: Player, amount: number): void {
+//   if(player.level >= MAX_PLAYER_LEVEL) return
 
-  player.exp += amount
-  if(player.exp >= player.nextLevelExp){
-    const leftOverExp = Math.max(player.exp - player.nextLevelExp, 0)
-    doPlayerLevelUp(player)
-    player.exp += leftOverExp
-  }
-}
+//   player.exp += amount
+//   if(player.exp >= player.nextLevelExp){
+//     const leftOverExp = Math.max(player.exp - player.nextLevelExp, 0)
+//     doPlayerLevelUp(player)
+//     player.exp += leftOverExp
+//   }
+// }
 
-function doPlayerLevelUp(player: Player): void {
-  player.exp = 0 //reset the current experience points
-  player.level += 1
-  player.nextLevelExp = determinePlayerNextLevelExp(player.level)
-}
+// function doPlayerLevelUp(player: Player): void {
+//   player.exp = 0 //reset the current experience points
+//   player.level += 1
+//   player.nextLevelExp = determinePlayerNextLevelExp(player.level)
+// }
 
 export function determineCharacterHealth(character: Character): number {
   let modifier = 1
@@ -102,9 +105,9 @@ export function determineCharacterNextLevelExp(level: number): number {
   return (level + .5) * 50
 }
 
-export function determinePlayerNextLevelExp(level: number): number {
-  return (level + .5) * 150
-}
+// export function determinePlayerNextLevelExp(level: number): number {
+//   return (level + .5) * 150
+// }
 
 /**
  * Calculates the attack damage of an entity.

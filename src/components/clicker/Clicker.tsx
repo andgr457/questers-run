@@ -7,33 +7,36 @@ import NewCharacter from '../NewCharacter'
 import CharacterComponent from '../CharacterComponent'
 import CharacterSaver from '../Save'
 import Loader from '../Load'
-import Bags from '../Bags'
-import { Player, Character, Bag, Mob } from '../../entity/entity.interface'
+import InventoryComponent from '../Inventory'
 import { getRandomMob, doCharacterExperience } from '../../entity/entity.service'
 import './Clicker.css'
+import { Character } from '../../entity/character'
+import { Mob } from '../../entity/mob'
+import { PlayerClass } from '../../entity/player'
+import { Inventory } from '../../entity/inventory'
 export function randomize(chance: number): boolean {
   const randomNumber = Math.random() * 100
   return randomNumber < chance
 }
 
 interface ClickerProps {
-  setPlayer: (player: Player) => void
-  player: Player
+  setPlayer: (player: PlayerClass) => void
+  player: PlayerClass
   setCharacters: (characters: Character[]) => void
   characters: Character[]
 }
 
 export default function Clicker(props: ClickerProps) {
-  const [bags, setBags]: [Bag[], any] = useState([])
+  const [inventory, setInventory]: [Inventory, any] = useState(undefined as any)
   const [mob, setMob]: [Mob, any] = useState(undefined as any)
   const [character, setCharacter]: [Character, any] = useState(undefined as any)
   
   const [encounterShown, setEncounterShown] = useState(false)
   const [showTavern, setShowTavern] = useState(false)
-  const [showBags, setShowBags]: [boolean, any] = useState(false)
+  const [showInventory, setShowInventory]: [boolean, any] = useState(false)
   const [showNewCharacter, setShowNewCharacter]: [boolean, any] = useState(false)
 
-  const handleEncounterEvent = useCallback((updatedCharacter: Character, updatedMob: Mob, updatedPlayer: Player) => {
+  const handleEncounterEvent = useCallback((updatedCharacter: Character, updatedMob: Mob, updatedPlayer: PlayerClass) => {
     if(!mob) return
     if(updatedMob.health <= 0){
       updatedMob.health = 0
@@ -49,10 +52,10 @@ export default function Clicker(props: ClickerProps) {
         return character;
       })
     )
-    props.setPlayer({...updatedPlayer})
+    props.setPlayer(updatedPlayer)
   }, [mob, props])
 
-const grind = useCallback((name: string, subject: string, characters: Character[], player: Player) => {
+const grind = useCallback((name: string, subject: string, characters: Character[], player: PlayerClass) => {
     const dupe = [...characters]
     const c = dupe.find(c => c.name === name)
     if(typeof c === 'undefined') return
@@ -149,8 +152,8 @@ const grind = useCallback((name: string, subject: string, characters: Character[
 
   const handleBagsClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]
-    setBags(props.characters.find(c => c.name === name)?.bags as Bag[])
-    setShowBags(true)
+    setInventory(props.characters.find(c => c.name === name)?.inventory as Inventory)
+    setShowInventory(true)
   }, [props.characters])
 
   const getButtonDisabled = (c: Character, levelRequirement: number) => {
@@ -168,16 +171,18 @@ const grind = useCallback((name: string, subject: string, characters: Character[
     setShowNewCharacter(true)
   }, [])
 
-  const handleLoadCharacters = useCallback((c: Character[], p: Player) => {
+  const handleLoadCharacters = useCallback((c: Character[], p: PlayerClass) => {
     props.setCharacters(c)
     props.setPlayer(p)
   }, [props])
 
-  const getBagItemsCount = (c: Character) => {
+  const getInventoryItemCount = (c: Character) => {
     if(!c) return
     let count = 0
-    for(const bag of c?.bags){
-      count += bag.items.length
+    for(const tab of c?.inventory?.tabs){
+      for(const item of tab.items){
+        count += item.quantity ?? 1
+      }
     }
     return count
   }
@@ -193,9 +198,9 @@ const grind = useCallback((name: string, subject: string, characters: Character[
         <NewCharacter characterNames={props.characters.map(c => c.name.toLowerCase())} addCharacter={handleAddCharacter} setShowNewCharacter={setShowNewCharacter} showNewCharacter={showNewCharacter}></NewCharacter>
         <Tavern character={character as any} handleTavernSleep={handleTavernSleep} handleTavernBuff={handleTavernBuff as any} showTavern={showTavern} setShowTavern={setShowTavern as any}></Tavern>
         <Dialog size='xxl' open={encounterShown} handler={() => {}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-          <Encounter player={{...props.player}} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
+          <Encounter player={props.player} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
         </Dialog>
-        <Bags bags={bags as any} setShowBags={setShowBags} showBags={showBags}></Bags>
+        <InventoryComponent inventory={inventory as any} setShowInventory={setShowInventory} showInventory={showInventory}></InventoryComponent>
 
       <div>
       <Button color='amber' onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} placeholder={undefined} onClick={handleNewCharacterClick}>New Character</Button>
@@ -212,7 +217,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
         <div>
 
         </div>
-        <Badge content={getBagItemsCount(c)}>
+        <Badge content={getInventoryItemCount(c)}>
             <Button id={`${c.name}___bags`} onClick={handleBagsClick} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                 Inventory
             </Button>
@@ -266,7 +271,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
         
       </>
     )
-  }, [bags, character, encounterShown, handleAddCharacter, handleBagsClick, handleDungeonClick, handleEncounterEvent, handleGrindClick, handleLoadCharacters, handleNewCharacterClick, handleQuestClick, handleRaidClick, handleTavernBuff, handleTavernClick, handleTavernSleep, mob, props.characters, props.player, showBags, showNewCharacter, showTavern])
+  }, [inventory, character, encounterShown, handleAddCharacter, handleBagsClick, handleDungeonClick, handleEncounterEvent, handleGrindClick, handleLoadCharacters, handleNewCharacterClick, handleQuestClick, handleRaidClick, handleTavernBuff, handleTavernClick, handleTavernSleep, mob, props.characters, props.player, showInventory, showNewCharacter, showTavern])
 
   return view
 }

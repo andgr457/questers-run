@@ -1,5 +1,5 @@
 import { Progress } from '@material-tailwind/react'
-import { Player } from '../entity/entity.interface'
+import { Player } from '../entity/player'
 
 interface PlayerProps {
   player: Player

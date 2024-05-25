@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react'
 import JSZip from 'jszip'
-import { Character, Player } from '../entity/entity.interface';
 import { Button } from '@material-tailwind/react';
+import { Character } from '../entity/character';
+import { Player } from '../entity/player';
 
 interface LoaderProps {
   onLoad: (characters: Character[], player: Player) => void

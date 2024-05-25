@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Button,
   DialogHeader,
@@ -8,13 +8,16 @@ import QuickEncounter from './QuickEncounter'
 import CharacterComponent from './CharacterComponent'
 import { randomize } from './clicker/Clicker'
 import MobComponent from './MobComponent'
-import { Character, Mob, Player } from '../entity/entity.interface';
 import { doCharacterExperience, doEntityAttack } from '../entity/entity.service';
+import { Character } from '../entity/character';
+import { Mob } from '../entity/mob';
+import { PlayerClass } from '../entity/player';
+import { ALL_ITEMS } from '../entity/Constants';
 
 interface EncounterProps {
   character: Character
   mob: Mob
-  player: Player
+  player: PlayerClass
   handleEncounterEvent: any
   setShowEncounter: any
 }
@@ -22,9 +25,23 @@ interface EncounterProps {
 export function Encounter(props: EncounterProps) {
   const [character] = useState<Character>({ ...props.character })
   const [mob] = useState<Mob>({ ...props.mob })
-  const [player] = useState<Player>({...props.player})
+  const [player] = useState<PlayerClass>(props.player)
   const [encounterEvents, setEncounterEvents] = useState<string[]>([])
   const [showQuickTimeEvent, setShowQuickTimeEvent] = useState(false)
+  const [healingPotions, setHealingPotions] = useState([])
+
+  useEffect(() => {
+    const potions = []
+    for(const tab of character.inventory.tabs){
+      for(const item of tab.items){
+        const itemData = ALL_ITEMS.find(i => i.name === item.name)
+        if(itemData?.category === 'Healing Potion'){
+          potions.push(itemData)
+        }
+      }
+    }
+    setHealingPotions(potions)
+  }, [])
 
   const handleRunClicked = useCallback(() => {
     if (randomize(50)) {
@@ -103,11 +120,17 @@ export function Encounter(props: EncounterProps) {
 
   }, [character, mob, player, props])
 
+  const handlePotionClicked = useCallback(() => {
+    if(healingPotions.length === 0) return
+    //TODO
+
+  }, [])
+
   const view = useMemo(() => {
     return (
       <>
     <QuickEncounter characterClass={character.class} setResult={handleQuickEncounterResult} quickEncounterShown={showQuickTimeEvent} setShowQuickTimeEvent={setShowQuickTimeEvent}></QuickEncounter>
-    <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>A wild {mob.name} attacks!</DialogHeader>
+    <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Encounter with a {mob.type} {mob.name}!</DialogHeader>
     <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} className='w-full overflow-hidden'>
     <div className='overflow-y-auto scrollable-y'>
     <table style={{width: '100%'}}>
@@ -131,6 +154,14 @@ export function Encounter(props: EncounterProps) {
                     className='mr-1' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                     <span>Run</span>
                 </Button>
+                <Button
+                  disabled={healingPotions.length === 0}
+                  variant='gradient'
+                  onClick={handlePotionClicked}
+                  className='mr-1' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}
+                >
+                  Potion
+                </Button>
             </td>
         </tr>
     </table>
@@ -146,7 +177,7 @@ export function Encounter(props: EncounterProps) {
 </>
 
     );
-  }, [character, handleQuickEncounterResult, showQuickTimeEvent, mob, handleAttackClicked, handleRunClicked, encounterEvents]);
+  }, [character, handleQuickEncounterResult, showQuickTimeEvent, mob, handleAttackClicked, handleRunClicked, encounterEvents, healingPotions]);
 
   return view;
 }

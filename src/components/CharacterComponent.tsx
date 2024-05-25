@@ -1,8 +1,8 @@
 import React from 'react'
 import { Progress } from '@material-tailwind/react'
 import { CLASSES } from '../entity/Constants';
-import { Character } from '../entity/entity.interface';
 import { doEntityAttack } from '../entity/entity.service';
+import { Character } from '../entity/character';
 
 interface CharacterProps {
   character: Character

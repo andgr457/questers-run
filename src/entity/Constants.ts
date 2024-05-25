@@ -1,11 +1,11 @@
-import { Attack } from '../components/QuickEncounter'
-import { CharacterClass, Bag, ItemRarity, Item, Mob } from './entity.interface'
+import { CharacterClass, ClassAttack } from './classes'
+import { BaseItem } from './item'
+import { Mob } from './mob'
 
 export const IMG_ZZZ__ICON8 = 'https://icons8.com/icon/6374/sleep'
 export const IMG_MAGE_ICON8 = 'https://icons8.com/icon/TYJEetqy7xCk/mage'
 export const IMG_ROGUE_ICON8 = 'https://icons8.com/icon/ZqDbnyVTvEPy/rogue'
 export const IMG_WARRIOR_ICON8 = 'https://icons8.com/icon/7Us820vzFood/warrior'
-// export const IMG_WARRIOR_ICON8 = '<a target="_blank" href="https://icons8.com/icon/7Us820vzFood/warrior">Warrior</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>'
 
 export enum MODES {
   GRIND = 'Grind',
@@ -73,7 +73,50 @@ export const CLASSES: CharacterClass[] = [
     }
   ]
 
-export const ATTACKS: Attack[] = [
+
+
+export const HEALING_POTION: BaseItem = {
+    name: 'Lesser Healing Potion',
+    baseValue: 4,
+    buffStats: [{
+        field: 'health',
+        name: 'Heal HP',
+        value: 5
+    }],
+    category: 'Healing Potion',
+    description: 'Go heal yourself.',
+    hash: undefined,
+    rarity: 'Common',
+    requiredLevel: 1,
+    stackable: true,
+    type: 'Consumable'
+}
+
+export const GREATER_HEALING_POTION: BaseItem = {
+    name: 'Lesser Healing Potion',
+    baseValue: 8,
+    buffStats: [{
+        field: 'health',
+        name: 'Heal HP',
+        value: 14
+    }],
+    category: 'Healing Potion',
+    description: 'Go heal yourself.',
+    hash: undefined,
+    rarity: 'Common',
+    requiredLevel: 1,
+    stackable: true,
+    type: 'Consumable'
+}
+
+export const POTIONS: BaseItem[] = [
+    {...HEALING_POTION},
+    {...GREATER_HEALING_POTION}
+]
+
+export const ALL_ITEMS: BaseItem[] = [...POTIONS]
+
+export const ATTACKS: ClassAttack[] = [
     {
         class: 'Mage',
         name: 'Ice Blast'
@@ -123,96 +166,6 @@ export const ATTACKS: Attack[] = [
         name: 'Long Rend'
     }
 ]
-
-export const BAGS: Bag[] = [
-    {
-        items: [],
-        name: 'Pillowcase',
-        slots: 4,
-        rarity: 'Common',
-        baseValue: 1,
-        description: `Can't really use it to sleep with anymore.`
-    },
-    {
-        items: [],
-        name: 'Snap Close',
-        slots: 1,
-        baseValue: 1,
-        description: 'Hold some apple slices.',
-        rarity: 'Common'
-    },
-    {
-        items: [],
-        name: 'Brown Backpack',
-        baseValue: 2,
-        description: 'Provides bad back posture due to the time spent in school.',
-        rarity: 'Common',
-        slots: 6
-    },
-    {
-        items: [],
-        name: 'Mule',
-        baseValue: 2,
-        description: 'Eee ahhh!',
-        rarity: 'Slick',
-        slots: 6
-    },
-    {
-        items: [],
-        name: 'Mavrick the Mule',
-        baseValue: 50,
-        description: 'Eee ahhh, eeeeee awww, eee ahhh!',
-        rarity: 'Unique',
-        slots: 12
-    }
-]
-
-export const ITEM_RARITIES: ItemRarity[] = [
-    {
-        name: 'Basic',
-        valueModifier: 1 //1 * value
-    },
-    {
-        name: 'Neat',
-        valueModifier: 2
-    },
-    {
-        name: 'Slick',
-        valueModifier: 3
-    },
-    {
-        name: 'Bruh',
-        valueModifier: 4
-    },
-    {
-        name: 'Legend',
-        valueModifier: 5
-    },
-    {
-        name: 'Unique',
-        valueModifier: 6
-    }
-    
-]
-export const ITEM_SOAP: Item = {name: 'Soap', baseValue: 1, rarity: 'Basic', description: 'This mystical bar of cleanliness promises to wash away your trouble... Maybe a few enemies if you can get a grip on it!'}
-
-export const STOCK_NAMES: string[] = [
-    'Thalindor', 'Eliria', 'Grommash', 'Lysandra', 'Calenon', 'Neridia', 'Thundar', 'Seraphina', 'Zephyrus', 'Lyria',
-    'Faelar', 'Aeris', 'Valthor', 'Elysium', 'Maelis', 'Darian', 'Liora', 'Elandrial', 'Sylvara', 'Valen',
-    'Aurelia', 'Daelor', 'Thyria', 'Eolande', 'Talon', 'Ilyndra', 'Raelin', 'Caelum', 'Nerion', 'Lunara',
-    'Draven', 'Ithilien', 'Seren', 'Elandra', 'Varian', 'Liora', 'Arannis', 'Fenris', 'Talindra', 'Elys',
-    'Aerion', 'Lysandra', 'Caelia', 'Thalor', 'Virel', 'Elara', 'Mithral', 'Sylas', 'Talira', 'Zirelia',
-    'Arvandor', 'Calindra', 'Zephyra', 'Eryndor', 'Thalara', 'Glyndor', 'Meloria', 'Xandros', 'Feralyn', 'Nymeria',
-    'Tavaris', 'Oriana', 'Valoria', 'Zenithra', 'Galadriel', 'Korinth', 'Mythoria', 'Aldoria', 'Orinthal', 'Sylthar',
-    'Ferelda', 'Ilarion', 'Kendar', 'Yvresse', 'Elowen', 'Vandor', 'Xelara', 'Thorian', 'Ylandra', 'Zelphyr'
-]
-
-export const TypeColors = {
-    'Common': 'gray',
-    'Elite': 'green',
-    'Boss': 'purple',
-    'Rare': 'gold'
-}
 
 export const MOBS: Mob[] = [
     {
