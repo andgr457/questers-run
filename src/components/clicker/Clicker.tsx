@@ -56,7 +56,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
     const dupe = [...characters]
     const c = dupe.find(c => c.name === name)
     if(typeof c === 'undefined') return
-    const mob = getRandomMob(subject)
+    const mob = getRandomMob(subject, c.level)
     let subjectExperience = 0
     let subjectDamage = 0
     let subjectMobChance = 0
@@ -214,7 +214,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
         </div>
         <Badge content={getBagItemsCount(c)}>
             <Button id={`${c.name}___bags`} onClick={handleBagsClick} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                Bags
+                Inventory
             </Button>
           </Badge>
           <Badge content={getEquipmentCount(c)}>
@@ -222,24 +222,27 @@ const grind = useCallback((name: string, subject: string, characters: Character[
                 Equip
             </Button>
           </Badge>
-        <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+          <br/>
           <Button id={`${c.name}___tavern`} onClick={handleTavernClick} color='teal' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
               Tavern [+ HP]
           </Button>
+          <Button id={`${c.name}___tavern`} onClick={handleTavernClick} color='amber' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+              Shoppe
+          </Button>
 
-              <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___grind`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleGrindClick}>
-                    Grind
-                </Button>
-                <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___quest`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleQuestClick}>
-                    Quest
-                </Button>
-                <Button disabled={c.health <= 0 || getButtonDisabled(c, 5)} id={`${c.name}___dungeon`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleDungeonClick}>
-                    Dungeon
-                </Button>
-                <Button disabled={c.health <= 0 || getButtonDisabled(c, 10)} id={`${c.name}___raid`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleRaidClick}>
-                    Raid
-                </Button>
-              </ul>
+          <br/>
+          <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___grind`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleGrindClick}>
+              Grind
+          </Button>
+          <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___quest`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleQuestClick}>
+              Quest
+          </Button>
+          <Button disabled={c.health <= 0 || getButtonDisabled(c, 5)} id={`${c.name}___dungeon`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleDungeonClick}>
+              Dungeon
+          </Button>
+          <Button disabled={c.health <= 0 || getButtonDisabled(c, 10)} id={`${c.name}___raid`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleRaidClick}>
+              Raid
+          </Button>
         </div>
         </>
 ))}

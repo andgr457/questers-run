@@ -121,7 +121,7 @@ export function Encounter(props: EncounterProps) {
         </tr>
         <tr>
             <td colSpan={3}>
-                <Button variant='gradient' color='green' onClick={handleAttackClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                <Button disabled={mob.health <= 0} variant='gradient' color='green' onClick={handleAttackClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                     <span>Attack</span>
                 </Button>
                 <Button

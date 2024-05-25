@@ -147,15 +147,15 @@ const Tavern: React.FC<TavernProps> = ({
       </div>
       <Button
           disabled={character.health >= character.maxHealth}
-          color="green"
+          variant="gradient"
           onClick={() => sleepClicked()}
           placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
           Rest +{(.2 * character.maxHealth ?? 0).toFixed(2)} HP 
         </Button>
-        <br/>
+  
         <Button
           disabled={character?.buffCount >= character?.maxBuffs}
-          color="blue"
+          variant="gradient"
           onClick={() => buffClicked()}
           placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
           Meditate +1 Attack +1 Defense +0.1 Crit

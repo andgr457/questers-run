@@ -21,10 +21,20 @@ export function getRandomClass(): string {
   return ['Warrior', 'Mage', 'Rogue'][randomIndex] 
 }
 
-export function getRandomMob(location: string): Mob {
+export function getRandomMob(location: string, characterLevel: number): Mob {
   const locationMobs = MOBS.filter(m => m.foundIn.includes(location))
   const randomIndex = Math.floor(Math.random() * locationMobs.length)
-  return {...locationMobs[randomIndex]}
+  const mob = {...locationMobs[randomIndex]}
+  const randomLevel = Math.floor(Math.random() * 3)
+  const levels = [characterLevel - 1 === 0 ? 1 : characterLevel - 1, characterLevel, characterLevel + 1]
+  mob.level = levels[randomLevel]
+  mob.attack = mob.attack * mob.level
+  mob.health = mob.health * mob.level
+  mob.maxHealth = mob.health
+  mob.expGiven = mob.expGiven * mob.level
+  mob.defense = mob.defense * mob.level
+  mob.mana = mob.mana * mob.level
+  return mob
 }
 
 const MAX_CHARACTER_LEVEL = 50

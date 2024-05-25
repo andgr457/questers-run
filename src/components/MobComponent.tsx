@@ -12,14 +12,14 @@ const MobComponent: React.FC<MobProps> = ({ mob }) => {
   return (
     <div>
       <div>
-        <img 
-          className="h-20 w-20 mx-auto mb-4" 
+      <p style={{textAlign: 'center'}}><strong>{mob.name}</strong><br/>{mob.type} </p>
+      <img 
+          className="h-16 w-16 mx-auto mb-4" 
           src={`img/mobs/${MOBS?.find(m => m.name === mob.name)?.imageName}`} 
           alt="" 
         />
-        <h5 className="text-center mb-2 font-sans text-xl font-semibold leading-snug text-blue-gray-900">
-        {mob.type} {mob.name} - Level {mob.level}
-        </h5>
+            <p style={{textAlign: 'center'}}>Level {mob.level}</p>
+      
         <p className="text-center text-xs font-sans text-base font-light leading-relaxed text-inherit">
           Stats [{doEntityAttack(mob)} Damage] [{mob.defense} Defense] [{mob.hitChance}% Hit Chance] [{mob.expGiven} Exp Given]
         </p>

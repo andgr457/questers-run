@@ -11,30 +11,14 @@ interface CharacterProps {
 const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
   return (
     <div style={{padding: '15px'}}>
-      <table>
-        <tr>
-          <td style={{minWidth: '16px'}}>
-            <p style={{textAlign: 'center'}}><strong>{character.name}</strong><br/>{character.class} </p>
-              <img 
-              className='h-16 w-16 mx-auto mb-4' 
-              src={`img/classes/${CLASSES?.find(clz => clz.name === character.class)?.imageName}`} 
-              alt='' 
-            />
-            <p style={{textAlign: 'center'}}>Level {character.level}</p>
-          </td>
-          <td>
-            <div style={{marginLeft: '15px', textAlign: 'left', alignItems: 'unset'}}>
-              <p style={{color: `${character.buffCount < character.maxBuffs ? 'green' : ''}` }}>Buffs [{character.buffCount}/{character.maxBuffs}] [+{character.buffAttack.toFixed(2)} Attack] [+{character.buffDefense.toFixed(2)} Defense] [+{character.buffCrit.toFixed(2)} Critical]</p>
-              
-              [{doEntityAttack(character, character.buffAttack)} Dmg] [{(doEntityAttack(character, character.buffAttack) * character.buffCrit).toFixed(2)} Crit Dmg]
-              [{character.critChance + character.buffCrit}% Crit] [{character.hitChance}% Hit]
-            </div>
-          </td>
-        </tr>
-      </table>
-      
-      <div className='mt-4'>
-        <Progress 
+          <p style={{textAlign: 'center'}}><strong>{character.name}</strong><br/>{character.class} </p>
+      <img 
+      className='h-16 w-16 mx-auto mb-4' 
+      src={`img/classes/${CLASSES?.find(clz => clz.name === character.class)?.imageName}`} 
+      alt='' 
+    />
+    <p style={{textAlign: 'center'}}>Level {character.level}</p>
+    <Progress 
           value={+((character.health / character.maxHealth) * 100).toFixed(2)}
           variant='gradient'
           color={((character.health / character.maxHealth) * 100) <= 50 ? 'red' : 'teal'} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
@@ -63,7 +47,16 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
         <p className='text-center mt-1 text-sm font-sm'>
           Experience: {((character.exp / character.nextLevelExp) * 100).toFixed(2)}% [{character.exp.toFixed(2)}/{character.nextLevelExp.toFixed(2)}]
         </p>
+        <div style={{marginLeft: '15px', textAlign: 'left', alignItems: 'unset', fontSize: '.8em'}}>
+              <p style={{color: `${character.buffCount < character.maxBuffs ? 'green' : ''}` }}>Buffs [{character.buffCount}/{character.maxBuffs}] [+{character.buffAttack.toFixed(2)} Attack] [+{character.buffDefense.toFixed(2)} Defense] [+{character.buffCrit.toFixed(2)} Critical]</p>
+              [{character.defense + character.buffDefense} Defense [{character.defense} + {character.buffDefense}]]
+              [{doEntityAttack(character, character.buffAttack)} Damage [{character.attack} + {character.buffAttack}]] [{(doEntityAttack(character, character.buffAttack) * character.buffCrit).toFixed(2)} Crit Dmg [({character.attack} + {character.buffAttack}) * {character.buffCrit}]]
+              [{character.critChance + character.buffCrit}% Crit [{character.critChance} + {character.buffCrit}]] [{character.hitChance}% Hit]
+            </div>
+            <div className='mt-4'>
+       
       </div>
+
     </div>
   )
 }
