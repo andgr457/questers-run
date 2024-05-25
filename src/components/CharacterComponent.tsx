@@ -19,7 +19,7 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
     />
     <p style={{textAlign: 'center'}}>Level {character.level}</p>
     <p style={{textAlign: 'center'}}>
-    {character.currency.copper} <span style={{color: '#B87333'}}>Copper</span> | {character.currency.silver} <span style={{color: '#646464'}}>Silver</span> | {character.currency.gold} <span style={{color: '#A38A00'}}>Gold</span> | {character.currency.platinum} <span style={{color: '#A9A9A9'}}>Platinum</span>    
+    {character.gold} <span style={{color: '#A38A00'}}>Gold</span>    
       </p>
 
     <Progress 

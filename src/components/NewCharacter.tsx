@@ -39,12 +39,7 @@ export default function NewCharacter(props: NewCharacterProps) {
         
         const character: Character = {
             name,
-            currency: {
-                copper: 0,
-                gold: 0,
-                platinum: 0,
-                silver: 0
-            },
+            gold: 0,
             class: classs as any,
             attack: foundClass.startAttack,
             maxHealth: foundClass.startHealth,
@@ -82,12 +77,7 @@ export default function NewCharacter(props: NewCharacterProps) {
         
         const character: Character = {
             name,
-            currency: {
-                copper: 0,
-                gold: 0,
-                platinum: 0,
-                silver: 0
-            },
+            gold: 0,
             class: classs as any,
             attack: foundClass.startAttack,
             maxHealth: foundClass.startHealth,

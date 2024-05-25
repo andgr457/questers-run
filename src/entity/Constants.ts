@@ -89,7 +89,8 @@ export const HEALING_POTION: BaseItem = {
     rarity: 'Common',
     requiredLevel: 1,
     stackable: true,
-    type: 'Consumable'
+    type: 'Consumable',
+    value: 5
 }
 
 export const GREATER_HEALING_POTION: BaseItem = {
@@ -106,7 +107,8 @@ export const GREATER_HEALING_POTION: BaseItem = {
     rarity: 'Common',
     requiredLevel: 1,
     stackable: true,
-    type: 'Consumable'
+    type: 'Consumable',
+    value: 20
 }
 
 export const POTIONS: BaseItem[] = [

@@ -1,4 +1,3 @@
-import { Currency } from './currency'
 import { InventoryTab } from './inventory'
 
 export interface Player {
@@ -6,7 +5,7 @@ export interface Player {
   exp: number
   nextLevelExp: number
   inventory: InventoryTab
-  currency: Currency
+  gold: number
 }
 
 const MAX_PLAYER_LEVEL = 10
@@ -16,7 +15,7 @@ export class PlayerClass implements Player {
   exp: number
   nextLevelExp: number
   inventory: InventoryTab
-  currency: Currency
+  gold: number
 
   constructor(player?: Player){
     if(player){
@@ -24,7 +23,7 @@ export class PlayerClass implements Player {
       this.exp = player.exp
       this.nextLevelExp = player.nextLevelExp
       this.inventory = player.inventory
-      this.currency = player.currency
+      this.gold = player.gold
     } else {
       this.level = 1
       this.exp = 0
@@ -34,13 +33,12 @@ export class PlayerClass implements Player {
         items: [],
         maxItems: 10
       }
-      this.currency = {
-        copper: 0,
-        gold: 0,
-        platinum: 0,
-        silver: 0
-      }
+      this.gold = 0
     }
+  }
+
+  doPlayerGold(amount: number): void {
+    this.gold += amount
   }
 
   doPlayerExperience(amount: number): void {

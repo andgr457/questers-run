@@ -20,7 +20,7 @@ export default function PlayerComponent(props: PlayerProps) {
             Player Level: {props.player.level} Experience: {((props.player.exp / props.player.nextLevelExp) * 100)?.toFixed(2)}% [{props.player.exp?.toFixed(2)}/{props.player.nextLevelExp}]
           </p>
           <p className="text-center mt-1 text-sm font-sm">
-            {props.player.currency.copper} Copper | {props.player.currency.silver} Silver | {props.player.currency.gold} Gold | {props.player.currency.platinum} Platinum
+            {props.player.gold} <span style={{color: '#A38A00'}}>Gold</span> 
           </p>
       </div>
     </>
