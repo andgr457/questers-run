@@ -1,9 +1,7 @@
 import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { useEffect, useMemo, useState } from 'react'
-import { Character, Player } from './entity/entity.interface'
-import { determinePlayerNextLevelExp } from './entity/entity.service'
-import Clicker from "./components/Clicker"
+import Clicker from "./components/clicker/Clicker"
 import Classes from "./components/Classes"
 import Credits from "./components/Credits"
 import { Footer } from "./components/Footer"
@@ -11,11 +9,13 @@ import Home from "./components/Home"
 import Mobs from "./components/Mobs"
 import { NavMenu } from "./components/NavMenu"
 import PlayerComponent from "./components/PlayerComponent"
+import { Character } from './entity/character'
+import { PlayerClass } from './entity/player'
 
 function App() {
   const [screen, setScreen] = useState('clicker')
   const [viewComonent, setViewComponent] = useState(<Home></Home>)
-  const [player, setPlayer]: [Player, (player: Player) => void] = useState({exp: 0, level: 1, nextLevelExp: determinePlayerNextLevelExp(1)})
+  const [player, setPlayer]: [PlayerClass, (player: PlayerClass) => void] = useState(new PlayerClass())
   const [characters, setCharacters]: [Character[], (characters: Character[]) => void] = useState([])
 
   useEffect(() => {

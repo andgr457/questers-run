@@ -1,0 +1,50 @@
+/* Resetting some basic styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+/* Container for the two columns */
+.container {
+    display: flex;
+    /* height: 100cqmax; Full height of the viewport */
+}
+
+/* Styles for the left column */
+.left-column {
+    width: 20%; /* 20% of the container's width */
+    background-color: #f0f0f0; /* Light grey background */
+    padding: 20px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+/* Styles for the right column */
+.right-column {
+    width: 80%; /* 80% of the container's width */
+    background-color: #ffffff; /* White background */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column; /* Stack columns vertically */
+    }
+
+    .left-column {
+        width: 100%; /* Full width */
+        height: 100vh; /* Full height of the viewport */
+    }
+
+    .right-column {
+        width: 100%; /* Full width */
+        transition: height 2.5s; /* Smooth transition for height */
+    }
+
+    .right-column.visible {
+        height: 50vh; /* Show half of the viewport height */
+    }
+}
