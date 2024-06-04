@@ -134,14 +134,16 @@ const grind = useCallback((name: string, subject: string, characters: Character[
   }, [props.characters])
 
   const handleTavernSleep = useCallback((toon: Character) => {
+    if(!toon) return
     const updatedCharacters = props.characters.map(c => {
-      if (c.name === character?.name) {
+      if (c.name === toon?.name) {
         c = toon
+        return c
       }
       return c
     })
     props.setCharacters(updatedCharacters)
-  }, [props, character])
+  }, [props])
 
   const handleTavernBuff = useCallback((toon: Character) => {
     if(!toon) return
@@ -153,7 +155,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
       return c
     })
     props.setCharacters(updatedCharacters)
-  }, [props, character])
+  }, [props])
 
   const handleBagsClick = useCallback((e: any) => {
     const name = e.target.id.split('___')[0]

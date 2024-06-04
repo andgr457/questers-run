@@ -168,7 +168,7 @@ const Tavern: React.FC<TavernProps> = ({
       </Button>
     </DialogFooter>
   </Dialog>)
-  }, [showTavern, character, setShowTavern, handleTavernSleep, handleTavernBuff, tavernMessage, buffClicked, sleepClicked])
+  }, [showTavern, character, setShowTavern, tavernMessage, buffClicked, sleepClicked])
 
   return view
 };
