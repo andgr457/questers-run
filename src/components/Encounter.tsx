@@ -41,7 +41,7 @@ export function Encounter(props: EncounterProps) {
       }
     }
     setHealingPotions(potions)
-  }, [])
+  }, [character.inventory.tabs])
 
   const handleRunClicked = useCallback(() => {
     if (randomize(50)) {
@@ -126,7 +126,7 @@ export function Encounter(props: EncounterProps) {
     if(healingPotions.length === 0) return
     //TODO
 
-  }, [])
+  }, [healingPotions])
 
   const view = useMemo(() => {
     return (
@@ -179,7 +179,7 @@ export function Encounter(props: EncounterProps) {
 </>
 
     );
-  }, [character, handleQuickEncounterResult, showQuickTimeEvent, mob, handleAttackClicked, handleRunClicked, encounterEvents, healingPotions]);
+  }, [character, handleQuickEncounterResult, showQuickTimeEvent, mob, handleAttackClicked, handleRunClicked, encounterEvents, healingPotions, handlePotionClicked]);
 
   return view;
 }

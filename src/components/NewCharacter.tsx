@@ -179,7 +179,7 @@ export default function NewCharacter(props: NewCharacterProps) {
             </DialogBody>
           </Dialog>
         )
-      }, [initialLoad, name, props, handleNameChanged, hideError, handleClassChanged, classs, handleSaveClick, previewCharacter])
+      }, [initialLoad, name, props, handleNameChanged, hideError, handleClassChanged, classs, handleSaveClick, previewCharacter, handleCloseClicked])
     
       return view
 }

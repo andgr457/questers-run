@@ -120,7 +120,7 @@ const Tavern: React.FC<TavernProps> = ({
       setTavernMessage(noBuffMessages[Math.floor(Math.random() * noBuffMessages.length)])
     }
     handleTavernBuff(character)
-  }, [character])
+  }, [character, handleTavernBuff])
 
   const sleepClicked = useCallback(() => {
     const sleep = .2 * character.maxHealth
@@ -130,7 +130,7 @@ const Tavern: React.FC<TavernProps> = ({
     }
     handleTavernSleep(character)
     setTavernMessage(`${restMessages[Math.floor(Math.random() * restMessages.length)]} +${sleep.toFixed(2)} HP!`)
-  }, [character])
+  }, [character, handleTavernSleep])
   
   const view = useMemo(() => {
     if(!character) return
@@ -168,7 +168,7 @@ const Tavern: React.FC<TavernProps> = ({
       </Button>
     </DialogFooter>
   </Dialog>)
-  }, [showTavern, character, setShowTavern, handleTavernSleep, handleTavernBuff, tavernMessage])
+  }, [showTavern, character, setShowTavern, handleTavernSleep, handleTavernBuff, tavernMessage, buffClicked, sleepClicked])
 
   return view
 };
