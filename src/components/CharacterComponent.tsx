@@ -17,10 +17,17 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
       src={`img/classes/${CLASSES?.find(clz => clz.name === character.class)?.imageName}`} 
       alt='' 
     />
-    <p style={{textAlign: 'center'}}>Level {character.level}</p>
-    <p style={{textAlign: 'center'}}>
-    {character.gold} <span style={{color: '#A38A00'}}>Gold</span>    
-      </p>
+    <p style={{textAlign: 'center'}}>Level {character.level} </p>
+    <div style={{ textAlign: 'center' }}>
+      <span>{character.gold}</span>
+      <img 
+        src={`img/custom/qr-gold-1.png`} 
+        alt="gold" 
+        style={{ display: 'inline-block', verticalAlign: 'middle'}}
+      />
+    </div>
+
+      
 
     <Progress 
           value={+((character.health / character.maxHealth) * 100).toFixed(2)}

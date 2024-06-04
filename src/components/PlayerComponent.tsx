@@ -19,9 +19,14 @@ export default function PlayerComponent(props: PlayerProps) {
           <p className="text-center mt-1 text-sm font-sm">
             Player Level: {props.player.level} Experience: {((props.player.exp / props.player.nextLevelExp) * 100)?.toFixed(2)}% [{props.player.exp?.toFixed(2)}/{props.player.nextLevelExp}]
           </p>
-          <p className="text-center mt-1 text-sm font-sm">
-            {props.player.gold} <span style={{color: '#A38A00'}}>Gold</span> 
-          </p>
+          <div style={{ textAlign: 'center' }}>
+            <span>{props.player.gold}</span>
+            <img 
+              src={`img/custom/qr-gold-1.png`} 
+              alt="gold" 
+              style={{ display: 'inline-block', verticalAlign: 'middle'}}
+            />
+          </div>
       </div>
     </>
   )

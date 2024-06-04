@@ -63,28 +63,31 @@ const grind = useCallback((name: string, subject: string, characters: Character[
     let subjectExperience = 0
     let subjectDamage = 0
     let subjectMobChance = 0
+    let subjectGold = 0
     switch(subject){
       case 'Grind': 
         subjectExperience = c.nextLevelExp * .01
         subjectDamage = c.maxHealth * .02
         subjectMobChance = 1
-
+        subjectGold = 1
         break
       case 'Quest': 
         subjectExperience = c.nextLevelExp * .018
         subjectDamage = c.maxHealth * .04
         subjectMobChance = 2
-
+        subjectGold = 2
         break
       case 'Dungeon': 
         subjectExperience = c.nextLevelExp * .025
         subjectDamage = c.maxHealth * .1
         subjectMobChance = 10
+        subjectGold = 5
         break
       case 'Raid': 
         subjectExperience = c.nextLevelExp * .035
         subjectDamage = c.maxHealth * .5
         subjectMobChance = 20
+        subjectGold = 8
         break
     }
     if(randomize(mob.chanceToShow + subjectMobChance)){
@@ -92,6 +95,8 @@ const grind = useCallback((name: string, subject: string, characters: Character[
       setCharacter({...c as any})
       setEncounterShown(true)
     } else {
+      player.gold += subjectGold
+      c.gold += subjectGold
       c.health -= subjectDamage
       if(c.health <= 0){
         c.health = 0

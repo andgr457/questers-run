@@ -79,6 +79,8 @@ export function Encounter(props: EncounterProps) {
 
     if (mob.health <= 0) {
       doCharacterExperience(player, character, mob.expGiven * mob.level)
+      player.gold += mob.expGiven
+      character.gold += mob.expGiven
       props.setShowEncounter(false)
     }
 
