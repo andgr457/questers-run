@@ -1,7 +1,8 @@
 import React from 'react'
 import JSZip from 'jszip'
 import { Button } from '@material-tailwind/react'
-import { Character, Player } from '../entity/entity.interface'
+import { Character } from '../entity/character'
+import { Player } from '../entity/player'
 
 interface CharacterSaverProps {
   characters: Character[]
@@ -27,7 +28,7 @@ const CharacterSaver: React.FC<CharacterSaverProps> = ({ characters, player }) =
   };
 
   return (
-    <Button color={'green'} onClick={handleDownload} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+    <Button onClick={handleDownload} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
       Save
     </Button>
   );

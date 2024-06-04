@@ -9,7 +9,7 @@ const Home: React.FC = () => {
           <h1>Welcome to the <strong>Quester's Run</strong> guild hall!</h1>
           <img src='img/mobs/dragon.png' alt='icons8' className="center-image" />
           <em>
-            RPG clicker where you create the world.
+            Various apps to tinker around with RPG style.
           </em>
           
         </div>

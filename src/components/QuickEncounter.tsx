@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button, Input } from '@material-tailwind/react';
 import { ATTACKS } from '../entity/Constants';
+import { ClassAttack } from '../entity/classes';
 
 interface QuickEncounterProps {
   setShowQuickTimeEvent: React.Dispatch<React.SetStateAction<boolean>>;
@@ -9,13 +10,8 @@ interface QuickEncounterProps {
   characterClass: string
 }
 
-export interface Attack {
-    name: string
-    class: string
-}
-
 const generateRandomAttack = (classs: string): string => {
-  const classAttacks: Attack[] = ATTACKS.filter(a => a.class === classs);
+  const classAttacks: ClassAttack[] = ATTACKS.filter(a => a.class === classs);
   const randomAttack = classAttacks[Math.floor(Math.random() * classAttacks.length)];
 
   return randomAttack ? randomAttack.name : '';

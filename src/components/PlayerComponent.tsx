@@ -1,5 +1,5 @@
 import { Progress } from '@material-tailwind/react'
-import { Player } from '../entity/entity.interface'
+import { Player } from '../entity/player'
 
 interface PlayerProps {
   player: Player
@@ -11,7 +11,7 @@ export default function PlayerComponent(props: PlayerProps) {
 
   return (
     <>
-      <div>
+      <div className='sticky'>
         <Progress 
             value={+((props.player.exp / props.player.nextLevelExp) * 100)?.toFixed(2)}
             variant="gradient"
@@ -19,6 +19,14 @@ export default function PlayerComponent(props: PlayerProps) {
           <p className="text-center mt-1 text-sm font-sm">
             Player Level: {props.player.level} Experience: {((props.player.exp / props.player.nextLevelExp) * 100)?.toFixed(2)}% [{props.player.exp?.toFixed(2)}/{props.player.nextLevelExp}]
           </p>
+          <div style={{ textAlign: 'center' }}>
+            <span>{props.player.gold}</span>
+            <img 
+              src={`img/custom/qr-gold-1.png`} 
+              alt="gold" 
+              style={{ display: 'inline-block', verticalAlign: 'middle'}}
+            />
+          </div>
       </div>
     </>
   )

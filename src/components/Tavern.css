@@ -1,0 +1,25 @@
+@keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  
+  .appear {
+    animation: slideUp 1s forwards, fadeOut 1s forwards 4s;
+    animation-fill-mode: forwards;
+  }
+  
