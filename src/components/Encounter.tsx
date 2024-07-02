@@ -152,11 +152,15 @@ export function Encounter(props: EncounterProps) {
 
     for(const stat of potion.buffStats){
       character[stat.field] += stat.value
-      const increaseOrDecreaseOrNone = stat.value > 0 ? 'increased' : stat.value === 0 ? 'did nothing' : 'decreased'
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} ${increaseOrDecreaseOrNone} their ${stat.field} for ${stat.value} points...`]);
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} consumed ${potion.name} for ${stat.value} points of ${stat.field}...`]);
     }
 
     potion.quantity -= 1
+    if(character.health >= character.maxHealth){
+      character.health = character.maxHealth
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} has max health...`]);
+    }
+
     for(const tab of character.inventory.tabs){
       const newItems = []
       for(const item of tab.items){
@@ -169,16 +173,7 @@ export function Encounter(props: EncounterProps) {
       }
       tab.items = newItems
     }
-    
-
-    if(character.health >= character.maxHealth){
-      character.health = character.maxHealth
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} has max health...`]);
-      return
-    }
-
-
-  }, [healingPotions, selectedPotion])
+  }, [character, healingPotions, selectedPotion])
 
   const setPotion = useCallback((e: any) => {
     setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} prepares ${e}...`]);
