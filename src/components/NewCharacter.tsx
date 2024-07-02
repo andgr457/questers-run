@@ -97,7 +97,7 @@ export default function NewCharacter(props: NewCharacterProps) {
               maxTabs: 1,
               tabs: [{
                   title: 'Pillow Case',
-                  items: [{name: 'Healing Potion', quantity: 5}],
+                  items: [{name: 'Lesser Healing Potion', quantity: 5}],
                   maxItems: 10
               }] 
              },
