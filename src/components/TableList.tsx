@@ -13,6 +13,7 @@ export default function TableList(props: TableListProps) {
         )
     }
     return (
+      <div className="overflow-x-auto">
         <table className="w-full min-w-max table-auto text-left" >
         <thead>
           <tr style={{maxWidth: '100px'}}>
@@ -53,5 +54,7 @@ export default function TableList(props: TableListProps) {
           ))}
         </tbody>
         </table>
+      </div>
+
     )
 }

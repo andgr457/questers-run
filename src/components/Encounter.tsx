@@ -3,6 +3,8 @@ import {
   Button,
   DialogHeader,
   DialogBody,
+  Select,
+  Option
 } from '@material-tailwind/react'
 import QuickEncounter from './QuickEncounter'
 import CharacterComponent from './CharacterComponent'
@@ -13,6 +15,7 @@ import { Character } from '../entity/character';
 import { Mob } from '../entity/mob';
 import { PlayerClass } from '../entity/player';
 import { ALL_ITEMS } from '../entity/Constants';
+import { BaseItem } from '../entity/item';
 
 interface EncounterProps {
   character: Character
@@ -22,25 +25,32 @@ interface EncounterProps {
   setShowEncounter: any
 }
 
+interface Potion extends BaseItem {
+  quantity: number
+}
+
 export function Encounter(props: EncounterProps) {
-  const [character] = useState<Character>({ ...props.character })
-  const [mob] = useState<Mob>({ ...props.mob })
+  const [character] = useState<Character>(props.character)
+  const [mob] = useState<Mob>(props.mob)
   const [player] = useState<PlayerClass>(props.player)
   const [encounterEvents, setEncounterEvents] = useState<string[]>([])
   const [showQuickTimeEvent, setShowQuickTimeEvent] = useState(false)
-  const [healingPotions, setHealingPotions] = useState([])
+  const [healingPotions, setHealingPotions] = useState<Potion[]>([])
+  const [selectedPotion, setSelectedPotion] = useState('')
 
   useEffect(() => {
+    if(!character.inventory.tabs) return
+
     const potions = []
     for(const tab of character.inventory.tabs){
       for(const item of tab.items){
         const itemData = ALL_ITEMS.find(i => i.name === item.name)
         if(itemData?.category === 'Healing Potion'){
-          potions.push(itemData)
+          potions.push({...itemData, quantity: item.quantity})
         }
       }
     }
-    setHealingPotions(potions)
+    setHealingPotions([...potions])
   }, [character.inventory.tabs])
 
   const handleRunClicked = useCallback(() => {
@@ -123,10 +133,57 @@ export function Encounter(props: EncounterProps) {
   }, [character, mob, player, props])
 
   const handlePotionClicked = useCallback(() => {
-    if(healingPotions.length === 0) return
-    //TODO
+    console.log(selectedPotion)
+    if(selectedPotion?.trim() === '') {
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} does not have a potion prepared...`]);
+      return
+    }
+    
+    const potion = healingPotions.find(hp => hp.name === selectedPotion)
+    if(potion.quantity === 0){
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} has no more ${potion.name}s left...`]);
+      return
+    }
 
-  }, [healingPotions])
+    if(character.health === character.maxHealth){
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} is already at max health...`]);
+      return
+    }
+
+    for(const stat of potion.buffStats){
+      character[stat.field] += stat.value
+      const increaseOrDecreaseOrNone = stat.value > 0 ? 'increased' : stat.value === 0 ? 'did nothing' : 'decreased'
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} ${increaseOrDecreaseOrNone} their ${stat.field} for ${stat.value} points...`]);
+    }
+
+    potion.quantity -= 1
+    for(const tab of character.inventory.tabs){
+      const newItems = []
+      for(const item of tab.items){
+        if(item.name === potion.name){
+          item.quantity = potion.quantity
+        }
+        if(item.quantity > 0){
+          newItems.push(item)
+        } 
+      }
+      tab.items = newItems
+    }
+    
+
+    if(character.health >= character.maxHealth){
+      character.health = character.maxHealth
+      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} has max health...`]);
+      return
+    }
+
+
+  }, [healingPotions, selectedPotion])
+
+  const setPotion = useCallback((e: any) => {
+    setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} prepares ${e}...`]);
+    setSelectedPotion(e)
+  }, [character])
 
   const view = useMemo(() => {
     return (
@@ -159,11 +216,21 @@ export function Encounter(props: EncounterProps) {
                 <Button
                   disabled={healingPotions.length === 0}
                   variant='gradient'
+                  color='green'
                   onClick={handlePotionClicked}
                   className='mr-1' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}
                 >
                   Potion
                 </Button>
+                <div className="w-72">
+                  <Select onChange={setPotion} label="Select Potion" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                    {healingPotions.map(hp => {
+                      return (
+                        <Option key={hp.name} value={hp.name}>{hp.name} [{hp.quantity}]</Option>
+                      )
+                    })}
+                  </Select>
+                </div>
             </td>
         </tr>
     </table>
@@ -179,7 +246,7 @@ export function Encounter(props: EncounterProps) {
 </>
 
     );
-  }, [character, handleQuickEncounterResult, showQuickTimeEvent, mob, handleAttackClicked, handleRunClicked, encounterEvents, healingPotions, handlePotionClicked]);
+  }, [setPotion, character, handleQuickEncounterResult, showQuickTimeEvent, mob, handleAttackClicked, handleRunClicked, encounterEvents, healingPotions, handlePotionClicked]);
 
   return view;
 }
