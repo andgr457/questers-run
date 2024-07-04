@@ -100,7 +100,8 @@ export function Encounter(props: EncounterProps) {
     }
 
     if (randomize(mob.hitChance)) {
-      const damage = doEntityAttack(mob, 0 - (character.buffDefense + character.defense))
+      /** Get defense, then divide  */
+      const damage = doEntityAttack(mob, character.buffDefense + character.defense)
       setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${damage}...`]);
       character.health -= damage
       if(character.health <= 0){

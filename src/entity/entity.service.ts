@@ -115,8 +115,21 @@ export function determineCharacterNextLevelExp(level: number): number {
  * @returns {number} Damage of the attack.
  */
 export function doEntityAttack(entity: BaseEntity, buffAttack?: number): number {
-  const buff = buffAttack ?? 0
-  return entity.attack + buff
+  const buff = buffAttack ?? 0;
+  let effectiveAttack = entity.attack;
+
+  // Defense mitigation calculation
+  const defenseFactor = buff / (buff + 10); // Adjust '10' for balance
+
+  // Reduce the attack based on the defense factor
+  effectiveAttack *= (1 - defenseFactor);
+
+  // Ensure the result is not less than 0
+  if (effectiveAttack < 0) {
+    effectiveAttack = 0;
+  }
+
+  return Math.ceil(effectiveAttack);
 }
 
 export function doEntityDamage(): void {
