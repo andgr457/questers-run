@@ -75,7 +75,7 @@ export const CLASSES: CharacterClass[] = [
 
 
 
-export const HEALING_POTION: BaseItem = {
+export const LESSER_HEALING_POTION: BaseItem = {
     name: 'Lesser Healing Potion',
     baseValue: 4,
     buffStats: [{
@@ -94,7 +94,7 @@ export const HEALING_POTION: BaseItem = {
 }
 
 export const GREATER_HEALING_POTION: BaseItem = {
-    name: 'Lesser Healing Potion',
+    name: 'Greater Healing Potion',
     baseValue: 8,
     buffStats: [{
         field: 'health',
@@ -111,9 +111,48 @@ export const GREATER_HEALING_POTION: BaseItem = {
     value: 20
 }
 
+export const LESSER_MANA_POTION: BaseItem = {
+    name: 'Lesser Mana Potion',
+    baseValue: 4,
+    buffStats: [{
+        field: 'mana',
+        name: 'Recover Mana',
+        value: 5
+    }],
+    category: 'Mana Potion',
+    description: 'Recover some mana.',
+    hash: undefined,
+    rarity: 'Common',
+    requiredLevel: 1,
+    stackable: true,
+    type: 'Consumable',
+    value: 5
+}
+
+
+export const GREATER_MANA_POTION: BaseItem = {
+    name: 'Greater Healing Potion',
+    baseValue: 8,
+    buffStats: [{
+        field: 'mana',
+        name: 'Recover Mana',
+        value: 14
+    }],
+    category: 'Mana Potion',
+    description: 'Recover a lot of mana.',
+    hash: undefined,
+    rarity: 'Common',
+    requiredLevel: 1,
+    stackable: true,
+    type: 'Consumable',
+    value: 20
+}
+
 export const POTIONS: BaseItem[] = [
-    {...HEALING_POTION},
-    {...GREATER_HEALING_POTION}
+    {...LESSER_HEALING_POTION},
+    {...GREATER_HEALING_POTION},
+    {...LESSER_MANA_POTION},
+    {...GREATER_MANA_POTION}
 ]
 
 export const ALL_ITEMS: BaseItem[] = [...POTIONS]

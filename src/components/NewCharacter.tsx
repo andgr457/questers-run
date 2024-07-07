@@ -5,6 +5,7 @@ import { determineCharacterNextLevelExp, getRandomName, getRandomClass } from '.
 import CharacterComponent from './CharacterComponent'
 import { Character } from '../entity/character'
 import { CharacterClass } from '../entity/classes'
+import { ItemLink } from '../entity/item'
 
 interface NewCharacterProps {
     addCharacter: (character: Character) => void
@@ -74,6 +75,14 @@ export default function NewCharacter(props: NewCharacterProps) {
     const handleSaveClick = useCallback(() => {
         if(name.trim() === '' || !hideError) return
         const foundClass: CharacterClass = CLASSES.find(c => c.name === classs) as any
+
+        let manaPotions: ItemLink = undefined
+        if(foundClass.startMana > 0){
+            manaPotions = {
+                name: 'Lesser Mana Potion',
+                quantity: 5
+            }
+        }
         
         const character: Character = {
             name,
@@ -97,7 +106,7 @@ export default function NewCharacter(props: NewCharacterProps) {
               maxTabs: 1,
               tabs: [{
                   title: 'Pillow Case',
-                  items: [{name: 'Lesser Healing Potion', quantity: 5}],
+                  items: [{name: 'Lesser Healing Potion', quantity: 5}, {...manaPotions}],
                   maxItems: 10
               }] 
              },
