@@ -14,7 +14,8 @@ import { Character } from '../../entity/character'
 import { Mob } from '../../entity/mob'
 import { PlayerClass } from '../../entity/player'
 import { Inventory } from '../../entity/inventory'
-export function randomize(chance: number): boolean {
+
+export function chanceCheck(chance: number): boolean {
   const randomNumber = Math.random() * 100
   return randomNumber < chance
 }
@@ -90,7 +91,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
         subjectGold = 8
         break
     }
-    if(randomize(mob.chanceToShow + subjectMobChance)){
+    if(chanceCheck(mob.chanceToShow + subjectMobChance)){
       setMob(mob)
       setCharacter({...c as any})
       setEncounterShown(true)

@@ -17,7 +17,7 @@ export default function NewCharacter(props: NewCharacterProps) {
     const [name, setName] = useState('')
     const [classs, setClasss] = useState(undefined)
     const [hideError, setHideError] = useState(true)
-    const [previewCharacter, setPreviewCharacter] = useState(undefined)
+    const [previewCharacter, setPreviewCharacter]: [Character, any] = useState(undefined)
     const [initialLoad, setInitialLoad] = useState(true)
 
     const handleNameChanged = useCallback((e: any) => {
@@ -37,7 +37,7 @@ export default function NewCharacter(props: NewCharacterProps) {
 
     useEffect(() => {
         const foundClass: CharacterClass = CLASSES.find(c => c.name === classs) as any
-        
+
         const character: Character = {
             name,
             gold: 0,
@@ -59,9 +59,9 @@ export default function NewCharacter(props: NewCharacterProps) {
                title: 'Inventory',
                maxTabs: 1,
                tabs: [{
-                title: 'Pillow Case',
+                title: 'Backpack',
                 items: [{name: 'Healing Potion', quantity: 5}],
-                maxItems: 10
+                maxItems: 24
                }] 
             },
             defense: 1,
@@ -69,20 +69,23 @@ export default function NewCharacter(props: NewCharacterProps) {
             hitChance: foundClass.startHitChance,
             critChance: foundClass.startCritChance
         }
+
+        if(character.maxMana > 0){
+            character.inventory.tabs.forEach((t) => {
+                if(t.title === 'Backpack'){
+                    t.items.push({
+                        name: 'Lesser Mana Potion',
+                        quantity: 5
+                    })
+                }
+            })
+        }
         setPreviewCharacter(character)
     }, [name, classs])
 
     const handleSaveClick = useCallback(() => {
         if(name.trim() === '' || !hideError) return
         const foundClass: CharacterClass = CLASSES.find(c => c.name === classs) as any
-
-        let manaPotions: ItemLink = undefined
-        if(foundClass.startMana > 0){
-            manaPotions = {
-                name: 'Lesser Mana Potion',
-                quantity: 5
-            }
-        }
         
         const character: Character = {
             name,
@@ -105,8 +108,8 @@ export default function NewCharacter(props: NewCharacterProps) {
               title: 'Inventory',
               maxTabs: 1,
               tabs: [{
-                  title: 'Pillow Case',
-                  items: [{name: 'Lesser Healing Potion', quantity: 5}, {...manaPotions}],
+                  title: 'Backpack',
+                  items: [{name: 'Lesser Healing Potion', quantity: 5}],
                   maxItems: 10
               }] 
              },
@@ -115,6 +118,18 @@ export default function NewCharacter(props: NewCharacterProps) {
             hitChance: foundClass.startHitChance,
             critChance: foundClass.startCritChance
         }
+
+        if(character.maxMana > 0){
+            character.inventory.tabs.forEach((t) => {
+                if(t.title === 'Backpack'){
+                    t.items.push({
+                        name: 'Lesser Mana Potion',
+                        quantity: 5
+                    })
+                }
+            })
+        }
+
         setName('')
         setClasss(undefined)
         setInitialLoad(true)
@@ -183,7 +198,23 @@ export default function NewCharacter(props: NewCharacterProps) {
                 <p className='text-xs'>{selectedClass.description}</p>
               </div>
               <CharacterComponent character={previewCharacter}></CharacterComponent>
-
+              <p className='text-xs'>
+                {previewCharacter?.inventory?.tabs?.map((t) => {
+                    return (
+                        <>
+                            {t.title} {t.items?.map((i: ItemLink) => {
+                                if(!i?.name) return (<></>)
+                                return (
+                                    <div>
+                                        {i.name} x{i.quantity}
+                                    </div>
+                                )
+                            })}
+                        </>
+                    )
+                })}
+              </p>
+              
             </div>
             </DialogBody>
           </Dialog>

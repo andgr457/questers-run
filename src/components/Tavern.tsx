@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
 import CharacterComponent from './CharacterComponent';
-import { randomize } from './clicker/Clicker';
+import { chanceCheck } from './clicker/Clicker';
 import './Tavern.css'
 import { Character } from '../entity/character';
 
@@ -104,15 +104,15 @@ const Tavern: React.FC<TavernProps> = ({
     if(character.buffCount >= character.maxBuffs){
       setTavernMessage(buffLimitReachedMessages[Math.floor(Math.random() * buffLimitReachedMessages.length)])
     }
-    if(randomize(50)){
+    if(chanceCheck(50)){
       character.buffAttack += 1
       character.buffCount += 1
       setTavernMessage(`${attackBuffMessages[Math.floor(Math.random() * attackBuffMessages.length)]} +1 Attack!`)
-    } else if(randomize(50)) {
+    } else if(chanceCheck(50)) {
       character.buffDefense += 1
       character.buffCount += 1
       setTavernMessage(`${defenseBuffMessages[Math.floor(Math.random() * defenseBuffMessages.length)]} +1 Defense!`)
-    } else if(randomize(50)){
+    } else if(chanceCheck(50)){
       character.buffCrit += .1
       character.buffCount += 1
       setTavernMessage(`${critBuffMessages[Math.floor(Math.random() * critBuffMessages.length)]} +1 Crit!`)

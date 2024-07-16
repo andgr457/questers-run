@@ -1,5 +1,5 @@
 import { InventoryTab } from './inventory'
-
+//TODO: Fix Player
 export interface Player {
   level: number
   exp: number

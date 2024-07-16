@@ -8,7 +8,7 @@ import {
 } from '@material-tailwind/react'
 import QuickEncounter from './QuickEncounter'
 import CharacterComponent from './CharacterComponent'
-import { randomize } from './clicker/Clicker'
+import { chanceCheck } from './clicker/Clicker'
 import MobComponent from './MobComponent'
 import { doCharacterExperience, doEntityAttack } from '../entity/entity.service';
 import { Character } from '../entity/character';
@@ -35,7 +35,7 @@ export function Encounter(props: EncounterProps) {
   const [player] = useState<PlayerClass>(props.player)
   const [encounterEvents, setEncounterEvents] = useState<string[]>([])
   const [showQuickTimeEvent, setShowQuickTimeEvent] = useState(false)
-  const [healingPotions, setHealingPotions] = useState<Potion[]>([])
+  const [potions, setPotions] = useState<Potion[]>([])
   const [selectedPotion, setSelectedPotion] = useState('')
 
   useEffect(() => {
@@ -45,19 +45,19 @@ export function Encounter(props: EncounterProps) {
     for(const tab of character.inventory.tabs){
       for(const item of tab.items){
         const itemData = ALL_ITEMS.find(i => i.name === item.name)
-        if(itemData?.category === 'Healing Potion'){
+        if(itemData?.type === 'Consumable'){
           potions.push({...itemData, quantity: item.quantity})
         }
       }
     }
-    setHealingPotions([...potions])
+    setPotions([...potions])
   }, [character.inventory.tabs])
 
   const handleRunClicked = useCallback(() => {
-    if (randomize(50)) {
+    if (chanceCheck(50)) {
       props.setShowEncounter(false);
     } else {
-      if (randomize(mob.hitChance)) {
+      if (chanceCheck(mob.hitChance)) {
         setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${mob.attack}...`]);
         character.health -= doEntityAttack(mob, 0 - (character.buffDefense + character.defense));
         if(character.health <= 0){
@@ -73,9 +73,9 @@ export function Encounter(props: EncounterProps) {
   }, [props, mob, character, player]);
 
   const handleAttackClicked = useCallback(() => {
-    if (randomize(character.hitChance)) {
+    if (chanceCheck(character.hitChance)) {
       let characterAttack = 0
-      if(randomize(character.critChance + character.buffCrit)){
+      if(chanceCheck(character.critChance + character.buffCrit)){
         characterAttack = doEntityAttack(character, character.buffAttack) * character.buffCrit
         setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} critically hit for ${characterAttack.toFixed(2)} on ${mob.name}...`])
       } else {
@@ -99,7 +99,7 @@ export function Encounter(props: EncounterProps) {
       props.setShowEncounter(false)
     }
 
-    if (randomize(mob.hitChance)) {
+    if (chanceCheck(mob.hitChance)) {
       /** Get defense, then divide  */
       const damage = doEntityAttack(mob, character.buffDefense + character.defense)
       setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${damage}...`]);
@@ -140,41 +140,53 @@ export function Encounter(props: EncounterProps) {
       return
     }
     
-    const potion = healingPotions.find(hp => hp.name === selectedPotion)
+    const potion = potions.find(p => p.name === selectedPotion)
     if(potion.quantity === 0){
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} has no more ${potion.name}s left...`]);
       return
     }
 
-    if(character.health === character.maxHealth){
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} is already at max health...`]);
-      return
-    }
-
     for(const stat of potion.buffStats){
+      let index = 0
+      let capitolized = stat.field[0].toUpperCase()
+      for(const value of stat.field as any){
+        if(index === 0){
+          index += 1
+          continue
+        }
+        index += 1
+        capitolized += `${value}`
+        console.log(value)
+      }
+      const maxStatField = `max${capitolized}`
+      console.log(maxStatField)
+
+      if(character[stat.field] === character[maxStatField]){
+        character[stat.field] = character[maxStatField]
+        setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} is already at max ${stat.field}...`]);
+        continue
+      }
       character[stat.field] += stat.value
+      if(character[stat.field] >= character[maxStatField]){
+        character[stat.field] = character[maxStatField]
+      }
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} consumed ${potion.name} for ${stat.value} points of ${stat.field}...`]);
     }
 
     potion.quantity -= 1
-    if(character.health >= character.maxHealth){
-      character.health = character.maxHealth
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} has max health...`]);
-    }
-
     for(const tab of character.inventory.tabs){
-      const newItems = []
+      // const newItems = []
       for(const item of tab.items){
         if(item.name === potion.name){
           item.quantity = potion.quantity
         }
-        if(item.quantity > 0){
-          newItems.push(item)
-        } 
+        // if(item.quantity > 0){
+        //   newItems.push(item)
+        // } 
       }
-      tab.items = newItems
+      // tab.items = newItems
     }
-  }, [character, healingPotions, selectedPotion])
+  }, [character, potions, selectedPotion])
 
   const setPotion = useCallback((e: any) => {
     setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} prepares ${e}...`]);
@@ -210,7 +222,7 @@ export function Encounter(props: EncounterProps) {
                     <span>Run</span>
                 </Button>
                 <Button
-                  disabled={healingPotions.length === 0}
+                  disabled={potions.length === 0}
                   variant='gradient'
                   color='green'
                   onClick={handlePotionClicked}
@@ -220,7 +232,7 @@ export function Encounter(props: EncounterProps) {
                 </Button>
                 <div className="w-72">
                   <Select onChange={setPotion} label="Select Potion" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                    {healingPotions.map(hp => {
+                    {potions.map(hp => {
                       return (
                         <Option key={hp.name} value={hp.name}>{hp.name} [{hp.quantity}]</Option>
                       )
@@ -242,7 +254,7 @@ export function Encounter(props: EncounterProps) {
 </>
 
     );
-  }, [setPotion, character, handleQuickEncounterResult, showQuickTimeEvent, mob, handleAttackClicked, handleRunClicked, encounterEvents, healingPotions, handlePotionClicked]);
+  }, [setPotion, character, handleQuickEncounterResult, showQuickTimeEvent, mob, handleAttackClicked, handleRunClicked, encounterEvents, potions, handlePotionClicked]);
 
   return view;
 }

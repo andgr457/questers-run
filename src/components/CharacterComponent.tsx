@@ -3,6 +3,7 @@ import { Progress } from '@material-tailwind/react'
 import { CLASSES } from '../entity/Constants';
 import { doEntityAttack } from '../entity/entity.service';
 import { Character } from '../entity/character';
+import TooltipCustomAnimation from './ToolTipAnimated';
 
 interface CharacterProps {
   character: Character
@@ -59,13 +60,18 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
           Experience: {((character.exp / character.nextLevelExp) * 100).toFixed(2)}% [{character.exp.toFixed(2)}/{character.nextLevelExp.toFixed(2)}]
         </p>
         <div style={{marginLeft: '15px', textAlign: 'left', alignItems: 'unset', fontSize: '.8em'}}>
-              <p style={{color: `${character.buffCount < character.maxBuffs ? 'green' : ''}` }}>Buffs [{character.buffCount}/{character.maxBuffs}] [+{character.buffAttack.toFixed(2)} Attack] [+{character.buffDefense.toFixed(2)} Defense] [+{character.buffCrit.toFixed(2)} Critical]</p>
-              [{character.defense + character.buffDefense} Defense [{character.defense} + {character.buffDefense}]]
-              [{doEntityAttack(character, character.buffAttack)} Damage [{character.attack} + {character.buffAttack}]] [{(doEntityAttack(character, character.buffAttack) * character.buffCrit).toFixed(2)} Crit Dmg [({character.attack} + {character.buffAttack}) * {character.buffCrit}]]
-              [{character.critChance + character.buffCrit}% Crit [{character.critChance} + {character.buffCrit}]] [{character.hitChance}% Hit]
+              
+                <TooltipCustomAnimation content={`Attack ${character.buffAttack.toFixed(2)} Defense ${character.buffDefense.toFixed(2)} Critical ${character.buffCrit.toFixed(2)}`} color={undefined} text={`Buffs [${character.buffCount}/${character.maxBuffs}]`}></TooltipCustomAnimation>
+                
+                
+                <TooltipCustomAnimation content={`${character.defense} + ${character.buffDefense}`} color={undefined} text={`Defense [${character.defense + character.buffDefense}]`}></TooltipCustomAnimation>
+                <TooltipCustomAnimation content={`${character.attack} + ${character.buffAttack}`} color={undefined} text={`Damage [${doEntityAttack(character, character.buffAttack)}]`}></TooltipCustomAnimation>
+                <TooltipCustomAnimation content={`(${character.attack} + ${character.buffAttack}) * ${character.buffCrit}`} color={undefined} text={`Crit Damage [${(doEntityAttack(character, character.buffAttack) * character.buffCrit).toFixed(2)}]`}></TooltipCustomAnimation>
+                <TooltipCustomAnimation content={`(${character.critChance} + ${character.buffCrit}) * ${character.buffCrit}`} color={undefined} text={`Crit Chance [${character.critChance + character.buffCrit}%]`}></TooltipCustomAnimation>
+                <TooltipCustomAnimation content={`${character.hitChance}`} color={undefined} text={`Hit Chance [${character.hitChance}%]`}></TooltipCustomAnimation>
+
             </div>
-            <div className='mt-4'>
-      </div>
+
 
     </div>
   )
