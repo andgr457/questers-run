@@ -65,7 +65,7 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
                 
                 
                 <TooltipCustomAnimation content={`${character.defense} + ${character.buffDefense}`} color={undefined} text={`Defense [${character.defense + character.buffDefense}]`}></TooltipCustomAnimation>
-                <TooltipCustomAnimation content={`${character.attack} + ${character.buffAttack}`} color={undefined} text={`Damage [${doEntityAttack(character, character.buffAttack)}]`}></TooltipCustomAnimation>
+                <TooltipCustomAnimation content={`${character.attack} + ${character.buffAttack}`} color={undefined} text={`Damage [${doEntityAttack(character, 0)}] *`}></TooltipCustomAnimation>
                 <TooltipCustomAnimation content={`(${character.attack} + ${character.buffAttack}) * ${character.buffCrit}`} color={undefined} text={`Crit Damage [${(doEntityAttack(character, character.buffAttack) * character.buffCrit).toFixed(2)}]`}></TooltipCustomAnimation>
                 <TooltipCustomAnimation content={`(${character.critChance} + ${character.buffCrit}) * ${character.buffCrit}`} color={undefined} text={`Crit Chance [${character.critChance + character.buffCrit}%]`}></TooltipCustomAnimation>
                 <TooltipCustomAnimation content={`${character.hitChance}`} color={undefined} text={`Hit Chance [${character.hitChance}%]`}></TooltipCustomAnimation>

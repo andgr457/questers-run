@@ -114,6 +114,7 @@ export function determineCharacterNextLevelExp(level: number): number {
  * @param {BaseEntity} entity The entity attacking.
  * @returns {number} Damage of the attack.
  */
+//TODO: Fix this
 export function doEntityAttack(entity: BaseEntity, buffAttack?: number): number {
   const buff = buffAttack ?? 0;
   let effectiveAttack = entity.attack;
