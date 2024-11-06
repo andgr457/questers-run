@@ -10,6 +10,8 @@ interface CharacterProps {
 }
 
 const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
+  const healthLeft = character.health / character.maxHealth
+  const manaLeft = character.mana / character.maxMana
   return (
     <div style={{padding: '15px'}}>
           <p style={{textAlign: 'center'}}><strong>{character.name}</strong><br/>{character.class} </p>
@@ -31,21 +33,21 @@ const CharacterComponent: React.FC<CharacterProps> = ({ character }) => {
       
 
     <Progress 
-          value={+((character.health / character.maxHealth) * 100).toFixed(2)}
+          value={+((healthLeft) * 100).toFixed(2)}
           variant='gradient'
-          color={((character.health / character.maxHealth) * 100) <= 50 ? 'red' : 'teal'} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
+          color={((healthLeft) * 100) <= 50 ? 'red' : 'teal'} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
         <p className='text-center mt-1 text-sm font-sm'>
-          Health: {((character.health / character.maxHealth) * 100).toFixed(2)}% [{character.health.toFixed(2)}/{character.maxHealth.toFixed(2)}]
+          Health: {((healthLeft) * 100).toFixed(2)}% [{character.health.toFixed(2)}/{character.maxHealth.toFixed(2)}]
         </p>
 
         {character.mana > 0 ? 
         <div>
           <Progress 
-            value={+((character.mana / character.maxMana) * 100).toFixed(2)}
+            value={+((manaLeft) * 100).toFixed(2)}
             variant='gradient'
             color='blue' placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
           <p className='text-center mt-1 text-sm font-sm'>
-            Mana: {((character.mana / character.maxMana) * 100).toFixed(2)}% [{character.mana.toFixed(2)}/{character.maxMana.toFixed(2)}]
+            Mana: {((manaLeft) * 100).toFixed(2)}% [{character.mana.toFixed(2)}/{character.maxMana.toFixed(2)}]
           </p>
         </div>
           : ''

@@ -14,6 +14,7 @@ import { Character } from '../../entity/character'
 import { Mob } from '../../entity/mob'
 import { PlayerClass } from '../../entity/player'
 import { Inventory } from '../../entity/inventory'
+import ShoppeComponent from '../Shoppe'
 
 export function chanceCheck(chance: number): boolean {
   const randomNumber = Math.random() * 100
@@ -34,6 +35,7 @@ export default function Clicker(props: ClickerProps) {
   
   const [encounterShown, setEncounterShown] = useState(false)
   const [showTavern, setShowTavern] = useState(false)
+  const [showShoppe, setShowShoppe] = useState(false)
   const [showInventory, setShowInventory]: [boolean, any] = useState(false)
   const [showNewCharacter, setShowNewCharacter]: [boolean, any] = useState(false)
 
@@ -134,6 +136,12 @@ const grind = useCallback((name: string, subject: string, characters: Character[
     setShowTavern(true)
   }, [props.characters])
 
+  const handleShoppeClick = useCallback((e: any) => {
+    const name = e.target.id.split('___')[0]
+    setCharacter(props.characters.find(c => c.name === name) as any)
+    setShowShoppe(true)
+  }, [props.characters])
+
   const handleTavernSleep = useCallback((toon: Character) => {
     if(!toon) return
     const updatedCharacters = props.characters.map(c => {
@@ -205,6 +213,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
       <>
         <NewCharacter characterNames={props.characters.map(c => c.name.toLowerCase())} addCharacter={handleAddCharacter} setShowNewCharacter={setShowNewCharacter} showNewCharacter={showNewCharacter}></NewCharacter>
         <Tavern character={character as any} handleTavernSleep={handleTavernSleep} handleTavernBuff={handleTavernBuff as any} showTavern={showTavern} setShowTavern={setShowTavern as any}></Tavern>
+        <ShoppeComponent character={character as any} showShoppe={showShoppe} setShowShoppe={setShowShoppe as any}></ShoppeComponent>
         <Dialog size='xxl' open={encounterShown} handler={() => {}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           <Encounter player={props.player} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
         </Dialog>
@@ -239,7 +248,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
           <Button id={`${c.name}___tavern`} onClick={handleTavernClick} color='teal' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
               Tavern [+ HP]
           </Button>
-          <Button id={`${c.name}___tavern`} onClick={handleTavernClick} color='amber' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+          <Button id={`${c.name}___tavern`} onClick={handleShoppeClick} color='amber' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
               Shoppe
           </Button>
 
@@ -279,7 +288,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
         
       </>
     )
-  }, [inventory, character, encounterShown, handleAddCharacter, handleBagsClick, handleDungeonClick, handleEncounterEvent, handleGrindClick, handleLoadCharacters, handleNewCharacterClick, handleQuestClick, handleRaidClick, handleTavernBuff, handleTavernClick, handleTavernSleep, mob, props.characters, props.player, showInventory, showNewCharacter, showTavern])
+  }, [showShoppe, handleShoppeClick, inventory, character, encounterShown, handleAddCharacter, handleBagsClick, handleDungeonClick, handleEncounterEvent, handleGrindClick, handleLoadCharacters, handleNewCharacterClick, handleQuestClick, handleRaidClick, handleTavernBuff, handleTavernClick, handleTavernSleep, mob, props.characters, props.player, showInventory, showNewCharacter, showTavern])
 
   return view
 }

@@ -90,7 +90,11 @@ export const LESSER_HEALING_POTION: BaseItem = {
     requiredLevel: 1,
     stackable: true,
     type: 'Consumable',
-    value: 5
+    value: 5,
+    gridSize: {
+        x: 1,
+        y: 1
+    }
 }
 
 export const GREATER_HEALING_POTION: BaseItem = {
@@ -108,7 +112,11 @@ export const GREATER_HEALING_POTION: BaseItem = {
     requiredLevel: 1,
     stackable: true,
     type: 'Consumable',
-    value: 20
+    value: 20,
+    gridSize: {
+        x: 1,
+        y: 1
+    }
 }
 
 export const LESSER_MANA_POTION: BaseItem = {
@@ -126,7 +134,11 @@ export const LESSER_MANA_POTION: BaseItem = {
     requiredLevel: 1,
     stackable: true,
     type: 'Consumable',
-    value: 5
+    value: 5,
+    gridSize: {
+        x: 1,
+        y: 1
+    }
 }
 
 
@@ -145,7 +157,11 @@ export const GREATER_MANA_POTION: BaseItem = {
     requiredLevel: 1,
     stackable: true,
     type: 'Consumable',
-    value: 20
+    value: 20,
+    gridSize: {
+        x: 1,
+        y: 1
+    }
 }
 
 export const POTIONS: BaseItem[] = [
