@@ -6,11 +6,10 @@ import {
   Select,
   Option
 } from '@material-tailwind/react'
-import QuickEncounter from './QuickEncounter'
 import CharacterComponent from './CharacterComponent'
 import { chanceCheck } from './clicker/Clicker'
 import MobComponent from './MobComponent'
-import { doCharacterExperience, doEntityAttack } from '../entity/entity.service';
+import { doCharacterExperience, getCharacterCritDamage, getCharacterDamage, getDamageAfterDefense, getEnemyDamage } from '../entity/entity.service';
 import { Character } from '../entity/character';
 import { Mob } from '../entity/mob';
 import { PlayerClass } from '../entity/player';
@@ -34,7 +33,6 @@ export function Encounter(props: EncounterProps) {
   const [mob] = useState<Mob>(props.mob)
   const [player] = useState<PlayerClass>(props.player)
   const [encounterEvents, setEncounterEvents] = useState<string[]>([])
-  const [showQuickTimeEvent, setShowQuickTimeEvent] = useState(false)
   const [potions, setPotions] = useState<Potion[]>([])
   const [selectedPotion, setSelectedPotion] = useState('')
 
@@ -59,7 +57,7 @@ export function Encounter(props: EncounterProps) {
     } else {
       if (chanceCheck(mob.hitChance)) {
         setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${mob.attack}...`]);
-        character.health -= doEntityAttack(mob, 0 - (character.buffDefense + character.defense));
+        character.health -= getDamageAfterDefense(character, mob.attack);
         if(character.health <= 0){
           character.health = 0
           props.setShowEncounter(false)
@@ -73,13 +71,15 @@ export function Encounter(props: EncounterProps) {
   }, [props, mob, character, player]);
 
   const handleAttackClicked = useCallback(() => {
+
+    /** Character Attack */
     if (chanceCheck(character.hitChance)) {
       let characterAttack = 0
       if(chanceCheck(character.critChance + character.buffCrit)){
-        characterAttack = doEntityAttack(character, character.buffAttack) * character.buffCrit
+        characterAttack = getCharacterCritDamage(character)
         setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} critically hit for ${characterAttack.toFixed(2)} on ${mob.name}...`])
       } else {
-        characterAttack = doEntityAttack(character, character.buffAttack)
+        characterAttack = getCharacterDamage(character)
         setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit ${mob.name} for ${characterAttack.toFixed(2)}...`]);
       }
       mob.health -= characterAttack;
@@ -87,51 +87,33 @@ export function Encounter(props: EncounterProps) {
       setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} missed ${mob.name}!`]);
     }
 
+    /** Mob Health Check */
     if (mob.health <= 0) {
       doCharacterExperience(player, character, mob.expGiven * mob.level)
       player.gold += mob.expGiven
       character.gold += mob.expGiven
       props.setShowEncounter(false)
+      setEncounterEvents([]);
     }
 
-    if(character.health <= 0){
-      character.health = 0
-      props.setShowEncounter(false)
-    }
-
+    /** Mob attack */
     if (chanceCheck(mob.hitChance)) {
-      /** Get defense, then divide  */
-      const damage = doEntityAttack(mob, character.buffDefense + character.defense)
-      setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${damage}...`]);
+      const damage = getEnemyDamage(character, mob)
       character.health -= damage
-      if(character.health <= 0){
-        character.health = 0
-        props.setShowEncounter(false)
-      }
+      setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} hit ${character.name} for ${damage}...`]);
     } else {
       setEncounterEvents((prevEvents) => [...prevEvents, `${mob.name} missed ${character.name}!`]);
     }
 
-    props.handleEncounterEvent(character, mob, player);
-  }, [props, mob, character, player]);
-
-  const handleQuickEncounterResult = useCallback((e: {result: string}) => {
-    if(e.result === 'Success'){
-      const crit = doEntityAttack(character, character.buffAttack) * character.buffCrit
-      mob.health -= crit;
-      doCharacterExperience(player, character, mob.expGiven)
-
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} hit for ${crit?.toFixed(2)} critical damage...`]);
-      if (mob.health <= 0) {
-        props.handleEncounterEvent(character, mob, player);
-        props.setShowEncounter(false);
-      }
-
-    }else {
-      setEncounterEvents((prevEvents) => [...prevEvents, `${character.name} skipped the critical hit event...`]);
+    /** Character Health Check */
+    if(character.health <= 0){
+      character.health = 0
+      props.setShowEncounter(false)
+      setEncounterEvents([]);
     }
 
-  }, [character, mob, player, props])
+    props.handleEncounterEvent(character, mob, player);
+  }, [props, mob, character, player]);
 
   const handlePotionClicked = useCallback(() => {
     console.log(selectedPotion)
@@ -196,7 +178,6 @@ export function Encounter(props: EncounterProps) {
   const view = useMemo(() => {
     return (
       <>
-    <QuickEncounter characterClass={character.class} setResult={handleQuickEncounterResult} quickEncounterShown={showQuickTimeEvent} setShowQuickTimeEvent={setShowQuickTimeEvent}></QuickEncounter>
     <DialogHeader placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Encounter with a {mob.type} {mob.name}!</DialogHeader>
     <DialogBody placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} className='w-full overflow-hidden'>
     <div className='overflow-y-auto scrollable-y'>
@@ -254,7 +235,7 @@ export function Encounter(props: EncounterProps) {
 </>
 
     );
-  }, [setPotion, character, handleQuickEncounterResult, showQuickTimeEvent, mob, handleAttackClicked, handleRunClicked, encounterEvents, potions, handlePotionClicked]);
+  }, [setPotion, character, mob, handleAttackClicked, handleRunClicked, encounterEvents, potions, handlePotionClicked]);
 
   return view;
 }

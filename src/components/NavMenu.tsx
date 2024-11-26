@@ -28,6 +28,7 @@ export function NavMenu(props: NavMenuProps) {
  
   const navList = useMemo(() => {
     return <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+      <Button id={'rogue'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Rogue</Button>
       <Button id={'clicker'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Clicker</Button>
       <Button id={'classes'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Classes</Button>
       <Button id={'mobs'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Mobs</Button>

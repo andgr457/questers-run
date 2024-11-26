@@ -11,6 +11,7 @@ import { NavMenu } from "./components/NavMenu"
 import PlayerComponent from "./components/PlayerComponent"
 import { Character } from './entity/character'
 import { PlayerClass } from './entity/player'
+import Rogue from './components/rogue/Rogue'
 
 function App() {
   const [screen, setScreen] = useState('clicker')
@@ -30,6 +31,8 @@ function App() {
       comp = <Classes></Classes>
     } else if(screen === 'mobs'){
       comp = <Mobs></Mobs>
+    } else if(screen === 'rogue') {
+      comp = <Rogue></Rogue>
     } else {
       comp = <Home></Home>
     }

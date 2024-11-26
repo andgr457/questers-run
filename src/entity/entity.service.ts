@@ -133,6 +133,30 @@ export function doEntityAttack(entity: BaseEntity, buffAttack?: number): number 
   return Math.ceil(effectiveAttack);
 }
 
+export function getCharacterDefense(character: Character): number {
+  return character.defense + character.buffDefense
+}
+
+export function getDamageAfterDefense(character: Character, mobDamage: number): number {
+  let result = mobDamage - getCharacterDefense(character)
+  if(result <= 0){
+    result = 1
+  }
+  return result
+}
+
+export function getEnemyDamage(character: Character, entity: BaseEntity): number {
+  return getDamageAfterDefense(character, entity.attack)
+}
+
+export function getCharacterDamage(character: Character): number {
+  return character.attack + character.buffAttack
+}
+
+export function getCharacterCritDamage(character: Character): number {
+  return getCharacterDamage(character) * character.buffCrit
+}
+
 export function doEntityDamage(): void {
   
 }
