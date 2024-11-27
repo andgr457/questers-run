@@ -1,36 +1,64 @@
-import { useState, useMemo } from 'react';
-import { getRogueMap, RogueRoomRequest } from './rogue.map';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { getRogueMap, isCellVisible, RogueMap, RogueRoomRequest } from './rogue.map';
 
 //TODO: Fix player clicking to cell and rememberance of surrounding cells.
-export default function RogueMap() {
-  const x = 5; // Width of the map
-  const y = 5; // Height of the map
+interface RogueMapProps {
+  roomsRequested?: RogueRoomRequest[]
+  sizeX: number
+  sizeY: number
+}
+export default function RogueMapComponent(props: RogueMapProps) {
+  const [map, setMap]: [undefined | RogueMap, any] = useState(undefined)
+  const [playerLocation, setPlayerLocation] = useState(undefined); // Starting point at the center
+  const [x, setX] = useState(undefined)
+  const [y, setY] = useState(undefined)
+  const [visitedXy, setVisitedXy]: [undefined | string[], any] = useState(undefined)
 
-  const roomRequests: RogueRoomRequest[] = [
-    { max: 1, chance: 10, type: 'stair' },
-    { max: 2, chance: 20, type: 'shop' },
-    { max: 3, chance: 30, type: 'loot' },
-    { max: 5, chance: 40, type: 'mob' },
-    { max: 1, chance: 5, type: 'boss' },
-  ];
+  /** Map Setup */
+  useEffect(() => {
+    if(typeof props?.roomsRequested === 'undefined'){
+      props = {
+        sizeX: 5,
+        sizeY: 5,
+        roomsRequested: [
+          { max: 1, chance: 10, type: 'stair', name: 'Stairwell' },
+          { max: 2, chance: 20, type: 'shop', name: 'Shop' },
+          { max: 3, chance: 30, type: 'loot', name: 'Treasure' },
+          { max: 5, chance: 40, type: 'mob', name: 'Mob' },
+          { max: 1, chance: 5, type: 'boss', name: 'Boss' },
+        ]
+      }
+    }
+    setX(props.sizeX)
+    setY(props.sizeY)
+    const generatedMap = getRogueMap(props.sizeX, props.sizeY, props.roomsRequested)
+    setPlayerLocation(generatedMap.startLocation)
+    setMap(generatedMap)
+  }, [props])
 
-  const rogueMap = useMemo(() => getRogueMap(x, y, roomRequests), [x, y, roomRequests]);
-
-  const [playerLocation, setPlayerLocation] = useState('2,2'); // Starting point at the center
-
-  // Determine if a cell is adjacent to the player's location
-  const isCellVisible = (cellKey: string): boolean => {
-    const [px, py] = playerLocation.split(',').map(Number);
-    const [cx, cy] = cellKey.split(',').map(Number);
-    return Math.abs(px - cx) + Math.abs(py - cy) === 1;
-  };
+  const handlePlayerMove = useCallback((xy: string) => {
+    if(!visitedXy){
+      setVisitedXy([xy])
+    } else {
+      if(!visitedXy.includes(xy)){
+        const newVisited = [...visitedXy, xy]
+        setVisitedXy(newVisited)
+      }
+    }
+    setPlayerLocation(xy)
+  }, [visitedXy])
 
   const renderGrid = useMemo(() => {
+    if(!map || !x || !y) return
+    console.log(`Rendering map.`)
+    const visitedCoords = visitedXy ? visitedXy : []
+    
     const cells = [];
     for (let xi = 0; xi < x; xi++) {
       for (let yi = 0; yi < y; yi++) {
         const xyKey = `${xi},${yi}`;
-        const room = rogueMap.rooms.get(xyKey);
+        console.log(`Rendering ${xyKey}`)
+        const room = map.rooms.get(xyKey);
         const roomType = room?.type || 'nothing';
 
         // Determine the styling based on room type
@@ -44,7 +72,8 @@ export default function RogueMap() {
         };
 
         // Check visibility
-        const visible = isCellVisible(xyKey) || xyKey === playerLocation;
+        const visible = isCellVisible(xyKey, playerLocation) || xyKey === playerLocation;
+        const roomName = visible ? room?.name : room?.type === 'stair' ? room?.name : visitedCoords.includes(xyKey) ? room?.name : '???'
 
         cells.push(
           <div
@@ -52,15 +81,15 @@ export default function RogueMap() {
             className={`flex items-center justify-center border border-gray-400 rounded-md text-sm font-bold ${
               visible ? roomStyle[roomType] : 'bg-gray-800 text-gray-400'
             } h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24`}
-            onClick={() => visible && setPlayerLocation(xyKey)} // Allow movement to adjacent cells
+            onClick={() => visible && handlePlayerMove(xyKey)} // Allow movement to adjacent cells
           >
-            {visible ? room?.name || 'Empty' : '???'}
+            {roomName}
           </div>
         );
       }
     }
     return cells;
-  }, [rogueMap.rooms, playerLocation, x, y]);
+  }, [map, playerLocation, x, y, visitedXy]);
 
   return (
     <div className="flex justify-center items-center h-full bg-gray-900 p-4 rounded-md">

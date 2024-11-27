@@ -1,3 +1,5 @@
+import { camelToReadable } from '../../entity/entity.service'
+
 /**
  * Rogue Map
  * Generate a map of cells given x and y along with chances of the room types and max amount of each room type.
@@ -17,6 +19,7 @@ export interface RogueRoomRequest {
   max: number
   chance: number
   type: RogueRoomType
+  name: string
 }
 
 export interface RogueRoom {
@@ -28,6 +31,14 @@ export interface RogueMap {
   requested: RogueRoomRequest[]
   maxedTypes: RogueRoomType[]
   rooms: Map<string, RogueRoom>
+  startLocation: string
+}
+
+// Determine if a cell is adjacent to the player's location
+export function isCellVisible(cellKey: string, playerLocation: string): boolean {
+  const [px, py] = playerLocation.split(',').map(Number);
+  const [cx, cy] = cellKey.split(',').map(Number);
+  return Math.abs(px - cx) + Math.abs(py - cy) === 1;
 }
 
 /** GPT */
@@ -36,6 +47,7 @@ export function getRogueMap(x: number, y: number, roomRequests: RogueRoomRequest
     maxedTypes: [],
     requested: roomRequests,
     rooms: new Map(),
+    startLocation: undefined
   };
 
   // Helper function to pick a random coordinate
@@ -43,10 +55,12 @@ export function getRogueMap(x: number, y: number, roomRequests: RogueRoomRequest
 
   // Assign stairwell room
   const stairwellXy = getRandomCoordinate();
+  console.log(`Stairwell location [${stairwellXy}]`)
+  rogueMap.startLocation = stairwellXy
   rogueMap.rooms.set(stairwellXy, { name: 'Stairwell', type: 'stair' });
 
   // Initialize room type counters
-  const roomCounters: Record<RogueRoomType, number> = {
+  const roomTypeCounters: Record<RogueRoomType, number> = {
     stair: 1, // Stairwell is already placed
     nothing: 0,
     shop: 0,
@@ -61,6 +75,7 @@ export function getRogueMap(x: number, y: number, roomRequests: RogueRoomRequest
     let randomValue = Math.random() * totalChance;
 
     for (const request of roomRequests) {
+      if(request.type === 'stair') continue
       if (rogueMap.maxedTypes.includes(request.type)) continue;
       randomValue -= request.chance;
       if (randomValue <= 0) {
@@ -75,24 +90,29 @@ export function getRogueMap(x: number, y: number, roomRequests: RogueRoomRequest
     for (let yi = 0; yi < y; yi++) {
       const xyKey = `${xi},${yi}`;
 
-      // Skip if it's the stairwell
-      if (xyKey === stairwellXy) continue;
+      // Handle stairwell
+      if (xyKey === stairwellXy) {
+        console.log(`Stairwell found`)
+        continue
+      }
+      console.log(`Stairwell check [${xyKey}] === [${stairwellXy}]`)
 
-      // Get a random room type
       const roomType = getRandomRoomType();
 
       // Increment the counter for this room type
-      roomCounters[roomType]++;
+      roomTypeCounters[roomType]++;
+
+      console.log(`Generating ${xyKey} - ${roomType} - #${roomTypeCounters[roomType]}`)
 
       // Check if we've reached the max for this room type
       const roomRequest = roomRequests.find(req => req.type === roomType);
-      if (roomRequest && roomCounters[roomType] >= roomRequest.max) {
+      if (roomRequest && roomTypeCounters[roomType] >= roomRequest.max) {
         rogueMap.maxedTypes.push(roomType);
       }
 
       // Assign the room to the map
       if(!rogueMap.rooms.has(xyKey)){
-        rogueMap.rooms.set(xyKey, { name: `${roomType} ${xyKey}`, type: roomType });
+        rogueMap.rooms.set(xyKey, { name: `${roomRequest?.name ?? camelToReadable(roomType)} [${xyKey}]`, type: roomType });
       }
     }
   }

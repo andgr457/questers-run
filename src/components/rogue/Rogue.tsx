@@ -4,7 +4,7 @@ import { determineCharacterNextLevelExp, getRandomClass, getRandomName } from '.
 import { CLASSES } from '../../entity/Constants';
 import CharacterComponent from '../CharacterComponent'
 import { getLogLine } from './rogue.log'
-import RogueMap from './RogueMap';
+import RogueMapComponent from './RogueMap';
 
 export default function Rogue(){
   const [character, setCharacter]: [Character, any] = useState(undefined)
@@ -83,19 +83,33 @@ export default function Rogue(){
         </div>
 
         {/* Map and Log Sections (Visible as Tabs on Mobile, Stacked on Larger Screens) */}
-        <div className={`flex-grow md:flex-none h-2/5 bg-blue-200 p-4 ${activeTab !== "map" && "hidden md:block"}`}>
-          <h2 className="text-xl font-bold mb-2">Interactive Map</h2>
+        <div className={`flex-grow md:flex-none h-3/5 bg-gray-100 p-4 ${activeTab !== "map" && "hidden md:block"}`}>
+          {/* <h2 className="text-xl font-bold mb-2">Interactive Map</h2>
           <div className="w-full h-full bg-gray-300 rounded-md flex items-center justify-center">
-            <RogueMap></RogueMap>
-          </div>
+          </div> */}
+            <RogueMapComponent sizeX={undefined} sizeY={undefined} roomsRequested={undefined}></RogueMapComponent>
+
         </div>
-        <div className={`flex-grow bg-gray-100 p-4 overflow-y-auto ${activeTab !== "log" && "hidden md:block"}`}>
+        <div
+          className={`flex-grow bg-gray-100 p-4 ${
+            activeTab !== "log" && "hidden md:block"
+          }`}
+        >
           <h2 className="text-xl font-bold mb-2">Action Log</h2>
-          <div className="bg-white rounded-md shadow-md p-4 h-full">
+          <div className="bg-white rounded-md shadow-md p-4 h-full max-h-[50vh] md:max-h-full overflow-y-auto">
             <p>Action logs will appear here...</p>
+            <p>{getLogLine(character, 'Awakened...')}</p>
+            <p>{getLogLine(character, 'Awakened...')}</p>
+            <p>{getLogLine(character, 'Awakened...')}</p>
+            <p>{getLogLine(character, 'Awakened...')}</p>
+            <p>{getLogLine(character, 'Awakened...')}</p>
+            <p>{getLogLine(character, 'Awakened...')}</p>
+            <p>{getLogLine(character, 'Awakened...')}</p>
+            <p>{getLogLine(character, 'Awakened...')}</p>
             <p>{getLogLine(character, 'Awakened...')}</p>
           </div>
         </div>
+
       </div>
     </div>
     </>
