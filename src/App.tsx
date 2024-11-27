@@ -8,20 +8,27 @@ import { Footer } from "./components/Footer"
 import Home from "./components/Home"
 import Mobs from "./components/Mobs"
 import { NavMenu } from "./components/NavMenu"
-import PlayerComponent from "./components/PlayerComponent"
 import { Character } from './entity/character'
-import { PlayerClass } from './entity/player'
 import Rogue from './components/rogue/Rogue'
+import { Player } from './entity/player'
+import { getPlayerNextLevelExp } from './entity/entity.service'
 
 function App() {
   const [screen, setScreen] = useState('clicker')
   const [viewComonent, setViewComponent] = useState(<Home></Home>)
-  const [player, setPlayer]: [PlayerClass, (player: PlayerClass) => void] = useState(new PlayerClass())
+
+  const [player, setPlayer]: [Player, (player: Player) => void] = useState({
+    exp: 0,
+    gold: 0,
+    inventory: {title: 'Player Inventory', items: [], maxItems: 10},
+    level: 1,
+    nextLevelExp: getPlayerNextLevelExp(undefined)
+  })
+
   const [characters, setCharacters]: [Character[], (characters: Character[]) => void] = useState([])
 
   useEffect(() => {
     let comp
-    console.log('screen', screen)
 
     if(screen === 'clicker'){
       comp = <Clicker setCharacters={setCharacters} setPlayer={setPlayer} player={player} characters={characters}></Clicker>
@@ -37,7 +44,7 @@ function App() {
       comp = <Home></Home>
     }
     setViewComponent(comp)
-  }, [screen, player, characters])
+  }, [screen, player, characters, setPlayer, setCharacters])
 
   const view = useMemo(() => {
     return     <>
@@ -52,8 +59,7 @@ function App() {
       draggable
       pauseOnHover
       />
-    <NavMenu setScreen={setScreen}></NavMenu>
-    <PlayerComponent player={player}></PlayerComponent>
+    <NavMenu setScreen={setScreen} player={player}></NavMenu>
     {viewComonent}
 
     <Footer></Footer>

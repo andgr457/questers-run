@@ -7,9 +7,12 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
+import PlayerComponent from './PlayerComponent';
+import { Player } from '../entity/player';
  
 interface NavMenuProps {
   setScreen: (screen: string) => void
+  player: Player
 }
 
 export function NavMenu(props: NavMenuProps) {
@@ -35,7 +38,7 @@ export function NavMenu(props: NavMenuProps) {
       <Button id={'items'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Items</Button>
       <Button id={'shoppe'} onClick={handleClicked} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>Shoppe</Button>
     </ul>
-}, [handleClicked]);
+  }, [handleClicked]);
  
   return (
         <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
@@ -99,6 +102,11 @@ export function NavMenu(props: NavMenuProps) {
                 )}
               </IconButton>
             </div>
+
+          </div>
+          <div>
+            <PlayerComponent player={props.player}></PlayerComponent>
+
           </div>
           <MobileNav open={openNav}>
             {navList}

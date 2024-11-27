@@ -57,7 +57,6 @@ export default function RogueMapComponent(props: RogueMapProps) {
     for (let xi = 0; xi < x; xi++) {
       for (let yi = 0; yi < y; yi++) {
         const xyKey = `${xi},${yi}`;
-        console.log(`Rendering ${xyKey}`)
         const room = map.rooms.get(xyKey);
         const roomType = room?.type || 'nothing';
 

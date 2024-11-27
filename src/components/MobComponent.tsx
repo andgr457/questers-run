@@ -1,7 +1,6 @@
 import React from 'react'
 import { Progress } from '@material-tailwind/react'
 import { MOBS } from '../entity/Constants';
-import { doEntityAttack } from '../entity/entity.service';
 import { Mob } from '../entity/mob';
 
 interface MobProps {
@@ -21,7 +20,7 @@ const MobComponent: React.FC<MobProps> = ({ mob }) => {
             <p style={{textAlign: 'center'}}>Level {mob.level}</p>
       
         <p className="text-center text-xs font-sans text-base font-light leading-relaxed text-inherit">
-          Stats [{doEntityAttack(mob)} Damage] [{mob.defense} Defense] [{mob.hitChance}% Hit Chance] [{mob.expGiven} Exp Given]
+          Stats [{mob.attack} Damage] [{mob.defense} Defense] [{mob.hitChance}% Hit Chance] [{mob.expGiven} Exp Given]
         </p>
         
         <div className="mt-4">

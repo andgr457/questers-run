@@ -11,7 +11,7 @@ export default function PlayerComponent(props: PlayerProps) {
 
   return (
     <>
-      <div className='sticky'>
+      <div className='h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4 text-blue-gray-900'>
         <Progress 
             value={+((props.player.exp / props.player.nextLevelExp) * 100)?.toFixed(2)}
             variant="gradient"

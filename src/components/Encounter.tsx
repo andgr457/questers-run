@@ -12,14 +12,14 @@ import MobComponent from './MobComponent'
 import { doCharacterExperience, getCharacterCritDamage, getCharacterDamage, getDamageAfterDefense, getEnemyDamage } from '../entity/entity.service';
 import { Character } from '../entity/character';
 import { Mob } from '../entity/mob';
-import { PlayerClass } from '../entity/player';
 import { ALL_ITEMS } from '../entity/Constants';
 import { BaseItem } from '../entity/item';
+import { Player } from '../entity/player';
 
 interface EncounterProps {
   character: Character
   mob: Mob
-  player: PlayerClass
+  player: Player
   handleEncounterEvent: any
   setShowEncounter: any
 }
@@ -31,7 +31,7 @@ interface Potion extends BaseItem {
 export function Encounter(props: EncounterProps) {
   const [character] = useState<Character>(props.character)
   const [mob] = useState<Mob>(props.mob)
-  const [player] = useState<PlayerClass>(props.player)
+  const [player] = useState<Player>(props.player)
   const [encounterEvents, setEncounterEvents] = useState<string[]>([])
   const [potions, setPotions] = useState<Potion[]>([])
   const [selectedPotion, setSelectedPotion] = useState('')

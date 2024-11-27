@@ -2,7 +2,7 @@ import { MOBS } from './Constants'
 import { BaseEntity } from './base.entity';
 import { Character } from './character';
 import { Mob } from './mob';
-import { PlayerClass } from './player';
+import { Player } from './player';
 import { RECOMMEND_NAMES } from './stock';
 
 export function camelToReadable(camelCaseStr: string): string {
@@ -42,14 +42,9 @@ export function getRandomMob(location: string, characterLevel: number): Mob {
 }
 
 const MAX_CHARACTER_LEVEL = 50
-/**
- * Adds experience points to a character and levels them up if they reach the next level experience points required.
- * @param {Character} Character to apply experience points to.
- * @param {number} amount Experience points to allocate.
- * @returns {boolean} [true] if the character leveled up, otherwise [false], or [false] if the character is max level.
- */
-export function doCharacterExperience(player: PlayerClass, character: Character, amount: number): boolean {
-  player.doPlayerExperience(amount)
+
+export function doCharacterExperience(player: Player, character: Character, amount: number): boolean {
+  setPlayerExperience(player, amount)
   if(character.level >= MAX_CHARACTER_LEVEL) return false
 
   character.exp += amount
@@ -63,30 +58,13 @@ export function doCharacterExperience(player: PlayerClass, character: Character,
 }
 
 function doCharacterLevelUp(character: Character): void {
-  character.exp = 0 //reset the current experience points
+  character.exp = 0
   character.level += 1
   character.nextLevelExp = determineCharacterNextLevelExp(character.level)
   character.maxBuffs = character.level
   character.maxHealth = determineCharacterHealth(character)
   character.health = character.maxHealth
 }
-
-// export function doPlayerExperience(player: Player, amount: number): void {
-//   if(player.level >= MAX_PLAYER_LEVEL) return
-
-//   player.exp += amount
-//   if(player.exp >= player.nextLevelExp){
-//     const leftOverExp = Math.max(player.exp - player.nextLevelExp, 0)
-//     doPlayerLevelUp(player)
-//     player.exp += leftOverExp
-//   }
-// }
-
-// function doPlayerLevelUp(player: Player): void {
-//   player.exp = 0 //reset the current experience points
-//   player.level += 1
-//   player.nextLevelExp = determinePlayerNextLevelExp(player.level)
-// }
 
 export function determineCharacterHealth(character: Character): number {
   let modifier = 1
@@ -103,34 +81,6 @@ export function determineCharacterHealth(character: Character): number {
 }
 export function determineCharacterNextLevelExp(level: number): number {
   return (level + .5) * 50
-}
-
-// export function determinePlayerNextLevelExp(level: number): number {
-//   return (level + .5) * 150
-// }
-
-/**
- * Calculates the attack damage of an entity.
- * @param {BaseEntity} entity The entity attacking.
- * @returns {number} Damage of the attack.
- */
-//TODO: Fix this
-export function doEntityAttack(entity: BaseEntity, buffAttack?: number): number {
-  const buff = buffAttack ?? 0;
-  let effectiveAttack = entity.attack;
-
-  // Defense mitigation calculation
-  const defenseFactor = buff / (buff + 10); // Adjust '10' for balance
-
-  // Reduce the attack based on the defense factor
-  effectiveAttack *= (1 - defenseFactor);
-
-  // Ensure the result is not less than 0
-  if (effectiveAttack < 0) {
-    effectiveAttack = 0;
-  }
-
-  return Math.ceil(effectiveAttack);
 }
 
 export function getCharacterDefense(character: Character): number {
@@ -157,6 +107,25 @@ export function getCharacterCritDamage(character: Character): number {
   return getCharacterDamage(character) * character.buffCrit
 }
 
-export function doEntityDamage(): void {
-  
+export function setPlayerGold(player:Player, amount: number): void {
+  player.gold += amount
+}
+
+export function setPlayerExperience(player:Player, amount: number): void {
+  player.exp += amount
+  if(player.exp >= player.nextLevelExp){
+    const leftOverExp = Math.max(player.exp - player.nextLevelExp, 0)
+    doPlayerLevelUp(player)
+    player.exp += leftOverExp
+  }
+}
+
+export function doPlayerLevelUp(player: Player): void {
+  player.exp = 0
+  player.level += 1
+  player.nextLevelExp = getPlayerNextLevelExp(player)
+}
+
+export function getPlayerNextLevelExp(player: Player): number {
+  return (player?.level ?? 1 + .5) * 300
 }
