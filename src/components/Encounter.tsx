@@ -223,12 +223,16 @@ export function Encounter(props: EncounterProps) {
             </td>
         </tr>
     </table>
-    <div className='w-full h-80 p-4 bg-yellow-100 overflow-y-auto rounded-lg'>
-    {encounterEvents.slice().reverse().map((e, index) => (
-        <p key={index} className='text-sm font-sm'>{e}</p>
-    ))}
-</div>
-
+    <div
+          className={`flex-grow bg-gray-100 p-4`}
+        >
+          <h2 className="text-xl font-bold mb-2">Action Log</h2>
+          <div className="bg-white rounded-md shadow-md p-4 h-full max-h-[50vh] md:max-h-full overflow-y-auto">
+          {encounterEvents.slice().reverse().map((e, index) => (
+              <p key={index} className='text-sm font-sm'>{e}</p>
+          ))}
+          </div>
+        </div>
 </div>
 
     </DialogBody>
