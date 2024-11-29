@@ -12,16 +12,18 @@ import { getRandomMob, doCharacterExperience } from '../../entity/entity.service
 import './Clicker.css'
 import { Character } from '../../entity/character'
 import { Mob } from '../../entity/mob'
-import { PlayerClass } from '../../entity/player'
 import { Inventory } from '../../entity/inventory'
-export function randomize(chance: number): boolean {
+import ShoppeComponent from '../Shoppe'
+import { Player } from '../../entity/player'
+
+export function chanceCheck(chance: number): boolean {
   const randomNumber = Math.random() * 100
   return randomNumber < chance
 }
 
 interface ClickerProps {
-  setPlayer: (player: PlayerClass) => void
-  player: PlayerClass
+  setPlayer: (player: Player) => void
+  player: Player
   setCharacters: (characters: Character[]) => void
   characters: Character[]
 }
@@ -33,10 +35,11 @@ export default function Clicker(props: ClickerProps) {
   
   const [encounterShown, setEncounterShown] = useState(false)
   const [showTavern, setShowTavern] = useState(false)
+  const [showShoppe, setShowShoppe] = useState(false)
   const [showInventory, setShowInventory]: [boolean, any] = useState(false)
   const [showNewCharacter, setShowNewCharacter]: [boolean, any] = useState(false)
 
-  const handleEncounterEvent = useCallback((updatedCharacter: Character, updatedMob: Mob, updatedPlayer: PlayerClass) => {
+  const handleEncounterEvent = useCallback((updatedCharacter: Character, updatedMob: Mob, updatedPlayer: Player) => {
     if(!mob) return
     if(updatedMob.health <= 0){
       updatedMob.health = 0
@@ -55,7 +58,7 @@ export default function Clicker(props: ClickerProps) {
     props.setPlayer(updatedPlayer)
   }, [mob, props])
 
-const grind = useCallback((name: string, subject: string, characters: Character[], player: PlayerClass) => {
+const grind = useCallback((name: string, subject: string, characters: Character[], player: Player) => {
     const dupe = [...characters]
     const c = dupe.find(c => c.name === name)
     if(typeof c === 'undefined') return
@@ -90,7 +93,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
         subjectGold = 8
         break
     }
-    if(randomize(mob.chanceToShow + subjectMobChance)){
+    if(chanceCheck(mob.chanceToShow + subjectMobChance)){
       setMob(mob)
       setCharacter({...c as any})
       setEncounterShown(true)
@@ -131,6 +134,12 @@ const grind = useCallback((name: string, subject: string, characters: Character[
     const name = e.target.id.split('___')[0]
     setCharacter(props.characters.find(c => c.name === name) as any)
     setShowTavern(true)
+  }, [props.characters])
+
+  const handleShoppeClick = useCallback((e: any) => {
+    const name = e.target.id.split('___')[0]
+    setCharacter(props.characters.find(c => c.name === name) as any)
+    setShowShoppe(true)
   }, [props.characters])
 
   const handleTavernSleep = useCallback((toon: Character) => {
@@ -178,7 +187,7 @@ const grind = useCallback((name: string, subject: string, characters: Character[
     setShowNewCharacter(true)
   }, [])
 
-  const handleLoadCharacters = useCallback((c: Character[], p: PlayerClass) => {
+  const handleLoadCharacters = useCallback((c: Character[], p: Player) => {
     props.setCharacters(c)
     props.setPlayer(p)
   }, [props])
@@ -201,84 +210,63 @@ const grind = useCallback((name: string, subject: string, characters: Character[
 
   const view = useMemo(() => {
     return (
-      <>
+      <div>
         <NewCharacter characterNames={props.characters.map(c => c.name.toLowerCase())} addCharacter={handleAddCharacter} setShowNewCharacter={setShowNewCharacter} showNewCharacter={showNewCharacter}></NewCharacter>
         <Tavern character={character as any} handleTavernSleep={handleTavernSleep} handleTavernBuff={handleTavernBuff as any} showTavern={showTavern} setShowTavern={setShowTavern as any}></Tavern>
+        <ShoppeComponent character={character as any} showShoppe={showShoppe} setShowShoppe={setShowShoppe as any}></ShoppeComponent>
         <Dialog size='xxl' open={encounterShown} handler={() => {}} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           <Encounter player={props.player} character={character as any} mob={mob as any} handleEncounterEvent={handleEncounterEvent} setShowEncounter={setEncounterShown}></Encounter>
         </Dialog>
         <InventoryComponent inventory={inventory as any} setShowInventory={setShowInventory} showInventory={showInventory}></InventoryComponent>
-
-      <div>
-      <Button color='amber' onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} placeholder={undefined} onClick={handleNewCharacterClick}>New Character</Button>
-        <CharacterSaver characters={props.characters} player={props.player}></CharacterSaver>
-        <Loader onLoad={handleLoadCharacters}></Loader>
-      </div>
-      <div style={{paddingTop: '15px'}}>
-        {props.characters.map((c: Character) => (
-        <>
         <div>
-
-        <CharacterComponent character={c}></CharacterComponent>
-
-        <div>
-
+          <Button color='amber' onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} placeholder={undefined} onClick={handleNewCharacterClick}>New Character</Button>
+          <CharacterSaver characters={props.characters} player={props.player}></CharacterSaver>
+          <Loader onLoad={handleLoadCharacters}></Loader>
         </div>
-        <Badge content={getInventoryItemCount(c)}>
-            <Button id={`${c.name}___bags`} onClick={handleBagsClick} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                Inventory
-            </Button>
-          </Badge>
-          <Badge content={getEquipmentCount(c)}>
-            <Button variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                Equip
-            </Button>
-          </Badge>
-          <br/>
-          <Button id={`${c.name}___tavern`} onClick={handleTavernClick} color='teal' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-              Tavern [+ HP]
-          </Button>
-          <Button id={`${c.name}___tavern`} onClick={handleTavernClick} color='amber' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-              Shoppe
-          </Button>
+        {props.characters.map((c: Character) => {
+          return <div>
+            <CharacterComponent character={c}></CharacterComponent>
 
-          <br/>
-          <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___grind`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleGrindClick}>
-              Grind
-          </Button>
-          <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___quest`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleQuestClick}>
-              Quest
-          </Button>
-          <Button disabled={c.health <= 0 || getButtonDisabled(c, 5)} id={`${c.name}___dungeon`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleDungeonClick}>
-              Dungeon
-          </Button>
-          <Button disabled={c.health <= 0 || getButtonDisabled(c, 10)} id={`${c.name}___raid`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleRaidClick}>
-              Raid
-          </Button>
-        </div>
-        </>
-))}
-</div>
-      <div className="container">
+            <Badge content={getInventoryItemCount(c)}>
+              <Button id={`${c.name}___bags`} onClick={handleBagsClick} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                  Inventory
+              </Button>
+            </Badge>
 
-        <div className="right-column">
+            <Badge content={getEquipmentCount(c)}>
+              <Button variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                  Equip
+              </Button>
+            </Badge>
+
+            <br/>
+
+            <Button id={`${c.name}___tavern`} onClick={handleTavernClick} color='teal' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                Tavern [+ HP]
+            </Button>
+            <Button id={`${c.name}___tavern`} onClick={handleShoppeClick} color='amber' variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                Shoppe
+            </Button>
+  
+            <br/>
             
-            <div>
-        
-          
-
-       
-        </div>
-        </div>
-    </div>
-
-
-        
-        
-        
-      </>
+            <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___grind`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleGrindClick}>
+                Grind
+            </Button>
+            <Button disabled={c.health <= 0 || getButtonDisabled(c, 0)} id={`${c.name}___quest`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleQuestClick}>
+                Quest
+            </Button>
+            <Button disabled={c.health <= 0 || getButtonDisabled(c, 5)} id={`${c.name}___dungeon`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleDungeonClick}>
+                Dungeon
+            </Button>
+            <Button disabled={c.health <= 0 || getButtonDisabled(c, 10)} id={`${c.name}___raid`} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} onClick={handleRaidClick}>
+                Raid
+            </Button>
+          </div>
+        })}
+      </div>
     )
-  }, [inventory, character, encounterShown, handleAddCharacter, handleBagsClick, handleDungeonClick, handleEncounterEvent, handleGrindClick, handleLoadCharacters, handleNewCharacterClick, handleQuestClick, handleRaidClick, handleTavernBuff, handleTavernClick, handleTavernSleep, mob, props.characters, props.player, showInventory, showNewCharacter, showTavern])
+  }, [showShoppe, handleShoppeClick, inventory, character, encounterShown, handleAddCharacter, handleBagsClick, handleDungeonClick, handleEncounterEvent, handleGrindClick, handleLoadCharacters, handleNewCharacterClick, handleQuestClick, handleRaidClick, handleTavernBuff, handleTavernClick, handleTavernSleep, mob, props.characters, props.player, showInventory, showNewCharacter, showTavern])
 
   return view
 }

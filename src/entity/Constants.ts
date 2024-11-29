@@ -36,7 +36,7 @@ export const CLASSES: CharacterClass[] = [
       credit: IMG_MAGE_ICON8,
       attacks: 'Mage',
       startAttack: 2,
-      startDefense: -1,
+      startDefense: 0,
       startHealth: 10,
       startMana: 10,
       startCrit: 1.7,
@@ -50,7 +50,7 @@ export const CLASSES: CharacterClass[] = [
       credit: IMG_ROGUE_ICON8,
       attacks: 'Rogue',
       startAttack: 4,
-      startDefense: -1,
+      startDefense: 0,
       startHealth: 15,
       startMana: 0,
       startCrit: 2,
@@ -64,7 +64,7 @@ export const CLASSES: CharacterClass[] = [
         credit: IMG_ROGUE_ICON8,
         attacks: 'Shaman',
         startAttack: 3,
-        startDefense: -1,
+        startDefense: 0,
         startHealth: 10,
         startMana: 10,
         startCrit: 1.7,
@@ -75,7 +75,7 @@ export const CLASSES: CharacterClass[] = [
 
 
 
-export const HEALING_POTION: BaseItem = {
+export const LESSER_HEALING_POTION: BaseItem = {
     name: 'Lesser Healing Potion',
     baseValue: 4,
     buffStats: [{
@@ -90,11 +90,15 @@ export const HEALING_POTION: BaseItem = {
     requiredLevel: 1,
     stackable: true,
     type: 'Consumable',
-    value: 5
+    value: 5,
+    gridSize: {
+        x: 1,
+        y: 1
+    }
 }
 
 export const GREATER_HEALING_POTION: BaseItem = {
-    name: 'Lesser Healing Potion',
+    name: 'Greater Healing Potion',
     baseValue: 8,
     buffStats: [{
         field: 'health',
@@ -108,12 +112,63 @@ export const GREATER_HEALING_POTION: BaseItem = {
     requiredLevel: 1,
     stackable: true,
     type: 'Consumable',
-    value: 20
+    value: 20,
+    gridSize: {
+        x: 1,
+        y: 1
+    }
+}
+
+export const LESSER_MANA_POTION: BaseItem = {
+    name: 'Lesser Mana Potion',
+    baseValue: 4,
+    buffStats: [{
+        field: 'mana',
+        name: 'Recover Mana',
+        value: 5
+    }],
+    category: 'Mana Potion',
+    description: 'Recover some mana.',
+    hash: undefined,
+    rarity: 'Common',
+    requiredLevel: 1,
+    stackable: true,
+    type: 'Consumable',
+    value: 5,
+    gridSize: {
+        x: 1,
+        y: 1
+    }
+}
+
+
+export const GREATER_MANA_POTION: BaseItem = {
+    name: 'Greater Healing Potion',
+    baseValue: 8,
+    buffStats: [{
+        field: 'mana',
+        name: 'Recover Mana',
+        value: 14
+    }],
+    category: 'Mana Potion',
+    description: 'Recover a lot of mana.',
+    hash: undefined,
+    rarity: 'Common',
+    requiredLevel: 1,
+    stackable: true,
+    type: 'Consumable',
+    value: 20,
+    gridSize: {
+        x: 1,
+        y: 1
+    }
 }
 
 export const POTIONS: BaseItem[] = [
-    {...HEALING_POTION},
-    {...GREATER_HEALING_POTION}
+    {...LESSER_HEALING_POTION},
+    {...GREATER_HEALING_POTION},
+    {...LESSER_MANA_POTION},
+    {...GREATER_MANA_POTION}
 ]
 
 export const ALL_ITEMS: BaseItem[] = [...POTIONS]
