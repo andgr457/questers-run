@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Dialog, DialogBody, DialogFooter, Button } from '@material-tailwind/react';
 import CharacterComponent from './CharacterComponent';
-import { randomize } from './clicker/Clicker';
+import { chanceCheck } from './clicker/Clicker';
 import './Tavern.css'
 import { Character } from '../entity/character';
 
@@ -104,15 +104,15 @@ const Tavern: React.FC<TavernProps> = ({
     if(character.buffCount >= character.maxBuffs){
       setTavernMessage(buffLimitReachedMessages[Math.floor(Math.random() * buffLimitReachedMessages.length)])
     }
-    if(randomize(50)){
+    if(chanceCheck(50)){
       character.buffAttack += 1
       character.buffCount += 1
       setTavernMessage(`${attackBuffMessages[Math.floor(Math.random() * attackBuffMessages.length)]} +1 Attack!`)
-    } else if(randomize(50)) {
+    } else if(chanceCheck(50)) {
       character.buffDefense += 1
       character.buffCount += 1
       setTavernMessage(`${defenseBuffMessages[Math.floor(Math.random() * defenseBuffMessages.length)]} +1 Defense!`)
-    } else if(randomize(50)){
+    } else if(chanceCheck(50)){
       character.buffCrit += .1
       character.buffCount += 1
       setTavernMessage(`${critBuffMessages[Math.floor(Math.random() * critBuffMessages.length)]} +1 Crit!`)
@@ -123,13 +123,24 @@ const Tavern: React.FC<TavernProps> = ({
   }, [character, handleTavernBuff])
 
   const sleepClicked = useCallback(() => {
-    const sleep = .2 * character.maxHealth
-    character.health += sleep
+    let hp = 0
+    let mana = 0
+    if(character.health < character.maxHealth){
+      hp = .2 * character.maxHealth
+      character.health += hp
+    }
+    if(character.mana < character.maxMana){
+      mana = .2 * character.maxMana
+      character.mana += mana
+    }
     if(character.health > character.maxHealth){
       character.health = character.maxHealth
     }
+    if(character.mana > character.maxMana){
+      character.mana = character.maxMana
+    }
     handleTavernSleep(character)
-    setTavernMessage(`${restMessages[Math.floor(Math.random() * restMessages.length)]} +${sleep.toFixed(2)} HP!`)
+    setTavernMessage(`${restMessages[Math.floor(Math.random() * restMessages.length)]} +${hp.toFixed(2)} HP and +${mana.toFixed(2)} Mana!`)
   }, [character, handleTavernSleep])
   
   const view = useMemo(() => {
@@ -146,11 +157,11 @@ const Tavern: React.FC<TavernProps> = ({
         <CharacterComponent character={character}></CharacterComponent>
       </div>
       <Button
-          disabled={character.health >= character.maxHealth}
+          disabled={character.health >= character.maxHealth && character.mana >= character.maxMana }
           variant="gradient"
           onClick={() => sleepClicked()}
           placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
-          Rest +{(.2 * character.maxHealth ?? 0).toFixed(2)} HP 
+          Rest +{(.2 * character.maxHealth ?? 0).toFixed(2)} HP +{(.2 * character.maxMana ?? 0).toFixed(2)} Mana
         </Button>
   
         <Button

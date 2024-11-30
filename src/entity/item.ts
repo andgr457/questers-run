@@ -21,6 +21,7 @@ export interface BaseItem {
   stackable: boolean // can stack on itself
   hash: string // compare for stacking
   value: number // in copper
+  gridSize: {x: number, y: number}
 }
   
 export interface Gear extends BaseItem {
