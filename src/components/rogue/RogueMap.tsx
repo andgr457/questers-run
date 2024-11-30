@@ -1,8 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { getRogueMap, isCellVisible, RogueMap, RogueRoomRequest } from './rogue.map';
 
-//TODO: Fix player clicking to cell and rememberance of surrounding cells.
-interface RogueMapProps {
+export interface RogueMapProps {
   roomsRequested?: RogueRoomRequest[]
   sizeX: number
   sizeY: number
@@ -14,21 +13,7 @@ export default function RogueMapComponent(props: RogueMapProps) {
   const [y, setY] = useState(undefined)
   const [visitedXy, setVisitedXy]: [undefined | string[], any] = useState(undefined)
 
-  /** Map Setup */
   useEffect(() => {
-    if(typeof props?.roomsRequested === 'undefined'){
-      props = {
-        sizeX: 5,
-        sizeY: 5,
-        roomsRequested: [
-          { max: 1, chance: 10, type: 'stair', name: 'Stairwell' },
-          { max: 2, chance: 20, type: 'shop', name: 'Shop' },
-          { max: 3, chance: 30, type: 'loot', name: 'Treasure' },
-          { max: 5, chance: 40, type: 'mob', name: 'Mob' },
-          { max: 1, chance: 5, type: 'boss', name: 'Boss' },
-        ]
-      }
-    }
     setX(props.sizeX)
     setY(props.sizeY)
     const generatedMap = getRogueMap(props.sizeX, props.sizeY, props.roomsRequested)
@@ -88,7 +73,7 @@ export default function RogueMapComponent(props: RogueMapProps) {
       }
     }
     return cells;
-  }, [map, playerLocation, x, y, visitedXy]);
+  }, [map, playerLocation, x, y, visitedXy, handlePlayerMove]);
 
   return (
     <div className="flex justify-center items-center h-full bg-gray-900 p-4 rounded-md">
