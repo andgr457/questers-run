@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Character } from '../../entity/character';
-import { determineCharacterNextLevelExp, getRandomClass, getRandomName } from '../../entity/entity.service';
+import { DEFAULT_ROGUE_MAP_PROPS, determineCharacterNextLevelExp, getRandomClass, getRandomName } from '../../entity/entity.service';
 import { CLASSES } from '../../entity/Constants';
 import CharacterComponent from '../CharacterComponent'
 import { getLogLine } from './rogue.log'
@@ -87,7 +87,7 @@ export default function Rogue(){
           {/* <h2 className="text-xl font-bold mb-2">Interactive Map</h2>
           <div className="w-full h-full bg-gray-300 rounded-md flex items-center justify-center">
           </div> */}
-            <RogueMapComponent sizeX={undefined} sizeY={undefined} roomsRequested={undefined}></RogueMapComponent>
+            <RogueMapComponent sizeX={DEFAULT_ROGUE_MAP_PROPS.sizeX} sizeY={DEFAULT_ROGUE_MAP_PROPS.sizeY} roomsRequested={DEFAULT_ROGUE_MAP_PROPS.roomsRequested}></RogueMapComponent>
 
         </div>
         <div

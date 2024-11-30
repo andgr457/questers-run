@@ -1,3 +1,4 @@
+import { RogueMapProps } from '../components/rogue/RogueMap';
 import { MOBS } from './Constants'
 import { BaseEntity } from './base.entity';
 import { Character } from './character';
@@ -128,4 +129,16 @@ export function doPlayerLevelUp(player: Player): void {
 
 export function getPlayerNextLevelExp(player: Player): number {
   return (player?.level ?? 1 + .5) * 300
+}
+
+export const DEFAULT_ROGUE_MAP_PROPS: RogueMapProps = {
+  sizeX: 5,
+  sizeY: 5,
+  roomsRequested: [
+    { max: 1, chance: 10, type: 'stair', name: 'Stairwell' },
+    { max: 2, chance: 20, type: 'shop', name: 'Shop' },
+    { max: 3, chance: 30, type: 'loot', name: 'Treasure' },
+    { max: 5, chance: 40, type: 'mob', name: 'Mob' },
+    { max: 1, chance: 5, type: 'boss', name: 'Boss' },
+  ]
 }
