@@ -113,9 +113,13 @@ const Tavern: React.FC<TavernProps> = ({
       character.buffCount += 1
       setTavernMessage(`${defenseBuffMessages[Math.floor(Math.random() * defenseBuffMessages.length)]} +1 Defense!`)
     } else if(chanceCheck(50)){
-      character.buffCrit += .1
+      character.buffCrit += .25
       character.buffCount += 1
-      setTavernMessage(`${critBuffMessages[Math.floor(Math.random() * critBuffMessages.length)]} +1 Crit!`)
+      setTavernMessage(`${critBuffMessages[Math.floor(Math.random() * critBuffMessages.length)]} +1 Crit %!`)
+    } else if(chanceCheck(50)) {
+      character.buffHit += .25
+      character.buffCount += 1
+      setTavernMessage(`${critBuffMessages[Math.floor(Math.random() * critBuffMessages.length)]} +1 Hit %!`)
     } else {
       setTavernMessage(noBuffMessages[Math.floor(Math.random() * noBuffMessages.length)])
     }
@@ -161,7 +165,7 @@ const Tavern: React.FC<TavernProps> = ({
           variant="gradient"
           onClick={() => sleepClicked()}
           placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
-          Rest +{(.2 * character.maxHealth ?? 0).toFixed(2)} HP +{(.2 * character.maxMana ?? 0).toFixed(2)} Mana
+          Rest +{(.2 * character.maxHealth).toFixed(2)} HP +{(.2 * character.maxMana).toFixed(2)} Mana
         </Button>
   
         <Button
@@ -169,7 +173,7 @@ const Tavern: React.FC<TavernProps> = ({
           variant="gradient"
           onClick={() => buffClicked()}
           placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
-          Meditate +1 Attack +1 Defense +0.1 Crit
+          Meditate +1 Attack or +1 Defense or +0.25 Crit % or +0.25 Hit %
         </Button>
 
     </DialogBody>

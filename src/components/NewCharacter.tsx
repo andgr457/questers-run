@@ -54,6 +54,7 @@ export default function NewCharacter(props: NewCharacterProps) {
             buffAttack: foundClass.startAttack,
             buffDefense: foundClass.startDefense,
             buffCrit: foundClass.startCrit,
+            buffHit: foundClass.startHitChance,
             buffCount: 0,
             inventory: {
                title: 'Inventory',
@@ -103,6 +104,7 @@ export default function NewCharacter(props: NewCharacterProps) {
             buffAttack: foundClass.startAttack,
             buffDefense: foundClass.startDefense,
             buffCrit: foundClass.startCrit,
+            buffHit: foundClass.startHitChance,
             buffCount: 0,
             inventory: {
               title: 'Inventory',

@@ -27,7 +27,7 @@ export const CLASSES: CharacterClass[] = [
       startMana: 0,
       startCrit: 1.5,
       startHitChance: 85,
-      startCritChance: 20
+      startCritChance: 20,
     },
     {
       name: 'Mage', 

@@ -31,6 +31,7 @@ export default function Rogue(){
       buffAttack: foundClass.startAttack,
       buffDefense: foundClass.startDefense,
       buffCrit: foundClass.startCrit,
+      buffHit: foundClass.startHitChance,
       buffCount: 0,
       inventory: {
          title: 'Inventory',
@@ -99,7 +100,7 @@ export default function Rogue(){
           <div className="bg-white rounded-md shadow-md p-4 h-full max-h-[50vh] md:max-h-full overflow-y-auto">
             <p>Action logs will appear here...</p>
             <p>{getLogLine(character, 'Awakened...')}</p>
-            <p>{getLogLine(character, 'Awakened...')}</p>
+            <p>{getLogLine(character, 'Sleep...')}</p>
             <p>{getLogLine(character, 'Awakened...')}</p>
             <p>{getLogLine(character, 'Awakened...')}</p>
             <p>{getLogLine(character, 'Awakened...')}</p>

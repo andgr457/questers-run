@@ -9,12 +9,12 @@ import CharacterSaver from '../Save'
 import Loader from '../Load'
 import InventoryComponent from '../Inventory'
 import { getRandomMob, doCharacterExperience } from '../../entity/entity.service'
-import './Clicker.css'
 import { Character } from '../../entity/character'
 import { Mob } from '../../entity/mob'
 import { Inventory } from '../../entity/inventory'
 import ShoppeComponent from '../Shoppe'
 import { Player } from '../../entity/player'
+import './Clicker.css'
 
 export function chanceCheck(chance: number): boolean {
   const randomNumber = Math.random() * 100
@@ -224,8 +224,11 @@ const grind = useCallback((name: string, subject: string, characters: Character[
           <Loader onLoad={handleLoadCharacters}></Loader>
         </div>
         {props.characters.map((c: Character) => {
-          return <div>
+          return <div style={{display: 'inline-block', width: '30%', gap: '0px', padding: '15px'}}>
             <CharacterComponent character={c}></CharacterComponent>
+            <span className='clicker-button'>
+              QUEST
+            </span>
 
             <Badge content={getInventoryItemCount(c)}>
               <Button id={`${c.name}___bags`} onClick={handleBagsClick} variant="gradient" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
@@ -264,6 +267,9 @@ const grind = useCallback((name: string, subject: string, characters: Character[
             </Button>
           </div>
         })}
+        <div style={{display: 'inline-block', width: '30%', gap: '0px', padding: '15px', textAlign:'center', verticalAlign: 'center', height: '100%'}}>
+          NEW CHARACTER
+        </div>
       </div>
     )
   }, [showShoppe, handleShoppeClick, inventory, character, encounterShown, handleAddCharacter, handleBagsClick, handleDungeonClick, handleEncounterEvent, handleGrindClick, handleLoadCharacters, handleNewCharacterClick, handleQuestClick, handleRaidClick, handleTavernBuff, handleTavernClick, handleTavernSleep, mob, props.characters, props.player, showInventory, showNewCharacter, showTavern])

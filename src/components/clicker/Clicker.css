@@ -48,3 +48,27 @@ body, html {
         height: 50vh; /* Show half of the viewport height */
     }
 }
+
+.clicker-header {
+    font-weight: lighter;
+    font-size: 1.3em;
+}
+
+.clicker-label {
+    font-weight: lighter;
+    color: #000000cb;
+}
+
+.clicker-button {
+    cursor: 'pointer';
+    border: solid 1px #000000cb;
+    box-shadow: #000000be 2px;
+}
+
+.clicker-table {
+    width: 100%;
+}
+
+.clicker-table tr td {
+    padding: 12px;
+}

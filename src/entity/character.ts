@@ -15,4 +15,5 @@ export interface Character extends BaseEntity {
     buffDefense: number
     buffCrit: number
     critChance: number
+    buffHit: number
 }
