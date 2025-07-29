@@ -1,11 +1,12 @@
 export class LoggerService {
-  private title: string
+  private logTitle: string
 
-  constructor(title: string, ){
-    this.title = title
+  constructor(logTitle: string){
+    this.logTitle = logTitle
   }
 
   log(description: string){
-    console.log(`${this.title} - ${Date.now()} - ${description}`)
+    console.log(`${Date.now()} | ${this.logTitle} | ${description}`)
+    //TODO Add more logging.
   }
 }

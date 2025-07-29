@@ -104,10 +104,6 @@ export function NavMenu(props: NavMenuProps) {
             </div>
 
           </div>
-          <div>
-            <PlayerComponent player={props.player}></PlayerComponent>
-
-          </div>
           <MobileNav open={openNav}>
             {navList}
             <div className="flex items-center gap-x-1">
