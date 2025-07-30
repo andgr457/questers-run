@@ -1,3 +1,5 @@
+import { ILoot, ILootArmor, ILootWeapon } from '../ILoot'
+
 export interface ICharacter {
   id: string
   status: string
@@ -15,7 +17,15 @@ export interface ICharacter {
   strength: number
   willpower: number
   agility: number
+
+  // Unequipped inventory items
+  loot: ILoot[]
+
+  // Equipped gear
+  equippedArmor: ILootArmor[]
+  equippedWeapons: ILootWeapon[]
 }
+
 
 export interface ICharacterCreate {
   name: string

@@ -40,7 +40,7 @@ const QUESTS: IQuest[] = [
 
     ],
     possibleMobIds: [
-
+      'goblin-1'
     ],
   }
 ]

@@ -29,6 +29,24 @@ export class CharacterService extends Service {
     this.quest = save.quest
   }
 
+  getDps(): number {
+    const baseDamage = this.character.strength * (1 + this.character.level * 0.1);
+    const willpowerBonus = this.character.willpower * 0.5;
+    const attackSpeed = Math.min(this.character.agility / 100, 2);
+
+    const weaponDps = this.character.equippedWeapons.reduce((total, weapon) => total + weapon.dps, 0);
+
+    return Math.max(0, (baseDamage + willpowerBonus) * attackSpeed + weaponDps);
+  }
+
+  getDefense(): number {
+    const baseDefense = this.character.agility * 0.5 + this.character.level * 2;
+
+    const armorDefense = this.character.equippedArmor.reduce((total, armor) => total + armor.defense, 0);
+
+    return baseDefense + armorDefense;
+  }
+
   addXp(xp: number): void {
     this.character.experience += xp
     this.levelUp()

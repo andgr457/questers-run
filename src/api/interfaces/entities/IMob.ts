@@ -8,6 +8,7 @@ export interface IMob {
   level: number
   defense: number
   experience: number
+  chance: number
   buffTriggers?: Array<{
     buffId: string
     /** Percent of health when the buff will trigger */

@@ -19,7 +19,7 @@ const HERBS: ILootResource[] = [
       'mana-potion-1',
       'stamina-potion-1'
     ],
-    chance: 5,
+    chance: .5,
     price: 2,
     rarity: 'common'
   }

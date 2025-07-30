@@ -41,6 +41,9 @@ export default function Clicker(){
       experienceNextLevel: 100,
       level: 1,
       name: 'Hayzlit',
+      equippedArmor: [],
+      equippedWeapons: [],
+      loot: [],
       health: 100,
       maxHealth: 100,
       mana: 100,
@@ -59,6 +62,9 @@ export default function Clicker(){
       experienceNextLevel: 100,
       level: 1,
       name: 'Hayzlit',
+      equippedArmor: [],
+      equippedWeapons: [],
+      loot: [],
       health: 100,
       maxHealth: 100,
       mana: 100,
@@ -98,73 +104,89 @@ export default function Clicker(){
   }, [])
 
   const handleQuestSelect = useCallback((questId: string, characterId: string) => {
-    const quest = quests.find(q => q.id === questId)
-    if (!quest) return
+    const quest = quests.find(q => q.id === questId);
+    if (!quest) return;
 
-    const characterService = characterServices.find(c => c.character.id === characterId)
-    if(quest.stamina > characterService.character.stamina){
-      return
+    const characterService = characterServices.find(c => c.character.id === characterId);
+    if (!characterService) return;
+
+    if (quest.stamina > characterService.character.stamina) {
+      // Not enough stamina to start the quest
+      return;
     }
 
     const questService = new QuestService(
       loggerService,
       quest,
-      characterId,
-      (timeLeft, isComplete) => {
+      characterService,
+      (timeLeft: number, isComplete: boolean) => {
         setQuestStates(prev => ({
           ...prev,
           [characterId]: { timeLeft, isComplete }
-        }))
+        }));
       },
       () => {
-        // ✅ XP reward logic here
-        console.log('Quest completed for:', characterId)
+        // XP reward logic on quest complete
+        console.log('Quest completed for:', characterId);
 
-        setCharacterServices(prevChars => {
-        return prevChars.map(c => {
+        setCharacterServices(prevChars =>
+          prevChars.map(c => {
             if (c.character.id === characterId) {
-              c.character.status = 'Town'
-              c.addXp(quest.experience)
+              // Update character status and XP
+              c.character.status = 'Town';
+              c.addXp(quest.experience);
+
+              // Create new CharacterService with updated character
               return new CharacterService(loggerService, {
                 character: { ...c.character },
                 characterClass: c.characterClass,
                 buffs: c.buffs,
                 quest: undefined
-              })
+              });
             }
-            return c
+            return c;
           })
-        })
+        );
       }
-    )
+    );
 
-    questService.startQuest()
+    questService.startQuest();
 
     setQuestServices(prev => {
-      const next = new Map(prev)
-      next.set(characterId, questService)
-      return next
-    })
+      const next = new Map(prev);
+      next.set(characterId, questService);
+      return next;
+    });
 
-    // If you need to set quest status on character data, do it explicitly
-    setCharacterServices(prevChars => {
-      return prevChars.map(c => {
+    // Update character status to 'Questing' and reduce stamina
+    setCharacterServices(prevChars =>
+      prevChars.map(c => {
         if (c.character.id === characterId) {
-          c.character.status = 'Questing'
-          c.character.stamina -= quest.stamina
+          c.character.status = 'Questing';
+          c.character.stamina -= quest.stamina;
+
           return new CharacterService(loggerService, {
             character: { ...c.character },
             characterClass: c.characterClass,
             buffs: c.buffs,
             quest: c.quest
-          })
+          });
         }
-        return c
+        return c;
       })
-    })
+    );
 
-    setShowQuestsParams({quests: undefined, characterId: undefined, level: undefined, show: false, onQuestSelect: undefined, onClose: undefined})
-  }, [quests])
+    // Close quest selection UI
+    setShowQuestsParams({
+      quests: undefined,
+      characterId: undefined,
+      level: undefined,
+      show: false,
+      onQuestSelect: undefined,
+      onClose: undefined
+    });
+  }, [quests, characterServices, loggerService, setQuestServices, setQuestStates, setCharacterServices, setShowQuestsParams]);
+
 
   return <div>
     <ClickerQuestSelection quests={quests} onClose={showQuestsParams?.onClose} characterId={showQuestsParams?.characterId} level={showQuestsParams?.level} onQuestSelect={showQuestsParams?.onQuestSelect} show={showQuestsParams?.show ?? false} />
@@ -172,7 +194,7 @@ export default function Clicker(){
     {characterServices?.map(c => (
       <ClickerCharacter
         key={c.character.id}
-        characterData={c}
+        characterService={c}
         onQuest={handleShowQuestSelection}
         onAddXp={handleAddXp}
         questService={questServices.get(c.character.id)}
