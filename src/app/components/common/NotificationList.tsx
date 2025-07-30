@@ -14,11 +14,12 @@ export default function NotificationList({ notifications }) {
 <div
   ref={containerRef}
   className="
-    absolute bottom-2 left-1/2 -translate-x-1/2
+    absolute bottom left-1/2 -translate-x-1/2
     w-full max-h-40
     flex flex-col items-center gap-2
     pointer-events-none
     px-4 py-2
+    z-50
   "
 >
   {notifications.map((n) => (

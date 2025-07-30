@@ -31,12 +31,13 @@ export class QuestService extends Service {
     quest: IQuest,
     characterService: CharacterService,
     onTick?: OnTickCallback,
-    onComplete?: OnCompleteCallback
+    onComplete?: OnCompleteCallback,
+    timeLeft?: number
   ) {
     super(loggerService)
     this.quest = quest
     this.characterService = characterService
-    this.timeLeft = quest.time
+    this.timeLeft = timeLeft ?? quest.time
     this.onTickCallback = onTick ?? null
     this.onCompleteCallback = onComplete ?? null
     this.mobRepo = new MobRepository(loggerService)
@@ -77,35 +78,51 @@ export class QuestService extends Service {
     return attackDps * (1 - cappedReduction);
   }
 
+  private getHitChance(attackerAgility: number, defenderAgility: number): number {
+    const agilityDiff = attackerAgility - defenderAgility;
+    const baseChance = 0.8 + agilityDiff * 0.02; // 80% base, adjust by agility difference
+    return Math.max(0.5, Math.min(0.95, baseChance)); // clamp between 50% and 95%
+  }
+
   private tick(): void {
     this.timeLeft--
     this.loggerService.log(`Quest tick: ${this.timeLeft}`)
-
+    this.emitEvent({ type: 'gain-xp', experience: this.quest.experience * .5 });
     for (const mob of this.potentialMobs) {
       if (Math.random() < mob.chance) {
-        const characterEffectiveDps = this.calculateEffectiveDamage(this.characterService.getDps(), mob.defense);
-        const mobEffectiveDps = this.calculateEffectiveDamage(mob.dps, this.characterService.getDefense());
+        // Roll for each side to hit
+        const charHits = Math.random() < this.getHitChance(this.characterService.character.agility, mob.agility ?? 2);
+        const mobHits = Math.random() < this.getHitChance(mob.agility ?? 2, this.characterService.character.agility);
+
+        const characterEffectiveDps = charHits
+          ? this.calculateEffectiveDamage(this.characterService.getDps(), mob.defense)
+          : 0;
+
+        const mobEffectiveDps = mobHits
+          ? this.calculateEffectiveDamage(mob.dps, this.characterService.getDefense())
+          : 0;
+
+        console.log(`Mob DPS: ${mobEffectiveDps} | Character DPS: ${characterEffectiveDps}`);
 
         if (mobEffectiveDps > characterEffectiveDps) {
-          this.emitEvent({ type: "damage-taken", damage: mobEffectiveDps.toFixed(2) });
+          this.emitEvent({ type: "damage-taken", damage: mobEffectiveDps });
 
           // Check if character died after taking damage
           if (this.characterService.character.health <= 0) {
             this.failQuest();
-            break; // Stop processing further since quest failed
+            break;
           }
-        } else {
-          this.emitEvent({ type: "mob-kill", mobName: mob.name });
+        } else if (characterEffectiveDps > 0) {
+          this.emitEvent({ type: "mob-kill", mobName: mob.name, experience: mob.experience, gold: mob.gold });
         }
-
-        // No break here, so all mobs can be processed each tick
       }
     }
+
 
     // Loot drops independently every tick
     for (const loot of this.potentialLoot) {
       if (Math.random() < loot.chance) {
-        this.emitEvent({ type: 'loot-drop', itemName: loot.title });
+        this.emitEvent({ type: 'loot-drop', itemName: loot.title, loot: loot });
       }
     }
 
@@ -121,13 +138,7 @@ export class QuestService extends Service {
       clearInterval(this.interval)
       this.interval = null
     }
-    this.emitEvent({ type: "quest-complete", questName: this.quest.title });
-
-
-    // Instead of one combined "rewards" event, do this:
-    this.emitEvent({ type: "gain-gold", amount: 15 });
-    this.emitEvent({ type: "gain-xp", amount: 25 });
-    this.emitEvent({ type: "loot-drop", itemName: "Iron Sword", icon: "/icons/sword.png" });
+    this.emitEvent({ type: "quest-complete", questName: this.quest.title, experience: this.quest.experience, gold: this.quest.gold });
   }
 
   failQuest(): void {

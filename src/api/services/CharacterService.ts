@@ -13,6 +13,9 @@ interface CharacterSave {
   characterClass: ICharacterClass
   buffs?: ICharacterBuff[]
   quest?: IQuest
+  lootIds?: string[]
+  armorIds?: string[]
+  weaponIds?: string[]
 }
 
 export class CharacterService extends Service {
@@ -30,13 +33,18 @@ export class CharacterService extends Service {
   }
 
   getDps(): number {
-    const baseDamage = this.character.strength * (1 + this.character.level * 0.1);
-    const willpowerBonus = this.character.willpower * 0.5;
-    const attackSpeed = Math.min(this.character.agility / 100, 2);
+      const baseDamage = this.character.strength * (1 + this.character.level * 0.1);
+      const willpowerBonus = this.character.willpower * 0.5;
 
-    const weaponDps = this.character.equippedWeapons.reduce((total, weapon) => total + weapon.dps, 0);
+      // Higher base scaling for starting advantage
+      const attackSpeed = 1 + (this.character.agility * 0.355);
 
-    return Math.max(0, (baseDamage + willpowerBonus) * attackSpeed + weaponDps);
+      const weaponDps = this.character.equippedWeapons.reduce(
+          (total, weapon) => total + weapon.dps, 
+          0
+      );
+
+      return Math.max(0, (baseDamage + willpowerBonus) * attackSpeed + weaponDps);
   }
 
   getDefense(): number {
@@ -45,6 +53,14 @@ export class CharacterService extends Service {
     const armorDefense = this.character.equippedArmor.reduce((total, armor) => total + armor.defense, 0);
 
     return baseDefense + armorDefense;
+  }
+
+  takeDamage(damage: number): number {
+    this.character.health -= damage
+    if(this.character.health < 0){
+      this.character.health = 0
+    }
+    return this.character.health
   }
 
   addXp(xp: number): void {
@@ -74,7 +90,7 @@ export class CharacterService extends Service {
   }
 
   calculateNextLevelXP(): number {
-    return Math.floor(100 * Math.pow(1.25, this.character.level - 1))
+    return Math.floor(50 * this.character.level * this.character.level + 75 * Math.pow(1.2, this.character.level));
   }
 
   json(): CharacterSave {
@@ -82,7 +98,8 @@ export class CharacterService extends Service {
       character: this.character,
       characterClass: this.characterClass,
       buffs: this.buffs,
-      quest: this.quest
+      quest: this.quest,
+
     }
   }
 }

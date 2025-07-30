@@ -4,7 +4,7 @@ export interface ILoot {
   title: string
   description: string
   chance: number
-  price: number
+  gold: number
   type: 'resource' | 'consumable' | 'armor' | 'weapon'
 }
 

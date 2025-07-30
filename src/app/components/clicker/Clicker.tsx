@@ -6,18 +6,23 @@ import { CharacterService } from '../../../api/services/CharacterService'
 import { LoggerService } from '../../../api/services/LoggerService'
 import { ICharacterClass } from '../../../api/interfaces/entities/character/ICharacterClass'
 import { Button } from '@material-tailwind/react'
-import ClickerQuestSelection, { ClickerQuestSelectionProps } from './components/ClickerQuestSelection'
 import { CharacterClassRepository } from '../../../api/repositories/CharacterClassRepository'
 import { QuestRepository } from '../../../api/repositories/QuestRepository'
 import { IQuest } from '../../../api/interfaces/entities/IQuest'
 import ClickerCharacter from './components/ClickerCharacter'
 import { QuestService } from '../../../api/services/QuestService'
+import { LootResourceRepository } from '../../../api/repositories/loot/LootResourceRepository'
+import ClickerQuestSelection, { ClickerQuestSelectionProps } from './components/ClickerQuestSelection'
+import { ILoot } from '../../../api/interfaces/entities/ILoot'
+import { MobRepository } from '../../../api/repositories/MobRepository'
 
 export default function Clicker(){
   const loggerService = new LoggerService('Clicker')
   const questRepo = new QuestRepository(loggerService)
   const characterClassRepo = new CharacterClassRepository(loggerService)
-
+  const lootResourcesRepo = new LootResourceRepository(loggerService)
+  const mobRepo = new MobRepository(loggerService)
+  
   const [player, setPlayer] = useState<IPlayer>(undefined)
   const [characterServices, setCharacterServices] = useState<CharacterService[]>(undefined)
   const [quests, setQuests] = useState<IQuest[]>(undefined)
@@ -39,6 +44,10 @@ export default function Clicker(){
       status: 'Town',
       experience: 0,
       experienceNextLevel: 100,
+      gold: 0,
+      armorIds: [],
+      lootIds: [],
+      weaponIds: [],
       level: 1,
       name: 'Hayzlit',
       equippedArmor: [],
@@ -60,8 +69,12 @@ export default function Clicker(){
       status: 'Town',
       experience: 0,
       experienceNextLevel: 100,
+      gold: 0,
+      armorIds: [],
+      lootIds: [],
+      weaponIds: [],
       level: 1,
-      name: 'Hayzlit',
+      name: 'Derp',
       equippedArmor: [],
       equippedWeapons: [],
       loot: [],
@@ -78,29 +91,28 @@ export default function Clicker(){
     setCharacterServices([new CharacterService(loggerService, {character: hayzlit, characterClass}), new CharacterService(loggerService, {character: derp, characterClass})])
   }, [])
 
-  const handleAddXp = useCallback((characterId: string, xp: number) => {
+  const handleModifyCharacter = useCallback((characterService: CharacterService) => {
     setCharacterServices(prevChars => {
       return prevChars.map(c => {
-        if (c.character.id === characterId) {
-          c.addXp(xp)
+        if (c.character.id === characterService.character.id) {
           return new CharacterService(loggerService, {
-            character: { ...c.character },
-            characterClass: c.characterClass,
-            buffs: c.buffs,
-            quest: c.quest
-          })
+            character: { ...characterService.character },
+            characterClass: characterService.characterClass,
+            buffs: characterService.buffs,
+            quest: characterService.quest
+          });
         }
-        return c
-      })
-    })
-  }, [characterServices])
+        return c;
+      });
+    });
+  }, []);
 
   const handleShowQuestSelection = useCallback((level: number, characterId: string) => {
-    setShowQuestsParams({quests: quests, characterId, level, show: true, onQuestSelect: handleQuestSelect, onClose: handleHideQuestSelection})
+    setShowQuestsParams({quests: quests, characterId, level, show: true, onQuestSelect: handleQuestSelect, onClose: handleHideQuestSelection, mobs: mobRepo.list(), resourceLoot: lootResourcesRepo.list()})
   }, [quests])
 
   const handleHideQuestSelection = useCallback(() => {
-    setShowQuestsParams({quests: undefined, characterId: undefined, level: undefined, show: false, onQuestSelect: undefined, onClose: undefined})
+    setShowQuestsParams({quests: undefined, characterId: undefined, level: undefined, show: false, onQuestSelect: undefined, onClose: undefined, mobs: undefined, resourceLoot: undefined})
   }, [])
 
   const handleQuestSelect = useCallback((questId: string, characterId: string) => {
@@ -183,22 +195,26 @@ export default function Clicker(){
       level: undefined,
       show: false,
       onQuestSelect: undefined,
-      onClose: undefined
+      onClose: undefined,
+      resourceLoot: undefined,
+      mobs: undefined
     });
   }, [quests, characterServices, loggerService, setQuestServices, setQuestStates, setCharacterServices, setShowQuestsParams]);
 
 
   return <div>
-    <ClickerQuestSelection quests={quests} onClose={showQuestsParams?.onClose} characterId={showQuestsParams?.characterId} level={showQuestsParams?.level} onQuestSelect={showQuestsParams?.onQuestSelect} show={showQuestsParams?.show ?? false} />
+    <ClickerQuestSelection mobs={mobRepo.list()} quests={quests} onClose={showQuestsParams?.onClose} characterId={showQuestsParams?.characterId} level={showQuestsParams?.level} onQuestSelect={showQuestsParams?.onQuestSelect} show={showQuestsParams?.show ?? false} resourceLoot={lootResourcesRepo.list()} />
     <ClickerPlayer player={player} />
-    {characterServices?.map(c => (
-      <ClickerCharacter
-        key={c.character.id}
-        characterService={c}
-        onQuest={handleShowQuestSelection}
-        onAddXp={handleAddXp}
-        questService={questServices.get(c.character.id)}
-      />
-    ))}
+    <div style={{flexWrap: 'wrap', display: 'flex', gap: '5px'}}>
+      {characterServices?.map(c => (
+        <ClickerCharacter
+          key={c.character.id}
+          characterService={c}
+          onModifyCharacter={handleModifyCharacter}
+          onQuest={handleShowQuestSelection}
+          questService={questServices.get(c.character.id)}
+        />
+      ))}
+    </div>
   </div>
 }

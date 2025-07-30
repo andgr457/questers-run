@@ -17,12 +17,16 @@ export interface ICharacter {
   strength: number
   willpower: number
   agility: number
+  gold: number
 
   // Unequipped inventory items
+  lootIds: string[]
   loot: ILoot[]
 
   // Equipped gear
+  armorIds: string[]
   equippedArmor: ILootArmor[]
+  weaponIds: string[]
   equippedWeapons: ILootWeapon[]
 }
 
