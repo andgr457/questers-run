@@ -2,7 +2,7 @@ import { IQuest } from '../../interfaces/entities/IQuest'
 
 export const TUTORIAL_QUESTS: IQuest[] = [
   {
-    id: 'explore-1',
+    id: 'quest-1',
     title: 'Explore the Woods',
     description: 'Adventure through the woods of Velmorra',
     experience: 7,
@@ -26,7 +26,7 @@ export const TUTORIAL_QUESTS: IQuest[] = [
     ]
   },
   {
-    id: 'goblins-1',
+    id: 'quest-2',
     title: 'Fight the Goblins',
     description: 'Thin out the goblin forces in the woods to defend the local villagers.',
     experience: 15,
@@ -49,5 +49,27 @@ export const TUTORIAL_QUESTS: IQuest[] = [
       'combat',
       'gather'
     ]
+  },
+  {
+    id: "quest-3",
+    title: "Catch of the Day",
+    description: "The village cook is running low on fresh fish for tonight's stew. Head to the shallow river near the docks and catch a Silverfin Darter and a Mudscale Perch.",
+    experience: 8,
+    level: 1,
+    eventSpread: 3,
+    time: 20,
+    stamina: 25,
+    gold: 3,
+    possibleLootIds: [
+      "fish-1",
+      "fish-2",
+      "vegetable-1"
+    ],
+    possibleMobIds: [],
+    types: [
+      "gather",
+      "fishing"
+    ]
   }
+
 ]

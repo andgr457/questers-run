@@ -133,7 +133,7 @@ export class QuestService extends Service {
 
     this.onTickCallback?.(this.timeLeft, this.timeLeft <= 0)
     
-    if (this.timeLeft <= 0) {
+    if (this.timeLeft <= 0 && this.characterService.character.health > 0) {
       this.completeQuest()
     }
   }
@@ -151,6 +151,7 @@ export class QuestService extends Service {
       clearInterval(this.interval)
       this.interval = null
     }
+    this.timeLeft = 0
     this.emitEvent({ type: "quest-failed", questName: this.quest.title })
   }
 

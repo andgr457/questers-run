@@ -1,4 +1,5 @@
 import { POTIONS_ALCHEMY_RECIPES } from '../data/recipes/alchemy/Potions'
+import { FISH_COOKING_RECIPES } from '../data/recipes/cooking/Fish'
 import { VEGETABLES_COOKING_RECIPES } from '../data/recipes/cooking/Vegetables'
 import { IRecipe } from '../interfaces/entities/IRecipe'
 import { IRepository } from './IRepository'
@@ -10,7 +11,8 @@ export class RecipeRepository extends Repository implements IRepository<IRecipe>
     ...POTIONS_ALCHEMY_RECIPES,
 
     /** Cooking */
-    ...VEGETABLES_COOKING_RECIPES
+    ...VEGETABLES_COOKING_RECIPES,
+    ...FISH_COOKING_RECIPES,
   ]
   list(params?: Partial<IRecipe>): IRecipe[] {
     if(params?.profession){

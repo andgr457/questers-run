@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react'
-import { BookOpen, Leaf, Map, MapPin, Sword, Zap } from 'lucide-react'
+import { BookOpen, Fish, Leaf, Map, MapPin, Sword, Zap } from 'lucide-react'
 import ClickerResourceTypes from './ClickerResourceTypes'
 import { LoggerService } from '../../../../api/services/LoggerService'
 import { QuestRepository } from '../../../../api/repositories/QuestRepository'
@@ -22,7 +22,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
   const lootRepo = new LootRepository(loggerService)
   const mobRepo = new MobRepository(loggerService)
 
-  const quests = questRepo.list()
+  const quests = questRepo.list().sort((a,b) => a.level - b.level)
   const loot = lootRepo.list()
   const mobs = mobRepo.list()
 
@@ -68,6 +68,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                     ? 'bg-gray-200 border-gray-300 opacity-60 cursor-not-allowed' 
                     : 'bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500'
                   }`}
+                style={{width: '30%'}}
                 onClick={() => !isLocked && props.onQuestSelect(q.id, props?.characterService.character.id)}
               >
                 {/* Title + Description */}
@@ -79,12 +80,12 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                     <div className="flex items-center gap-1 mr-2">
                       {q.types?.includes('explore') && (
                         <span title="Explore" className="inline-block">
-                          <MapPin className="w-5 h-5 text-green-600" />
+                          <MapPin className="w-5 h-5 text-orange-600" />
                         </span>
                       )}
                       {q.types?.includes('gather') && (
                         <span title="Gather" className="inline-block">
-                          <Leaf className="w-5 h-5 text-emerald-600" />
+                          <Leaf className="w-5 h-5 text-green-600" />
                         </span>
                       )}
                       {q.types?.includes('combat') && (
@@ -97,11 +98,20 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                           <BookOpen className="w-5 h-5 text-blue-600" />
                         </span>
                       )}
+                      {q.types?.includes('fishing') && (
+                        <span title="Research" className="inline-block">
+                          <Fish className="w-5 h-5 text-blue-600" />
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="text-sm text-gray-700">
-                    {q.description}<br/>
-                    <span style={{fontSize: '.64rem'}}>XP {q.experience} GP {q.gold} </span>
+                    {q.description}
+
+                  </div>
+                  <div className="text-sm text-gray-700">
+                    REWARDS
+                    <span style={{fontSize: '.7rem'}}><br/>XP {q.experience} GP {q.gold} </span>
 
                   </div>
                   <div className="text-sm text-gray-700">
@@ -119,14 +129,13 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                         <span style={{fontWeight: 'bolder'}} title={item.description}>
                            {item.title}
                         </span> 
-                        {item.chance * 100}% chance p/t
+                        {(item.chance * 100).toFixed(1)}% chance p/t
                       </div>
                     })}
                   </div>
                   <div className="text-sm text-gray-700">
                     MOBS
-                    {q.possibleMobIds.length === 0 ? 'Hmm...' :
-                      q.possibleMobIds.map(id => {
+                    {q.possibleMobIds.map(id => {
                         const mob = mobs.find(rl => rl.id === id)
                         if(!mob){
                           return null
@@ -136,6 +145,8 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                         </div>
                       })
                     }
+                    {q.possibleMobIds.length === 0 && <div style={{fontSize: '.7rem'}}>None</div>}
+                      
                   </div>
                 </div>
 

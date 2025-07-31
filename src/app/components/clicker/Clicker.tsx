@@ -194,7 +194,6 @@ export default function Clicker(){
 
   return <div>
     <ClickerQuestBoard onClose={showQuestsParams?.onClose} characterService={showQuestsParams?.characterService} onQuestSelect={showQuestsParams?.onQuestSelect} show={showQuestsParams?.show ?? false} />
-    <ClickerPlayer player={player} />
     <div style={{flexWrap: 'wrap', display: 'flex', gap: '5px'}}>
       {characterServices?.map(c => (
         <ClickerCharacter

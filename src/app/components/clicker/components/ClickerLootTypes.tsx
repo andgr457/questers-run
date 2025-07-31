@@ -28,7 +28,6 @@ export default function ClickerLootTypes(props: ClickerLootTypesProps) {
             <div title='Cooking Consumable'><Soup className="w-5 h-5 text-green-600" /></div>
           </>
         }
-        break
       case 'resource': return <div title='Resource'><Sprout className="w-5 h-5 text-green-600" /></div>
       case 'weapon': return <div title='Weapon'><Sword className="w-5 h-5 text-orange-600" /></div>
       default: return <div title='Unknown'><CircleQuestionMark /></div>

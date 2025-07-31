@@ -75,7 +75,7 @@ export default function ClickerProfession(props: ClickerProfessionProps){
           <div className='flex flex-row gap-3'>
 
           {
-          recipeRepo.list({profession: props.profession}).map(r => {
+          recipeRepo.list({profession: props.profession}).sort((a,b) => a.level - b.level).map(r => {
             const item = lootRepo.list().find(l => l.id === r.craftedItemId)
             return (
               <div className="p-4 rounded-xl shadow-md border transition-all cursor-pointer bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500 mb-3">
@@ -119,9 +119,9 @@ export default function ClickerProfession(props: ClickerProfessionProps){
                     Requires {r.stamina} STAM {r.mana} MP
                   </div>
                   <div>
-                    {props.characterService.character.level < r.level && <div className="mt-2 text-xs text-red-500 italic">
+                    <div className="mt-2 text-xs text-black-500 italic">
                       Requires Lvl {r.level}
-                    </div>}
+                    </div>
                     {props.characterService.character.level >= r.level && <div className="mt-2 text-xs text-red-500 italic">
                       <Button
                         onClick={undefined}

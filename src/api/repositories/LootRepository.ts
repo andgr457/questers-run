@@ -1,5 +1,7 @@
 import { POTION_LOOT } from '../data/consumables/alchemy/Potions'
+import { FISH_COOKING_LOOT } from '../data/consumables/cooking/Fish'
 import { VEGETABLES_COOKING_LOOT } from '../data/consumables/cooking/Vegetables'
+import { FISH_LOOT } from '../data/resources/Fish'
 import { HERBS_LOOT } from '../data/resources/Herbs'
 import { VEGETABLES_LOOT } from '../data/resources/Vegetables'
 import { ILootArmor, ILootConsumable, ILootResource } from '../interfaces/entities/ILoot'
@@ -13,9 +15,11 @@ export class LootRepository extends Repository implements IRepository<Partial<Al
     /** Consumables */
     ...POTION_LOOT,
     ...VEGETABLES_COOKING_LOOT,
+    ...FISH_COOKING_LOOT,
     /** Resources */
     ...HERBS_LOOT,
-    ...VEGETABLES_LOOT
+    ...VEGETABLES_LOOT,
+    ...FISH_LOOT,
   ]
 
   list(params?: Partial<AllLoot>): Partial<AllLoot>[] {

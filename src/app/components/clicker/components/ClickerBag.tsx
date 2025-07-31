@@ -60,7 +60,7 @@ export default function ClickerBag(props: ClickerQuestSelectionProps) {
             <div style={{fontSize: 'small'}}>TYPES</div>
           </ClickerLootTypes>
         </div>
-        <div className='flex flex-row gap-3'>
+        <div className='flex flex-row gap-1 flex-wrap'>
 
           {Object.values(groupedLoot).map((l) => (
             <div
@@ -69,30 +69,27 @@ export default function ClickerBag(props: ClickerQuestSelectionProps) {
             >
                 <div className="flex flex-col gap-1">
                   <div className="text-lg font-semibold flex items-center gap-2 text-yellow-900">
-                    <ClickerRarity rarity={l.rarity} />
+
 
                     <span style={{ fontWeight: 'lighter', fontSize: '1.5rem' }}>
                       {l.title} {l.quantity > 1 && <span className="text-sm">×{l.quantity}</span>}
                     </span>
+                    <div className='flex flex-row gap-1'>
+                      <ClickerLootTypes type={l.type} />
+                      <ClickerResourceTypes type={l.resourceType} />
+                      <ClickerRarity rarity={l.rarity} />
+                    </div>
                   </div>
 
                   <div className="text-sm text-gray-700">
                     {l.description}
                     <br />
                     <span style={{ fontSize: '.64rem' }}>
-                      {l.rarity.toUpperCase()} {l.chance * 100}% GP {l.gold}
+                      {l.rarity.toUpperCase()} {(l.chance * 100).toFixed(1)}% GP {l.gold}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center gap-4 text-sm">
-                  <div className="flex items-center gap-1">
-                    <Zap className="w-4 h-4 text-blue-500" />
-                    <span className="text-yellow-800 font-bold">
-                      Type: <code>{l.type}</code>
-                    </span>
-                  </div>
-                </div>
               </div>
           ))}
         </div>
