@@ -1,4 +1,5 @@
-import { ILoot, ILootArmor, ILootWeapon } from '../ILoot'
+import { AllLoot } from '../../../repositories/LootRepository'
+import { ILootArmor, ILootWeapon } from '../ILoot'
 
 export interface ICharacter {
   id: string
@@ -21,7 +22,7 @@ export interface ICharacter {
 
   // Unequipped inventory items
   lootIds: string[]
-  loot: ILoot[]
+  loot: Partial<AllLoot>[]
 
   // Equipped gear
   armorIds: string[]

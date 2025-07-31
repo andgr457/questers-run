@@ -1,4 +1,4 @@
-import { ILoot } from './ILoot';
+import { AllLoot } from '../../repositories/LootRepository'
 
 export type QuestEventType =
   | { type: "quest-start"; questName: string }
@@ -6,7 +6,7 @@ export type QuestEventType =
   | { type: "quest-failed"; questName: string }
   | { type: "gain-xp"; experience: number }
   | { type: "gain-gold"; gold: number }
-  | { type: "loot-drop"; itemName: string; icon?: string, loot: ILoot }
+  | { type: "loot-drop"; itemName: string; icon?: string, loot: Partial<AllLoot> }
   | { type: "mob-kill"; mobName: string, experience: number, gold: number }
   | { type: 'damage-taken'; damage: number}
   | { type: "character-died" }

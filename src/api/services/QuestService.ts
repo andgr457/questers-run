@@ -2,12 +2,10 @@ import { DateTime } from 'luxon'
 import { IQuest, QuestEventCallback, QuestEventType } from '../interfaces/entities/IQuest'
 import { LoggerService } from './LoggerService'
 import { Service } from './Service'
-import { ILoot } from '../interfaces/entities/ILoot'
 import { IMob } from '../interfaces/entities/IMob'
-import { LootResourceRepository } from '../repositories/loot/LootResourceRepository'
 import { MobRepository } from '../repositories/MobRepository'
-import { ICharacter } from '../interfaces/entities/character/ICharacter'
 import { CharacterService } from './CharacterService'
+import { AllLoot, LootRepository } from '../repositories/LootRepository'
 
 type OnTickCallback = (timeLeft: number, isComplete: boolean) => void
 type OnCompleteCallback = () => void
@@ -20,10 +18,10 @@ export class QuestService extends Service {
   private onTickCallback: OnTickCallback | null = null
   private onCompleteCallback: OnCompleteCallback | null = null
   private eventListeners: QuestEventCallback[] = []
-  private potentialLoot: ILoot[]
+  private potentialLoot: Partial<AllLoot>[]
   private potentialMobs: IMob[]
 
-  private resourceRepo: LootResourceRepository
+  private lootRepo: LootRepository
   private mobRepo: MobRepository
 
   constructor(
@@ -41,13 +39,17 @@ export class QuestService extends Service {
     this.onTickCallback = onTick ?? null
     this.onCompleteCallback = onComplete ?? null
     this.mobRepo = new MobRepository(loggerService)
-    this.resourceRepo = new LootResourceRepository(this.loggerService)
-    this.potentialLoot = [
-      ...this.resourceRepo.list().filter(resource => this.quest.possibleLootIds.includes(resource.id)) //TODO: fix params
-    ]
-    this.potentialMobs = [
-      ...this.mobRepo.list().filter(mob => this.quest.possibleMobIds.includes(mob.id))
-    ]
+    this.lootRepo = new LootRepository(this.loggerService)
+
+    this.potentialLoot = []
+    for(const id of this.quest.possibleLootIds){
+      this.potentialLoot.push(this.lootRepo.getById(id))
+    }
+
+    this.potentialMobs = []
+    for(const id of this.quest.possibleMobIds){
+      this.potentialMobs.push(this.mobRepo.getById(id))
+    }
   }
 
   /** Add UI listener for quest events */
@@ -86,7 +88,6 @@ export class QuestService extends Service {
 
   private tick(): void {
     this.timeLeft--
-    this.loggerService.log(`Quest tick: ${this.timeLeft}`)
     this.emitEvent({ type: 'gain-xp', experience: this.quest.experience * .5 });
     for (const mob of this.potentialMobs) {
       if (Math.random() < mob.chance) {
@@ -105,12 +106,16 @@ export class QuestService extends Service {
         console.log(`Mob DPS: ${mobEffectiveDps} | Character DPS: ${characterEffectiveDps}`);
 
         if (mobEffectiveDps > characterEffectiveDps) {
+          this.characterService.character.health -= mobEffectiveDps;
+          // Make sure it doesn't go below zero
+          if (this.characterService.character.health < 0) {
+            this.characterService.character.health = 0;
+          }
           this.emitEvent({ type: "damage-taken", damage: mobEffectiveDps });
-
           // Check if character died after taking damage
           if (this.characterService.character.health <= 0) {
             this.failQuest();
-            break;
+            break
           }
         } else if (characterEffectiveDps > 0) {
           this.emitEvent({ type: "mob-kill", mobName: mob.name, experience: mob.experience, gold: mob.gold });
@@ -127,7 +132,7 @@ export class QuestService extends Service {
     }
 
     this.onTickCallback?.(this.timeLeft, this.timeLeft <= 0)
-
+    
     if (this.timeLeft <= 0) {
       this.completeQuest()
     }
@@ -146,7 +151,6 @@ export class QuestService extends Service {
       clearInterval(this.interval)
       this.interval = null
     }
-    this.loggerService.log(`Quest failed!`)
     this.emitEvent({ type: "quest-failed", questName: this.quest.title })
   }
 

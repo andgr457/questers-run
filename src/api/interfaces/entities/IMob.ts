@@ -1,5 +1,3 @@
-import { ICharacterBuff } from './character/ICharacterBuff'
-
 export interface IMob {
   id: string
   name: string

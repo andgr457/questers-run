@@ -7,6 +7,7 @@ import { IQuest } from '../interfaces/entities/IQuest'
 import { DateTime } from 'luxon'
 import { ILoot } from '../interfaces/entities/ILoot'
 import { QuestService } from './QuestService'
+import { CharacterClassRepository } from '../repositories/CharacterClassRepository'
 
 interface CharacterSave {
   character: ICharacter

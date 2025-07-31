@@ -6,8 +6,6 @@ export class LoggerService {
   }
 
   log(description: string){
-    return
     console.log(`${Date.now()} | ${this.logTitle} | ${description}`)
-    //TODO Add more logging.
   }
 }

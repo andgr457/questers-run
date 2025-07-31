@@ -1,12 +1,14 @@
-import { Button } from '@material-tailwind/react';
-import { useState, useEffect } from 'react';
-import { useFloatingNotifications } from '../hooks/useFloatingNotifications';
-import { CharacterService } from '../../../../api/services/CharacterService';
-import { QuestService } from '../../../../api/services/QuestService';
-import FloatingNotify from '../../common/FloatingNotify';
-import NotificationList from '../../common/NotificationList';
-import ClickerProgress from './ClickerProgress';
-import ClickerBag from './ClickerBag';
+import { Button } from '@material-tailwind/react'
+import { useState, useEffect } from 'react'
+import { useFloatingNotifications } from '../hooks/useFloatingNotifications'
+import { CharacterService } from '../../../../api/services/CharacterService'
+import { QuestService } from '../../../../api/services/QuestService'
+import NotificationList from '../../common/NotificationList'
+import ClickerProgress from './ClickerProgress'
+import ClickerBag from './ClickerBag'
+import ClickerProfession from './ClickerProfession'
+import { CharacterClassRepository } from '../../../../api/repositories/CharacterClassRepository'
+import { LoggerService } from '../../../../api/services/LoggerService'
 
 interface ClickerCharacterProps {
   characterService: CharacterService;
@@ -16,11 +18,19 @@ interface ClickerCharacterProps {
 }
 
 export default function ClickerCharacter(props: ClickerCharacterProps) {
+  const loggerService = new LoggerService('ClickerCharacter')
+  const characterClassRepo = new CharacterClassRepository(loggerService)
+  const characterClass = characterClassRepo.getById(props.characterService.character.classId)
+
   const { characterService, questService, onModifyCharacter, onQuest } = props;
   const [tick, setTick] = useState(0);
   const { notifications, addNotification } = useFloatingNotifications();
   const [isBagVisible, setIsBagVisible] = useState(false)
   const toggleBag = () => setIsBagVisible(prev => !prev)
+  const [isAlchemyVisible, setIsAlchemyVisible] = useState(false)
+  const toggleAlchemy = () => setIsAlchemyVisible(prev => !prev)
+  const [isCookingVisible, setIsCookingVisible] = useState(false)
+  const toggleCooking = () => setIsCookingVisible(prev => !prev)
 
   useEffect(() => {
     const interval = setInterval(() => setTick(t => t + 1), 1000);
@@ -134,12 +144,12 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
   return (
     <div className="p-14 bg-black-50 rounded-xl shadow-lg max-w-3xl mx-auto">
     <div className="relative overflow-hidden space-y-6">
-
-      {/* Hey, this is ChatGPT shining bright ✨ — your friendly AI assistant! */}
-
       <NotificationList notifications={notifications} />
 
-      <h2 className="text-4xl font-extrabold text-teal-900">{characterService.character.name}</h2>
+      <h2 className="text-4xl font-extrabold text-teal-900">
+        {characterService.character.name}
+        <span style={{fontSize: 'small'}}>{characterClass.name.toUpperCase()}</span>
+      </h2>
 
       <div className="flex gap-10 flex-wrap text-black-800 font-semibold">
         <div>Level: {characterService.character.level}</div>
@@ -216,12 +226,40 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
         >
           LOOT
         </Button>
+
+        <Button
+          color="purple"
+          disabled={typeof questService?.timeLeft !== 'undefined' && questService.timeLeft !== 0}
+          onClick={toggleAlchemy}
+          placeholder={undefined}
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
+        >
+          ALCHEMY
+        </Button>
+        
+        <Button
+          color="orange"
+          disabled={typeof questService?.timeLeft !== 'undefined' && questService.timeLeft !== 0}
+          onClick={toggleCooking}
+          placeholder={undefined}
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
+        >
+          COOKING
+        </Button>
         {isBagVisible && (
           <ClickerBag
             characterService={characterService}
             show={isBagVisible}
             onClose={() => setIsBagVisible(false)}
           />
+        )}
+        {isAlchemyVisible && (
+          <ClickerProfession statField='mana' characterService={characterService} onClose={() => setIsAlchemyVisible(false)} profession='alchemy' show={isAlchemyVisible} />
+        )}
+        {isCookingVisible && (
+          <ClickerProfession statField='stamina' characterService={characterService} onClose={() => setIsCookingVisible(false)} profession='cooking' show={isCookingVisible} />
         )}
       </div>
     </div>

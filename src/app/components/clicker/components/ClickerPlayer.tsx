@@ -1,4 +1,4 @@
-import { IPlayer } from '../../../../api/interfaces/entities/IPlayer';
+import { IPlayer } from '../../../../api/interfaces/entities/IPlayer'
 
 interface ClickerPlayerProps {
   player: IPlayer

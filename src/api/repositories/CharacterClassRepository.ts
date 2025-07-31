@@ -1,24 +1,18 @@
-import { ICharacterClass } from '../interfaces/entities/character/ICharacterClass';
-import { IRepository } from './IRepository';
-import { Repository } from './Repository';
+import { MELEE_CLASSES } from '../data/classes/MeleeClasses'
+import { ICharacterClass } from '../interfaces/entities/character/ICharacterClass'
+import { IRepository } from './IRepository'
+import { Repository } from './Repository'
 
 export class CharacterClassRepository extends Repository implements IRepository<ICharacterClass> {
+  private ALL_CLASSES = [
+    ...MELEE_CLASSES,
+  ]
+
   list(params?: ICharacterClass): ICharacterClass[] {
-    return CHARACTER_CLASSES
+    return this.ALL_CLASSES
+  }
+
+  getById(id: string): ICharacterClass {
+    return this.ALL_CLASSES.find(c => c.id === id)
   }
 }
-
-const CHARACTER_CLASSES: ICharacterClass[] = [
-  {
-    id: 'knight',
-    name: 'Knight',
-    statModifiersPerLevel: {
-      health: 20,
-      mana: 5,
-      stamina: 10,
-      agility: 2,
-      strength: 3,
-      willpower: 1
-    }
-  }
-]
