@@ -2,7 +2,7 @@
 import { CharacterSave } from '../interfaces/entities/saves/CharacterSave';
 
 export class CharacterRepository {
-  private readonly storageKey = 'characterDataArray';
+  private readonly storageKey = 'characterDataArray'; //todo make dynamic
 
   /** Get all characters */
   getAll(): CharacterSave[] {

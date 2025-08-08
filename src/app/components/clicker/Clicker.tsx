@@ -13,11 +13,13 @@ import { QuestService } from '../../../api/services/QuestService'
 import ClickerQuestBoard, { ClickerQuestBoardProps } from './components/ClickerQuestBoard'
 import { ClickerNewCharacter } from './components/ClickerNewCharacter'
 import { Button } from '@material-tailwind/react'
+import { CharacterRepository } from '../../../api/repositories/CharacterRepository'
 
 export default function Clicker() {
   const loggerService = new LoggerService('Clicker')
   const questRepo = new QuestRepository(loggerService)
   const characterClassRepo = new CharacterClassRepository(loggerService)
+  const characterRepository = new CharacterRepository()
 
   const [player, setPlayer] = useState<IPlayer>(undefined)
   const [characterServices, setCharacterServices] = useState<CharacterService[]>(undefined)
@@ -30,81 +32,38 @@ export default function Clicker() {
   const [showQuestsParams, setShowQuestsParams] = useState<ClickerQuestBoardProps>(undefined)
 
   useEffect(() => {
-    // load player & characters - test data for now
-    setQuests(questRepo.list())
+    setQuests(questRepo.list());
 
-    const characterClass: ICharacterClass = characterClassRepo.getById('knight')
-    const hayzlit: ICharacter = {
-      id: 'creator',
-      classId: 'knight',
-      status: 'Town',
-      experience: 0,
-      experienceNextLevel: 100,
-      gold: 0,
-      armorIds: [],
-      lootIds: [],
-      weaponIds: [],
-      level: 1,
-      name: 'Hayzlit',
-      equippedArmor: [],
-      equippedWeapons: [],
-      loot: [],
-      health: 5,
-      maxHealth: 100,
-      mana: 100,
-      maxMana: 100,
-      stamina: 100,
-      maxStamina: 100,
-      agility: characterClass.statModifiersPerLevel.agility,
-      strength: characterClass.statModifiersPerLevel.strength,
-      willpower: characterClass.statModifiersPerLevel.willpower,
+    // Load saved characters from localStorage using your repo
+    const savedCharacters = characterRepository.getAll();
+
+    if (savedCharacters.length > 0) {
+      const loadedCharacterServices = savedCharacters.map((save) => new CharacterService(loggerService, save));
+      setCharacterServices(loadedCharacterServices);
     }
-    const derp: ICharacter = {
-      id: 'derp',
-      classId: 'knight',
-      status: 'Town',
-      experience: 0,
-      experienceNextLevel: 100,
-      gold: 0,
-      armorIds: [],
-      lootIds: [],
-      weaponIds: [],
-      level: 1,
-      name: 'Derp',
-      equippedArmor: [],
-      equippedWeapons: [],
-      loot: [],
-      health: 100,
-      maxHealth: 100,
-      mana: 100,
-      maxMana: 100,
-      stamina: 100,
-      maxStamina: 100,
-      agility: characterClass.statModifiersPerLevel.agility,
-      strength: characterClass.statModifiersPerLevel.strength,
-      willpower: characterClass.statModifiersPerLevel.willpower,
-    }
-    setCharacterServices([
-      new CharacterService(loggerService, { character: hayzlit, characterClass }),
-      new CharacterService(loggerService, { character: derp, characterClass }),
-    ])
-  }, [])
+  }, []);
+
 
   const handleModifyCharacter = useCallback(
     (characterService: CharacterService) => {
       setCharacterServices((prevChars) =>
         prevChars.map((c) => {
           if (c.character.id === characterService.character.id) {
-            return new CharacterService(loggerService, {
+            const updatedCharService = new CharacterService(loggerService, {
               character: { ...characterService.character },
               characterClass: characterService.characterClass,
               buffs: characterService.buffs,
               quest: characterService.quest,
-            })
+            });
+
+            // Persist the updated character save
+            characterRepository.store(updatedCharService.json());
+
+            return updatedCharService;
           }
-          return c
+          return c;
         }),
-      )
+      );
     },
     [loggerService],
   )
@@ -219,16 +178,12 @@ export default function Clicker() {
 
   const handleNewCharCreate = useCallback(
     (character: { name: string; classId: string }) => {
-      console.log('Created character:', character)
-
-      // Get character class data
       const characterClass = characterClassRepo.getById(character.classId)
       if (!characterClass) {
         console.error('Invalid classId:', character.classId)
         return
       }
 
-      // Create new ICharacter instance with defaults
       const newCharacter: ICharacter = {
         id: Math.random().toString(36).substr(2, 9), // simple id generator
         classId: character.classId,
@@ -244,7 +199,7 @@ export default function Clicker() {
         equippedArmor: [],
         equippedWeapons: [],
         loot: [],
-        health: characterClass.statModifiersPerLevel.strength * 10, // example formula
+        health: characterClass.statModifiersPerLevel.strength * 10,
         maxHealth: characterClass.statModifiersPerLevel.strength * 10,
         mana: characterClass.statModifiersPerLevel.willpower * 10,
         maxMana: characterClass.statModifiersPerLevel.willpower * 10,
@@ -255,19 +210,28 @@ export default function Clicker() {
         willpower: characterClass.statModifiersPerLevel.willpower,
       }
 
-      // Create CharacterService instance for new character
       const newCharService = new CharacterService(loggerService, {
         character: newCharacter,
         characterClass,
       })
 
-      // Add to existing character services
       setCharacterServices((prev) => (prev ? [...prev, newCharService] : [newCharService]))
-
+      saveCharacter(newCharacter)
       setNewCharModalOpen(false)
     },
     [characterClassRepo, loggerService],
   )
+
+  const saveCharacter = (character: ICharacter) => {
+    try {
+      // Wrap character in CharacterSave if needed, else save directly
+      const service = characterServices.find(cs => cs.character.id === character.id)
+      characterRepository.store(service.json());
+      loggerService.log(`Saved character ${character.name} using CharacterRepository`)
+    } catch (error) {
+      loggerService.log('Failed to save character', error)
+    }
+  }
 
   return (
     <div>
@@ -295,6 +259,14 @@ export default function Clicker() {
           onPointerLeaveCapture={undefined}>
           + New Character
         </Button>
+        <Button
+          color="red"
+          onClick={() => {
+            characterRepository.clear()
+            setCharacterServices([])
+          } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}        >
+          Reset All Characters
+        </Button>
       </div>
 
       <div style={{ flexWrap: 'wrap', display: 'flex', gap: '5px' }}>
@@ -305,6 +277,7 @@ export default function Clicker() {
             onModifyCharacter={handleModifyCharacter}
             onQuest={handleShowQuestSelection}
             questService={questServices.get(c.character.id)}
+            onSaveCharacter={saveCharacter}
           />
         ))}
       </div>

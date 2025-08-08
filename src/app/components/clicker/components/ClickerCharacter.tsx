@@ -16,14 +16,16 @@ interface ClickerCharacterProps {
   questService: QuestService
   onModifyCharacter: (characterService: CharacterService) => void
   onQuest: (level: number, characterId: string) => void
+  onSaveCharacter: (character: ICharacter) => void  // new prop
 }
+
 
 export default function ClickerCharacter(props: ClickerCharacterProps) {
   const loggerService = new LoggerService('ClickerCharacter')
   const characterClassRepo = new CharacterClassRepository(loggerService)
   const characterClass = characterClassRepo.getById(props.characterService.character.classId)
 
-  const { characterService, questService, onModifyCharacter, onQuest } = props
+  const { characterService, questService, onModifyCharacter, onQuest, onSaveCharacter } = props
 
   const [tick, setTick] = useState(0)
   const { notifications, addNotification } = useFloatingNotifications()
@@ -48,6 +50,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
         case 'quest-start':
           addNotification(`Started: ${event.questName}`)
           onModifyCharacter(characterService)
+          onSaveCharacter(characterService.character)
           break
         case 'quest-complete':
           addNotification(`Completed: ${event.questName}`)
@@ -56,41 +59,49 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
           characterService.character.gold += event.gold
           characterService.character.status = 'Walking home...'
           onModifyCharacter(characterService)
+          onSaveCharacter(characterService.character)
           break
         case 'quest-failed':
           addNotification(`Quest Failed: ${event.questName}`)
           characterService.character.status = 'Crawling to the nearest town...'
           onModifyCharacter(characterService)
+          onSaveCharacter(characterService.character)
           break
         case 'gain-xp':
           addNotification(`+${event.experience.toFixed(2)} XP`)
           characterService.addXp(event.experience)
           onModifyCharacter(characterService)
+          onSaveCharacter(characterService.character)
           break
         case 'gain-gold':
           addNotification(`+${event.gold} Gold`)
           characterService.character.gold += event.gold
           onModifyCharacter(characterService)
+          onSaveCharacter(characterService.character)
           break
         case 'loot-drop':
           addNotification(`+${event.itemName}`, event?.icon)
           characterService.character.loot.push(event.loot)
           onModifyCharacter(characterService)
+          onSaveCharacter(characterService.character)
           break
         case 'mob-kill':
           addNotification(`Killed ${event.mobName} 💀`)
           characterService.character.gold += event.gold
           onModifyCharacter(characterService)
+          onSaveCharacter(characterService.character)
           break
         case 'damage-taken':
           addNotification(`❌ You took ${event.damage.toFixed(2)} damage!`)
           characterService.takeDamage(event.damage)
           onModifyCharacter(characterService)
+          onSaveCharacter(characterService.character)
           break
         case 'character-died':
           addNotification(`💀 You were slain by ${event.mobName}!`)
           characterService.character.status = '💀'
           onModifyCharacter(characterService)
+          onSaveCharacter(characterService.character)
           break
       }
     }
@@ -125,23 +136,6 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
 
     onModifyCharacter(characterService)
   }
-
-  const onLoot = () => {
-    characterService.character.status = 'Ruffling through their bags...'
-    addNotification(`Bag check success!`)
-    onModifyCharacter(characterService)
-  }
-
-  const saveCharacter = (character: ICharacter) => {
-    try {
-      localStorage.setItem(`character-${character.id}`, JSON.stringify(character));
-      addNotification(`Character ${character.name} saved.`);
-    } catch (error) {
-      addNotification(`Failed to save character: ${character.name}`);
-      loggerService.log('Save failed');
-    }
-  }
-
 
   return (
     <div className="p-14 bg-black-50 rounded-xl shadow-lg max-w-3xl mx-auto">
