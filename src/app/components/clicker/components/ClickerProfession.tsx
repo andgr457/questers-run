@@ -72,13 +72,13 @@ export default function ClickerProfession(props: ClickerProfessionProps){
               {props.characterService.character.mana} Mana
             </div>
           </div>
-          <div className='flex flex-row gap-3'>
+          <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}>
 
           {
           recipeRepo.list({profession: props.profession}).sort((a,b) => a.level - b.level).map(r => {
             const item = lootRepo.list().find(l => l.id === r.craftedItemId)
             return (
-              <div className="p-4 rounded-xl shadow-md border transition-all cursor-pointer bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500 mb-3">
+              <div style={{width: '100%'}} className="p-4 rounded-xl shadow-md border transition-all cursor-pointer bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500 mb-3">
                 <div className="flex flex-col gap-1">
                   <div className="text-lg font-semibold flex items-center gap-2 text-yellow-900">
                     <ClickerLootTypes type={item.type} profession={props.profession} />

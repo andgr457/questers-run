@@ -6,13 +6,13 @@ import { AllLoot } from '../../../../api/repositories/LootRepository'
 import ClickerLootTypes from './ClickerLootTypes'
 import { PackageOpen, Zap } from 'lucide-react'
 
-export interface ClickerQuestSelectionProps {
+export interface ClickerLootProps {
   show: boolean
   onClose: () => void
   characterService: CharacterService
 }
 
-export default function ClickerBag(props: ClickerQuestSelectionProps) {
+export default function ClickerLoot(props: ClickerLootProps) {
   const groupedLoot = props.characterService.character.loot.reduce((groups, lootItem) => {
     const existing = groups[lootItem.id]
     if (!existing) {
@@ -41,6 +41,17 @@ export default function ClickerBag(props: ClickerQuestSelectionProps) {
       >
         <PackageOpen className="w-6 h-6 text-yellow-700" />
         Loot <span style={{fontSize: '.7rem'}}>{props.characterService.character.name}</span>
+        <div style={{flexWrap: 'wrap', display: 'flex', gap: '15px', fontSize: '.5em'}}>
+          <ClickerRarity>
+            <div>RARITY</div>
+          </ClickerRarity>
+          <ClickerResourceTypes>
+            <div>RESOURCES</div>
+          </ClickerResourceTypes>
+          <ClickerLootTypes>
+            <div>TYPES</div>
+          </ClickerLootTypes>
+        </div>
       </DialogHeader>
 
       <DialogBody
@@ -49,22 +60,13 @@ export default function ClickerBag(props: ClickerQuestSelectionProps) {
         onPointerLeaveCapture={undefined}
         className="max-h-[70vh] overflow-y-auto p-4 space-y-4"
       >
-        <div style={{flexWrap: 'wrap', display: 'flex', gap: '15px'}}>
-          <ClickerRarity>
-            <div style={{fontSize: 'small'}}>RARITY</div>
-          </ClickerRarity>
-          <ClickerResourceTypes>
-            <div style={{fontSize: 'small'}}>RESOURCES</div>
-          </ClickerResourceTypes>
-          <ClickerLootTypes>
-            <div style={{fontSize: 'small'}}>TYPES</div>
-          </ClickerLootTypes>
-        </div>
+
         <div className='flex flex-row gap-1 flex-wrap'>
 
           {Object.values(groupedLoot).map((l) => (
             <div
               key={l.id}
+              style={{width: '100%'}}
               className="p-4 rounded-xl shadow-md border transition-all cursor-pointer bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500 mb-3"
             >
                 <div className="flex flex-col gap-1">

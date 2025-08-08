@@ -44,7 +44,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
         className="border-b border-yellow-600 text-2xl font-bold flex items-center gap-2"
       >
         <Map className="w-6 h-6 text-yellow-700" />
-        Quest Board
+        Quest Board {props.characterService.character.name}
       </DialogHeader>
 
       {/* Quest List */}
@@ -54,8 +54,8 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
         onPointerLeaveCapture={undefined}
         className="max-h-[70vh] overflow-y-auto p-4 space-y-4"
       >
-        <div style={{display: 'flex', flexWrap: 'wrap', gap: '5px'}}>
-          {quests?.map((q) => {
+        <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}>
+          {quests?.sort((a, b) => { return a.level - b.level }).map((q) => {
             const isLockedLevel = q.level > props?.characterService.character.level
             const isLockedHealthOrEnergy = props?.characterService.character.stamina < q.stamina || props?.characterService?.character.health <= 0
             const isLocked = isLockedLevel || isLockedHealthOrEnergy
@@ -68,7 +68,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                     ? 'bg-gray-200 border-gray-300 opacity-60 cursor-not-allowed' 
                     : 'bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500'
                   }`}
-                style={{width: '30%'}}
+                style={{width: '100%'}}
                 onClick={() => !isLocked && props.onQuestSelect(q.id, props?.characterService.character.id)}
               >
                 {/* Title + Description */}
