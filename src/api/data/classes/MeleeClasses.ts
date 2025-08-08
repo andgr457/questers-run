@@ -5,7 +5,7 @@ export const MELEE_CLASSES: ICharacterClass[] = [
     id: 'knight',
     name: 'Knight',
     statModifiersPerLevel: {
-      health: 10,
+      health: 15,
       mana: 5,
       stamina: 10,
       agility: 2,
