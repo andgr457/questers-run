@@ -1,8 +1,8 @@
 import { ICharacterClass } from '../../interfaces/entities/character/ICharacterClass'
 
-export const MELEE_CLASSES: ICharacterClass[] = [
+export const MAGE_CLASSES: ICharacterClass[] = [
   {
-    id: 'knight',
+    id: 'wizard',
     name: 'Knight',
     statModifiersPerLevel: {
       health: 10,

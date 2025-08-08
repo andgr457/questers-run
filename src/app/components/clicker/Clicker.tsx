@@ -178,14 +178,14 @@ export default function Clicker() {
 
   const handleNewCharCreate = useCallback(
     (character: { name: string; classId: string }) => {
-      const characterClass = characterClassRepo.getById(character.classId)
+      const characterClass = characterClassRepo.getById(character.classId);
       if (!characterClass) {
-        console.error('Invalid classId:', character.classId)
-        return
+        console.error('Invalid classId:', character.classId);
+        return;
       }
 
       const newCharacter: ICharacter = {
-        id: Math.random().toString(36).substr(2, 9), // simple id generator
+        id: Math.random().toString(36).substr(2, 9),
         classId: character.classId,
         status: 'Town',
         experience: 0,
@@ -208,19 +208,23 @@ export default function Clicker() {
         agility: characterClass.statModifiersPerLevel.agility,
         strength: characterClass.statModifiersPerLevel.strength,
         willpower: characterClass.statModifiersPerLevel.willpower,
-      }
+      };
 
       const newCharService = new CharacterService(loggerService, {
         character: newCharacter,
         characterClass,
-      })
+      });
 
-      setCharacterServices((prev) => (prev ? [...prev, newCharService] : [newCharService]))
-      saveCharacter(newCharacter)
-      setNewCharModalOpen(false)
+      setCharacterServices((prev) => (prev ? [...prev, newCharService] : [newCharService]));
+
+      // Save immediately from the newCharService instance — no need to wait for state update
+      characterRepository.store(newCharService.json());
+
+      setNewCharModalOpen(false);
     },
-    [characterClassRepo, loggerService],
+    [characterClassRepo, loggerService]
   )
+
 
   const saveCharacter = (character: ICharacter) => {
     try {
@@ -230,6 +234,15 @@ export default function Clicker() {
       loggerService.log(`Saved character ${character.name} using CharacterRepository`)
     } catch (error) {
       loggerService.log('Failed to save character', error)
+    }
+  }
+
+  const resetSave = () => {
+    if(window.confirm('Are you sure?')){
+      if(window.confirm(`Are you sure you're sure?`)){
+        characterRepository.clear()
+        setCharacterServices([])
+      }
     }
   }
 
@@ -261,10 +274,7 @@ export default function Clicker() {
         </Button>
         <Button
           color="red"
-          onClick={() => {
-            characterRepository.clear()
-            setCharacterServices([])
-          } } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}        >
+          onClick={() => {resetSave()} } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}        >
           Reset All Characters
         </Button>
       </div>

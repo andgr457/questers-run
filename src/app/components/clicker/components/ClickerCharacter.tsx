@@ -5,7 +5,7 @@ import { CharacterService } from '../../../../api/services/CharacterService'
 import { QuestService } from '../../../../api/services/QuestService'
 import NotificationList from '../../common/NotificationList'
 import ClickerProgress from './ClickerProgress'
-import ClickerBag from './ClickerBag'
+import ClickerLoot from './ClickerLoot'
 import ClickerProfession from './ClickerProfession'
 import { CharacterClassRepository } from '../../../../api/repositories/CharacterClassRepository'
 import { LoggerService } from '../../../../api/services/LoggerService'
@@ -267,7 +267,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
           </Button>
 
           {isBagVisible && (
-            <ClickerBag
+            <ClickerLoot
               characterService={characterService}
               show={isBagVisible}
               onClose={() => setIsBagVisible(false)}
