@@ -5,7 +5,11 @@ export class LoggerService {
     this.logTitle = logTitle
   }
 
-  log(description: string){
-    console.log(`${Date.now()} | ${this.logTitle} | ${description}`)
+  log(description: string, error?: any){
+    if(error){
+      console.error(`${Date.now()} | ${this.logTitle} | ${description} | ${JSON.stringify(error)}`)
+    } else {
+      console.log(`${Date.now()} | ${this.logTitle} | ${description}`)
+    }
   }
 }

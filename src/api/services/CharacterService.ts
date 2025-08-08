@@ -4,20 +4,7 @@ import { ICharacter } from '../interfaces/entities/character/ICharacter'
 import { ICharacterClass } from '../interfaces/entities/character/ICharacterClass'
 import { ICharacterBuff } from '../interfaces/entities/character/ICharacterBuff'
 import { IQuest } from '../interfaces/entities/IQuest'
-import { DateTime } from 'luxon'
-import { ILoot } from '../interfaces/entities/ILoot'
-import { QuestService } from './QuestService'
-import { CharacterClassRepository } from '../repositories/CharacterClassRepository'
-
-interface CharacterSave {
-  character: ICharacter
-  characterClass: ICharacterClass
-  buffs?: ICharacterBuff[]
-  quest?: IQuest
-  lootIds?: string[]
-  armorIds?: string[]
-  weaponIds?: string[]
-}
+import { CharacterSave } from '../interfaces/entities/saves/CharacterSave'
 
 export class CharacterService extends Service {
   character: ICharacter

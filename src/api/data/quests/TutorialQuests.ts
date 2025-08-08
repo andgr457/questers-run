@@ -9,7 +9,7 @@ export const TUTORIAL_QUESTS: IQuest[] = [
     level: 1,
     eventSpread: 3,
     time: 10,
-    stamina: 35,
+    stamina: 10,
     gold: 0,
     possibleLootIds: [
       'herb-1',
