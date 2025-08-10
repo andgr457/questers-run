@@ -1,10 +1,11 @@
 import { IQuest } from '../../interfaces/entities/IQuest'
+import { FISH_JUNK_LOOT } from '../resources/Fish.junk'
 
 export const TUTORIAL_QUESTS: IQuest[] = [
   {
     id: 'quest-1',
     title: 'Explore the Woods',
-    description: 'Adventure through the woods of Velmorra',
+    description: 'What am I even doing in Velmorra?',
     experience: 5,
     level: 1,
     eventSpread: 3,
@@ -63,7 +64,8 @@ export const TUTORIAL_QUESTS: IQuest[] = [
     possibleLootIds: [
       "fish-1",
       "fish-2",
-      "vegetable-1"
+      "vegetable-1",
+      ...FISH_JUNK_LOOT.map(jl => jl.id)
     ],
     possibleMobIds: [],
     types: [

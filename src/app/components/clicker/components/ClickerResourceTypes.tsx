@@ -1,4 +1,4 @@
-import { Carrot, CircleQuestionMark, Container, Fish, Grape, Ham, Layers2, Leaf, Pickaxe, Worm } from 'lucide-react'
+import { Carrot, CircleQuestionMark, Container, Fish, Grape, Ham, Layers2, Leaf, Pickaxe, Trash, Worm } from 'lucide-react'
 import { ILootResourceType } from '../../../../api/interfaces/entities/ILoot'
 import { ReactNode } from 'react'
 
@@ -20,6 +20,7 @@ export default function ClickerResourceTypes(props: ClickerResourceTypesProps) {
       case 'ore': return <div title='Ore'><Pickaxe className="w-5 h-5 text-brown-600" /></div>
       case 'vegetable': return <div title='Vegetable'><Carrot className="w-5 h-5 text-orange-600" /></div>
       case 'worm': return <div title='Worm'><Worm className="w-5 h-5 text-brown-600" /></div>
+      case 'junk': return <div title='Junk'><Trash className="w-5 h-5 text-brown-600" /></div>
       default: return <div title='Unknown'><CircleQuestionMark /></div>
     }
   }
@@ -29,6 +30,7 @@ export default function ClickerResourceTypes(props: ClickerResourceTypesProps) {
   } else {
     return <div style={{cursor: 'pointer', flexWrap: 'wrap', display: 'flex', gap: '5px'}}>
       {props.children}
+      {getIconByType('junk')}
       {getIconByType('herb')}
       {getIconByType('ore')}
       {getIconByType('vegetable')}

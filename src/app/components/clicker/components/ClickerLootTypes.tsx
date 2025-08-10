@@ -4,7 +4,7 @@
 import { ILootType } from '../../../../api/interfaces/entities/ILoot'
 import { ReactNode } from 'react'
 import { Profession } from '../../../../api/interfaces/entities/IProfession'
-import { ShieldHalf, TestTubeDiagonal, Soup, Sprout, Sword, CircleQuestionMark } from 'lucide-react'
+import { ShieldHalf, TestTubeDiagonal, Soup, Sprout, Sword, CircleQuestionMark, BaggageClaim, Trash } from 'lucide-react'
 
 interface ClickerLootTypesProps {
   type?: ILootType
@@ -14,8 +14,8 @@ interface ClickerLootTypesProps {
 
 export default function ClickerLootTypes(props: ClickerLootTypesProps) {
 
-  function getIconByType(rarity: ILootType): ReactNode {
-    switch(rarity){
+  function getIconByType(lootType: ILootType): ReactNode {
+    switch(lootType){
       case 'armor': return <div title='Armor'><ShieldHalf className="w-5 h-5 text-red-600" /></div>
       case 'consumable': 
         if(props.profession === 'alchemy'){

@@ -1,5 +1,5 @@
 export type ILootRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
-export type ILootType = 'resource' | 'consumable' | 'armor' | 'weapon'
+export type ILootType = 'resource' | 'consumable' | 'armor' | 'weapon' | 'junk'
 
 export interface ILoot {
   id: string
@@ -11,7 +11,7 @@ export interface ILoot {
   type: ILootType
 }
 
-export type ILootResourceType = 'herb' | 'ore' | 'vegetable' | 'fruit' | 'meat' | 'fish' | 'worm' | 'leather' | 'ingot'
+export type ILootResourceType = 'herb' | 'ore' | 'vegetable' | 'fruit' | 'meat' | 'fish' | 'worm' | 'leather' | 'ingot' | 'junk'
 
 export interface ILootResource extends ILoot {
   recipeIds: string[]

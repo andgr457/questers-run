@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react'
-import { BookOpen, Fish, Leaf, Map, MapPin, Sword, Zap } from 'lucide-react'
+import { Award, BookOpen, Fish, Leaf, Map, MapPin, Sword, Zap } from 'lucide-react'
 import ClickerResourceTypes from './ClickerResourceTypes'
 import { LoggerService } from '../../../../api/services/LoggerService'
 import { QuestRepository } from '../../../../api/repositories/QuestRepository'
@@ -45,6 +45,12 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
       >
         <Map className="w-6 h-6 text-yellow-700" />
         Quest Board {props.characterService.character.name}
+        <div>
+          <Award className="w-6 h-6 text-yellow-700" />
+        </div>
+        <div>
+          QUEST BOARD
+        </div> 
       </DialogHeader>
 
       {/* Quest List */}
@@ -55,6 +61,18 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
         className="max-h-[70vh] overflow-y-auto p-4 space-y-4"
       >
         <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}>
+          <div className='flex flex-row gap-3'>
+            <div>
+              {props.characterService.character.name}
+            </div>
+            <div>
+              {props.characterService.character.stamina} Stamina
+            </div>
+            <div>
+              {props.characterService.character.mana} Mana
+            </div>
+          </div>
+          <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}></div>
           {quests?.sort((a, b) => { return a.level - b.level }).map((q) => {
             const isLockedLevel = q.level > props?.characterService.character.level
             const isLockedHealthOrEnergy = props?.characterService.character.stamina < q.stamina || props?.characterService?.character.health <= 0
@@ -63,7 +81,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
             return (
               <div
                 key={q.id}
-                className={`p-4 rounded-xl shadow-md border transition-all cursor-pointer 
+                className={`p-4 rounded-xl shadow-md border transition-all cursor-pointer gap-4
                   ${isLocked
                     ? 'bg-gray-200 border-gray-300 opacity-60 cursor-not-allowed' 
                     : 'bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500'
@@ -72,8 +90,8 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                 onClick={() => !isLocked && props.onQuestSelect(q.id, props?.characterService.character.id)}
               >
                 {/* Title + Description */}
-                <div className="flex flex-col gap-1">
-                  <div className="text-lg font-semibold flex items-center gap-2 text-yellow-900">
+                <div title={`${q.title} - Requires level ${q.level}`} className="flex flex-wrap gap-4">
+                  <div className="text-lg font-semibold  items-center gap-2 text-yellow-900">
                     {/* Quest Title */}
                     <span style={{fontWeight: 'lighter', fontSize: '1.5rem'}}>{q.title}</span>
                                         {/* Quest Type Icons */}
@@ -104,18 +122,18 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                         </span>
                       )}
                     </div>
+                    <div className="text-sm text-gray-700">
+                      "{q.description}"
+                    </div>
                   </div>
+                  
                   <div className="text-sm text-gray-700">
-                    {q.description}
-
-                  </div>
-                  <div className="text-sm text-gray-700">
-                    REWARDS
+                    
                     <span style={{fontSize: '.7rem'}}><br/>XP {q.experience} GP {q.gold} </span>
 
                   </div>
                   <div className="text-sm text-gray-700">
-                    LOOT
+                    
                     {q.possibleLootIds.length === 0 ? <div style={{fontSize: '.7rem'}}>None</div> : ''}
                     {q.possibleLootIds.map(id => {
                       const item = loot.find(rl => rl.id === id)
@@ -134,14 +152,14 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                     })}
                   </div>
                   <div className="text-sm text-gray-700">
-                    MOBS
+                    
                     {q.possibleMobIds.map(id => {
                         const mob = mobs.find(rl => rl.id === id)
                         if(!mob){
                           return null
                         }
                         return <div style={{fontSize: '.7rem'}}>
-                          <span style={{fontWeight: 'bolder'}} title={mob.description}>{mob.name}</span> {(mob.chance * 100).toFixed(2)}% chance p/t <br/><span style={{fontSize: '.64rem'}}>XP {mob.experience} GP {mob.gold} DPS {mob.dps}</span>
+                          <span style={{fontWeight: 'bolder'}} title={mob.description}>{mob.name}</span> {(mob.chance * 100).toFixed(1)}% chance p/t <br/><span style={{fontSize: '.64rem'}}>XP {mob.experience} GP {mob.gold} DPS {mob.dps}</span>
                         </div>
                       })
                     }
