@@ -58,20 +58,24 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
         onPointerLeaveCapture={undefined}
         className="max-h-[70vh] overflow-y-auto p-4 space-y-4"
       >
-        <div className="sticky -top-2 z-10 bg-white flex flex-col sm:flex-row gap-3 p-2 shadow-sm">
-          <div>
-            {props.characterService.character.name}
-          </div>
-          <div>
-            {props.characterService.character.stamina} Stamina
-          </div>
-          <div>
-            {props.characterService.character.mana} Mana
+        <div className="sticky -top-2 z-10 bg-white flex flex-col sm:flex-row gap-3 p-2 shadow-sm rounded-2xl">
+          <div style={{display: 'flex', flexWrap: 'wrap', gap: '5px'}}>
+            <div>
+              {props.characterService.character.name}
+            </div>
+            <div>
+               HP {props.characterService.character.health}
+            </div>
+            <div>
+               Stamina {props.characterService.character.stamina}
+            </div>
+            <div>
+              Mana {props.characterService.character.mana}
+            </div>
           </div>
         </div>
         <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}>
           
-          <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}></div>
           {quests?.sort((a, b) => { return a.level - b.level }).map((q) => {
             const isLockedLevel = q.level > props?.characterService.character.level
             const isLockedHealthOrEnergy = props?.characterService.character.stamina < q.stamina || props?.characterService?.character.health <= 0
@@ -85,7 +89,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                     ? 'bg-gray-200 border-gray-300 opacity-60 cursor-not-allowed' 
                     : 'bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500'
                   }`}
-                style={{width: '30%'}}
+                style={{width: '100%'}}
                 onClick={() => !isLocked && props.onQuestSelect(q.id, props?.characterService.character.id)}
               >
                 {/* Title + Description */}
