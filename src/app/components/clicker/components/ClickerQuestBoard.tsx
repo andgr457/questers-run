@@ -43,8 +43,6 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
         onPointerLeaveCapture={undefined}
         className="border-b border-yellow-600 text-2xl font-bold flex items-center gap-2"
       >
-        <Map className="w-6 h-6 text-yellow-700" />
-        Quest Board {props.characterService.character.name}
         <div>
           <Award className="w-6 h-6 text-yellow-700" />
         </div>
@@ -60,18 +58,19 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
         onPointerLeaveCapture={undefined}
         className="max-h-[70vh] overflow-y-auto p-4 space-y-4"
       >
-        <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}>
-          <div className='flex flex-row gap-3'>
-            <div>
-              {props.characterService.character.name}
-            </div>
-            <div>
-              {props.characterService.character.stamina} Stamina
-            </div>
-            <div>
-              {props.characterService.character.mana} Mana
-            </div>
+        <div className="sticky -top-2 z-10 bg-white flex flex-col sm:flex-row gap-3 p-2 shadow-sm">
+          <div>
+            {props.characterService.character.name}
           </div>
+          <div>
+            {props.characterService.character.stamina} Stamina
+          </div>
+          <div>
+            {props.characterService.character.mana} Mana
+          </div>
+        </div>
+        <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}>
+          
           <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}></div>
           {quests?.sort((a, b) => { return a.level - b.level }).map((q) => {
             const isLockedLevel = q.level > props?.characterService.character.level
@@ -86,7 +85,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                     ? 'bg-gray-200 border-gray-300 opacity-60 cursor-not-allowed' 
                     : 'bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500'
                   }`}
-                style={{width: '100%'}}
+                style={{width: '30%'}}
                 onClick={() => !isLocked && props.onQuestSelect(q.id, props?.characterService.character.id)}
               >
                 {/* Title + Description */}
@@ -94,7 +93,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                   <div className="text-lg font-semibold  items-center gap-2 text-yellow-900">
                     {/* Quest Title */}
                     <span style={{fontWeight: 'lighter', fontSize: '1.5rem'}}>{q.title}</span>
-                                        {/* Quest Type Icons */}
+                    {/* Quest Type Icons */}
                     <div className="flex items-center gap-1 mr-2">
                       {q.types?.includes('explore') && (
                         <span title="Explore" className="inline-block">

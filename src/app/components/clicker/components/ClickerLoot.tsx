@@ -39,8 +39,13 @@ export default function ClickerLoot(props: ClickerLootProps) {
         onPointerLeaveCapture={undefined}
         className="border-b border-yellow-600 text-2xl font-bold flex items-center gap-2"
       >
-        <PackageOpen className="w-6 h-6 text-yellow-700" />
-        Loot <span style={{fontSize: '.7rem'}}>{props.characterService.character.name}</span>
+        <div>
+          <PackageOpen className="w-6 h-6 text-yellow-700" />
+        </div>
+        <div>
+          LOOT
+        </div> 
+        
         <div style={{flexWrap: 'wrap', display: 'flex', gap: '15px', fontSize: '.5em'}}>
           <ClickerRarity>
             <div>RARITY</div>
@@ -60,6 +65,14 @@ export default function ClickerLoot(props: ClickerLootProps) {
         onPointerLeaveCapture={undefined}
         className="max-h-[70vh] overflow-y-auto p-4 space-y-4"
       >
+        <div className="sticky -top-2 z-10 bg-white flex flex-col sm:flex-row gap-3 p-2 shadow-sm">
+          <div>
+            {props.characterService.character.name}
+          </div>
+          <div>
+            {props.characterService.character.gold.toLocaleString()} GP
+          </div>
+        </div>
 
         <div className='flex flex-row gap-1 flex-wrap'>
 
@@ -67,12 +80,11 @@ export default function ClickerLoot(props: ClickerLootProps) {
             <div
               key={l.id}
               style={{width: '100%'}}
-              className="p-4 rounded-xl shadow-md border transition-all cursor-pointer bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500 mb-3"
+              className="flex flex-col gap-4 p-4 rounded-xl shadow-md border transition-all cursor-pointer bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500 mb-3"
             >
                 <div className="flex flex-col gap-1">
                   <div title={l.description} className="text-lg font-semibold flex items-center gap-2 text-yellow-900">
-                      <ClickerRarity rarity={l.rarity} /> 
-
+                    <ClickerRarity rarity={l.rarity} /> 
 
                     <span style={{ fontWeight: 'lighter', fontSize: '1.5rem' }}>
                       {l.title} {l.quantity > 1 && <span className="text-sm">×{l.quantity}</span>}
