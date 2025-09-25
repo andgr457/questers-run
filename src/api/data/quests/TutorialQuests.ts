@@ -72,6 +72,31 @@ export const TUTORIAL_QUESTS: IQuest[] = [
       "gather",
       "fishing"
     ]
+  },
+  {
+    id: "quest-4",
+    title: "Sam's Horse",
+    description: "Somebody took Sam's horse and he needs someone to get it back for him while he tends to his farm.",
+    experience: 3,
+    level: 2,
+    eventSpread: 3,
+    time: 40,
+    stamina: 15,
+    gold: 3,
+    possibleLootIds: [
+      'herb-3',
+      'vegetable-1',
+      'vegetable-2'
+    ],
+    possibleMobIds: [
+      'goblin-1',
+      'goblin-2',
+      'goblin-3'
+    ],
+    types: [
+      "combat",
+      "explore"
+    ]
   }
 
 ]
