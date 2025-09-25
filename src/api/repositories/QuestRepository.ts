@@ -11,7 +11,14 @@ export class QuestRepository extends Repository implements IRepository<IQuest> {
   ]
 
   list(params?: IQuest): IQuest[] {
-    return this.ALL_QUESTS
-    //TODO implement params
+    if (!params) return this.ALL_QUESTS;
+
+    return this.ALL_QUESTS.filter(r =>
+      Object.entries(params).every(([key, value]) => r[key as keyof IQuest] === value)
+    );
+  }
+
+  getById(id: string): IQuest {
+    return this.ALL_QUESTS.find(m => m.id === id)
   }
 }

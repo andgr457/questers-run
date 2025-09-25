@@ -76,7 +76,7 @@ export default function ClickerProfession(props: ClickerProfessionProps){
 
           {
           recipeRepo.list({profession: props.profession}).sort((a,b) => a.level - b.level).map(r => {
-            const item = lootRepo.list().find(l => l.id === r.craftedItemId)
+            const item = lootRepo.getById(r.craftedItemId)
             return (
               <div style={{width: '100%'}} className="p-4 rounded-xl shadow-md border transition-all cursor-pointer bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500 mb-3">
                 <div className="flex flex-col gap-1">

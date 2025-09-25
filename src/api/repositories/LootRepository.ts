@@ -12,7 +12,7 @@ import { Repository } from './Repository'
 export type AllLoot = ILootArmor & ILootConsumable & ILootResource
 
 export class LootRepository extends Repository implements IRepository<Partial<AllLoot>> {
-  private allLoot: Partial<AllLoot>[] = [
+  private ALL_LOOT: Partial<AllLoot>[] = [
     /** Consumables */
     ...POTION_LOOT,
     ...VEGETABLES_COOKING_LOOT,
@@ -26,16 +26,14 @@ export class LootRepository extends Repository implements IRepository<Partial<Al
   ]
 
   list(params?: Partial<AllLoot>): Partial<AllLoot>[] {
-    if(params?.type){
-      return this.allLoot.filter(l => l.type === params?.type)
-    }
-    if(params?.id){
-      return this.allLoot.filter(l => l.id === params?.id)
-    }
-    return this.allLoot
+    if (!params) return this.ALL_LOOT;
+
+    return this.ALL_LOOT.filter(r =>
+      Object.entries(params).every(([key, value]) => r[key as keyof AllLoot] === value)
+    );
   }
 
   getById(id: string): Partial<AllLoot> {
-    return this.allLoot.find(l => l.id === id)
+    return this.ALL_LOOT.find(l => l.id === id)
   }
 }
