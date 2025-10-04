@@ -14,6 +14,15 @@ export default function NotificationList({ notifications }) {
 <div
   ref={containerRef}
   className="
+    absolute top-0 right-0
+    max-h-40
+    flex flex-col items-end gap-2
+    pointer-events-none
+    px-4 py-2
+    z-50
+  "
+  /**
+   * "
     absolute bottom left-1/2 -translate-x-1/2
     w-full max-h-40
     flex flex-col items-center gap-2
@@ -21,6 +30,8 @@ export default function NotificationList({ notifications }) {
     px-4 py-2
     z-50
   "
+   */
+  
 >
   {notifications.map((n) => (
     <FloatingNotify key={n.id} text={n.text} icon={n.icon} />

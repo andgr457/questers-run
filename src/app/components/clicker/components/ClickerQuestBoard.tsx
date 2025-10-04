@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react'
-import { Award, BookOpen, Fish, Leaf, Map, MapPin, Sword, Zap } from 'lucide-react'
+import { Award, BookOpen, Bubbles, Clock, Fish, Heart, Leaf, Map, MapPin, Sword, Zap } from 'lucide-react'
 import ClickerResourceTypes from './ClickerResourceTypes'
 import { LoggerService } from '../../../../api/services/LoggerService'
 import { QuestRepository } from '../../../../api/repositories/QuestRepository'
@@ -34,14 +34,14 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
       placeholder={undefined}
       onPointerEnterCapture={undefined}
       onPointerLeaveCapture={undefined}
-      className="bg-gradient-to-br from-yellow-50 via-amber-100 to-yellow-200 text-gray-900 rounded-2xl shadow-xl border-4 border-yellow-600"
+      className="bg-gradient-to-br text-gray-900 rounded-2xl shadow-xl border-4"
     >
       {/* Header */}
       <DialogHeader
         placeholder={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
-        className="border-b border-yellow-600 text-2xl font-bold flex items-center gap-2"
+        className="border-b text-2xl font-bold flex items-center gap-2"
       >
         <div>
           <Award className="w-6 h-6 text-yellow-700" />
@@ -63,14 +63,17 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
             <div>
               {props.characterService.character.name}
             </div>
-            <div>
-               HP {props.characterService.character.health}
+            <div title='Health' style={{display: 'flex', flexWrap: 'wrap', gap: '5px'}} className="text-red-500">
+              <Heart />
+               HP {props.characterService.character.health.toFixed(2)}
             </div>
-            <div>
-               Stamina {props.characterService.character.stamina}
+            <div title='Stamina' style={{display: 'flex', flexWrap: 'wrap', gap: '5px'}} className="text-orange-500">
+              <Zap  />
+               {props.characterService.character.stamina.toFixed(2)}
             </div>
-            <div>
-              Mana {props.characterService.character.mana}
+            <div title='Mana' style={{display: 'flex', flexWrap: 'wrap', gap: '5px'}} className="text-blue-500">
+              <Bubbles />
+              {props.characterService.character.mana.toFixed(2)}
             </div>
           </div>
         </div>
@@ -87,7 +90,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                 className={`p-4 rounded-xl shadow-md border transition-all cursor-pointer gap-4
                   ${isLocked
                     ? 'bg-gray-200 border-gray-300 opacity-60 cursor-not-allowed' 
-                    : 'bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500'
+                    : ' hover:shadow-lg hover:border-yellow-500'
                   }`}
                 style={{width: '100%'}}
                 onClick={() => !isLocked && props.onQuestSelect(q.id, props?.characterService.character.id)}
@@ -96,7 +99,11 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                 <div title={`${q.title} - Requires level ${q.level}`} className="flex flex-wrap gap-4">
                   <div className="text-lg font-semibold  items-center gap-2 text-yellow-900">
                     {/* Quest Title */}
-                    <span style={{fontWeight: 'lighter', fontSize: '1.5rem'}}>{q.title}</span>
+                      <span style={{fontWeight: 'lighter', fontSize: '1.5rem'}}>
+                        {q.title}
+                      </span>
+                        <br/>
+                        <span style={{fontSize: '.7rem'}}>XP {q.experience * 10} ({q.experience / 2} p/t) GP {q.gold} </span>
                     {/* Quest Type Icons */}
                     <div className="flex items-center gap-1 mr-2">
                       {q.types?.includes('explore') && (
@@ -130,11 +137,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                     </div>
                   </div>
                   
-                  <div className="text-sm text-gray-700">
-                    
-                    <span style={{fontSize: '.7rem'}}><br/>XP {q.experience} GP {q.gold} </span>
-
-                  </div>
+                  
                   <div className="text-sm text-gray-700">
                     
                     {q.possibleLootIds.length === 0 ? <div style={{fontSize: '.7rem'}}>None</div> : ''}
@@ -162,7 +165,7 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
                           return null
                         }
                         return <div style={{fontSize: '.7rem'}}>
-                          <span style={{fontWeight: 'bolder'}} title={mob.description}>{mob.name}</span> {(mob.chance * 100).toFixed(1)}% chance p/t <br/><span style={{fontSize: '.64rem'}}>XP {mob.experience} GP {mob.gold} DPS {mob.dps}</span>
+                          <span style={{fontWeight: 'bolder'}} title={mob.description}>{mob.name} Lvl {mob.level}</span> {(mob.chance * 100).toFixed(1)}% chance p/t <br/><span style={{fontSize: '.64rem'}}>XP {mob.experience} GP {mob.gold} DPS {mob.dps}</span>
                         </div>
                       })
                     }
@@ -173,12 +176,16 @@ export default function ClickerQuestBoard(props: ClickerQuestBoardProps) {
 
                 {/* Requirements */}
                 <div className="mt-3 flex items-center gap-4 text-sm">
-                  <div className="flex items-center gap-1">
-                    <span className="text-yellow-800 font-bold">Lvl {q.level}</span>
+                  <div className="flex items-center gap-1 text-silver-800">
+                    <span>Lvl {q.level}</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-orange-500">
+                    <Zap className="w-4 h-4 text-orange-500" />
+                    <span>{q.stamina} Stamina</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Zap className="w-4 h-4 text-blue-500" />
-                    <span className="text-blue-600">{q.stamina} Stamina</span>
+                    <Clock className="w-4 h-4 text-silver-500" />
+                    <span className="text-silver-600">{q.time} Seconds</span>
                   </div>
                 </div>
 

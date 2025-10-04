@@ -88,7 +88,7 @@ export class QuestService extends Service {
 
   private tick(): void {
     this.timeLeft--
-    this.emitEvent({ type: 'gain-xp', experience: this.quest.experience * .5 });
+    this.emitEvent({ type: 'gain-xp', experience: this.quest.experience * .5 }); //half quest xp per tick
     for (const mob of this.potentialMobs) {
       if (Math.random() < mob.chance) {
         // Roll for each side to hit
@@ -143,7 +143,7 @@ export class QuestService extends Service {
       clearInterval(this.interval)
       this.interval = null
     }
-    this.emitEvent({ type: "quest-complete", questName: this.quest.title, experience: this.quest.experience, gold: this.quest.gold });
+    this.emitEvent({ type: "quest-complete", questName: this.quest.title, experience: this.quest.experience * 10, gold: this.quest.gold }); // 10 times xp on quest complete?
   }
 
   failQuest(): void {
