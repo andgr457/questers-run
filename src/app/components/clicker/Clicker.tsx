@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { IPlayer } from '../../../api/interfaces/entities/IPlayer'
 import { ICharacter } from '../../../api/interfaces/entities/character/ICharacter'
-import ClickerPlayer from './components/ClickerPlayer'
 import { CharacterService } from '../../../api/services/CharacterService'
 import { LoggerService } from '../../../api/services/LoggerService'
-import { ICharacterClass } from '../../../api/interfaces/entities/character/ICharacterClass'
 import { CharacterClassRepository } from '../../../api/repositories/CharacterClassRepository'
 import { QuestRepository } from '../../../api/repositories/QuestRepository'
 import { IQuest } from '../../../api/interfaces/entities/IQuest'
@@ -19,7 +17,7 @@ export default function Clicker() {
   const loggerService = new LoggerService('Clicker')
   const questRepo = new QuestRepository(loggerService)
   const characterClassRepo = new CharacterClassRepository(loggerService)
-  const characterRepository = new CharacterRepository()
+  const characterRepo = new CharacterRepository()
 
   const [player, setPlayer] = useState<IPlayer>(undefined)
   const [characterServices, setCharacterServices] = useState<CharacterService[]>(undefined)
@@ -35,7 +33,7 @@ export default function Clicker() {
     setQuests(questRepo.list());
 
     // Load saved characters from localStorage using your repo
-    const savedCharacters = characterRepository.getAll();
+    const savedCharacters = characterRepo.getAll();
 
     if (savedCharacters.length > 0) {
       const loadedCharacterServices = savedCharacters.map((save) => new CharacterService(loggerService, save));
@@ -57,7 +55,7 @@ export default function Clicker() {
             });
 
             // Persist the updated character save
-            characterRepository.store(updatedCharService.json());
+            characterRepo.store(updatedCharService.json());
 
             return updatedCharService;
           }
@@ -218,7 +216,7 @@ export default function Clicker() {
       setCharacterServices((prev) => (prev ? [...prev, newCharService] : [newCharService]));
 
       // Save immediately from the newCharService instance — no need to wait for state update
-      characterRepository.store(newCharService.json());
+      characterRepo.store(newCharService.json());
 
       setNewCharModalOpen(false);
     },
@@ -230,7 +228,7 @@ export default function Clicker() {
     try {
       // Wrap character in CharacterSave if needed, else save directly
       const service = characterServices.find(cs => cs.character.id === character.id)
-      characterRepository.store(service.json());
+      characterRepo.store(service.json());
       loggerService.log(`Saved character ${character.name} using CharacterRepository`)
     } catch (error) {
       loggerService.log('Failed to save character', error)
@@ -240,7 +238,7 @@ export default function Clicker() {
   const resetSave = () => {
     if(window.confirm('Are you sure?')){
       if(window.confirm(`Are you sure you're sure?`)){
-        characterRepository.clear()
+        characterRepo.clear()
         setCharacterServices([])
       }
     }
@@ -272,6 +270,7 @@ export default function Clicker() {
           onPointerLeaveCapture={undefined}>
           + New Character
         </Button>
+        
         <Button
           color="red"
           onClick={() => {resetSave()} } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}        >

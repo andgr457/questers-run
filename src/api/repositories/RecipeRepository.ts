@@ -14,12 +14,15 @@ export class RecipeRepository extends Repository implements IRepository<IRecipe>
     ...VEGETABLES_COOKING_RECIPES,
     ...FISH_COOKING_RECIPES,
   ]
+
   list(params?: Partial<IRecipe>): IRecipe[] {
-    if(params?.profession){
-      return this.ALL_RECIPES.filter(r => r.profession === params.profession)
-    }
-    return this.ALL_RECIPES
+    if (!params) return this.ALL_RECIPES;
+
+    return this.ALL_RECIPES.filter(r =>
+      Object.entries(params).every(([key, value]) => r[key as keyof IRecipe] === value)
+    );
   }
+  
   getById(id: string): IRecipe {
     return this.ALL_RECIPES.find(r => r.id === id)
   }

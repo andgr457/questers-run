@@ -10,7 +10,11 @@ export class MobRepository extends Repository implements IRepository<IMob> {
   ]
 
   list(params?: IMob): IMob[] {
-    return [...this.ALL_MOBS]
+    if (!params) return this.ALL_MOBS;
+
+    return this.ALL_MOBS.filter(r =>
+      Object.entries(params).every(([key, value]) => r[key as keyof IMob] === value)
+    );
   }
 
   getById(id: string): IMob {
