@@ -11,7 +11,11 @@ export class CharacterClassRepository extends Repository implements IRepository<
   ]
 
   list(params?: ICharacterClass): ICharacterClass[] {
-    return this.ALL_CLASSES
+    if (!params) return this.ALL_CLASSES;
+
+    return this.ALL_CLASSES.filter(r =>
+      Object.entries(params).every(([key, value]) => r[key as keyof ICharacterClass] === value)
+    );
   }
 
   getById(id: string): ICharacterClass {

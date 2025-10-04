@@ -132,7 +132,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
       characterService.character.maxStamina,
     )
 
-    addNotification(`zZzZzZz +${healthGain} HP +${manaGain} MP +${staminaGain} ST`)
+    addNotification(`zZzZzZz +${healthGain.toFixed(2)} HP +${manaGain.toFixed(2)} MP +${staminaGain.toFixed(2)} ST`)
 
     onModifyCharacter(characterService)
   }
@@ -150,8 +150,8 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
         <div className="flex gap-10 flex-wrap text-black-800 font-semibold">
           <div>Level: {characterService.character.level}</div>
           <div>
-            Experience: {characterService.character.experience.toFixed(2)} /{' '}
-            {characterService.character.experienceNextLevel}
+            XP: {characterService.character.experience.toFixed(2)} /{' '}
+            {characterService.character.experienceNextLevel.toFixed(2)}
           </div>
         </div>
 
@@ -165,12 +165,19 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
         <div className="text-black-800 font-semibold">Gold: {characterService.character.gold ?? 0}</div>
         <div className="text-green-800 font-semibold">Status: {characterService.character.status}</div>
 
-        <ClickerProgress
-          color="orange"
-          type="addition"
-          left={questService?.timeLeft ?? 0}
-          total={questService?.quest?.time ?? 0}
-        />
+        
+        {questService && questService.quest && questService.timeLeft > 0 && <>
+          <ClickerProgress
+            color="orange"
+            type="addition"
+            left={questService?.timeLeft ?? 0}
+            total={questService?.quest?.time ?? 0}
+          />
+          <div>
+            {questService?.timeLeft} / {questService?.quest?.time} seconds
+          </div>
+        </>
+        }
 
         <div className="space-y-4">
           {[
@@ -197,7 +204,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
               <div className="flex justify-between font-medium text-black-900">
                 <span>{label}:</span>
                 <span>
-                  {current.toFixed(2)} / {max}
+                  {current.toFixed(2)} / {max.toFixed(2)}
                 </span>
               </div>
               <ClickerProgress color={color} left={current} total={max} />
@@ -205,9 +212,11 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
           ))}
         </div>
 
-        <div className="text-black-900 font-semibold mt-2">
-          DPS: {characterService.getDps().toFixed(2)} | Strength: {characterService.character.strength} &nbsp;|&nbsp; Agility:{' '}
-          {characterService.character.agility} &nbsp;|&nbsp; Willpower: {characterService.character.willpower}
+        <div className="text-silver-500 mt-2 flex flex-wrap gap-4 mt-6">
+          <span>DPS: {characterService.getDps().toFixed(2)}</span>
+          <span>Strength: {characterService.character.strength.toFixed(2)}</span>
+          <span>Agility: {characterService.character.agility.toFixed(2)}</span>
+          <span>Willpower: {characterService.character.willpower.toFixed(2)}</span>
         </div>
 
         <div className="flex flex-wrap gap-4 mt-6">
