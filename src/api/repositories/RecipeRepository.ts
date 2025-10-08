@@ -2,7 +2,7 @@ import { POTIONS_ALCHEMY_RECIPES } from '../data/recipes/alchemy/Potions'
 import { FISH_COOKING_RECIPES } from '../data/recipes/cooking/Fish'
 import { VEGETABLES_COOKING_RECIPES } from '../data/recipes/cooking/Vegetables'
 import { IRecipe } from '../interfaces/entities/IRecipe'
-import { IRepository } from './IRepository'
+import { IRepository } from '../interfaces/entities/IRepository'
 import { Repository } from './Repository'
 
 export class RecipeRepository extends Repository implements IRepository<IRecipe> {

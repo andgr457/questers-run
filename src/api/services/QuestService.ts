@@ -67,8 +67,6 @@ export class QuestService extends Service {
   }
 
   startQuest(): void {
-    this.emitEvent({ type: "quest-start", questName: this.quest.title })
-    this.quest.startDate = DateTime.utc().toISO()
     this.interval = setInterval(() => this.tick(), 1000)
   }
 
@@ -87,8 +85,12 @@ export class QuestService extends Service {
   }
 
   private tick(): void {
+    if(this.quest.time === this.timeLeft){
+      this.emitEvent({ type: "quest-start", questName: `Quest [${this.quest.title}]` })
+      this.quest.startDate = DateTime.utc().toISO()
+    }
     this.timeLeft--
-    this.emitEvent({ type: 'gain-xp', experience: this.quest.experience * .5 }); //half quest xp per tick
+    this.emitEvent({ type: 'gain-xp', experience: this.quest.experience }); //half quest xp per tick
     for (const mob of this.potentialMobs) {
       if (Math.random() < mob.chance) {
         // Roll for each side to hit
@@ -123,13 +125,26 @@ export class QuestService extends Service {
       }
     }
 
+    // Number of possible rolls = up to the total number of loot items
+    const maxRolls = this.potentialLoot.length;
+    const minRolls = 1;
 
-    // Loot drops independently every tick
-    for (const loot of this.potentialLoot) {
+    // Randomly decide how many items to roll for
+    const rollCount = Math.floor(Math.random() * (maxRolls - minRolls + 1)) + minRolls;
+
+    // Shuffle to randomize order
+    const shuffledLoot = [...this.potentialLoot].sort(() => Math.random() - 0.5);
+
+    // Take only the rolled amount
+    const selectedLoot = shuffledLoot.slice(0, rollCount);
+
+    // Roll to see which of those actually drop
+    for (const loot of selectedLoot) {
       if (Math.random() < loot.chance) {
-        this.emitEvent({ type: 'loot-drop', itemName: loot.title, loot: loot });
+        this.emitEvent({ type: 'loot-drop', itemName: loot.title, loot });
       }
     }
+
 
     this.onTickCallback?.(this.timeLeft, this.timeLeft <= 0)
     

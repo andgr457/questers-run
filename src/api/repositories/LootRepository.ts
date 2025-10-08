@@ -6,7 +6,7 @@ import { FISH_JUNK_LOOT } from '../data/resources/Fish.junk'
 import { HERBS_LOOT } from '../data/resources/Herbs'
 import { VEGETABLES_LOOT } from '../data/resources/Vegetables'
 import { ILootArmor, ILootConsumable, ILootResource } from '../interfaces/entities/ILoot'
-import { IRepository } from './IRepository'
+import { IRepository } from '../interfaces/entities/IRepository'
 import { Repository } from './Repository'
 
 export type AllLoot = ILootArmor & ILootConsumable & ILootResource

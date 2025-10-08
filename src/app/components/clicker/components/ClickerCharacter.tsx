@@ -5,11 +5,12 @@ import { CharacterService } from '../../../../api/services/CharacterService'
 import { QuestService } from '../../../../api/services/QuestService'
 import NotificationList from '../../common/NotificationList'
 import ClickerProgress from './ClickerProgress'
-import ClickerLoot from './ClickerLoot'
 import ClickerProfession from './ClickerProfession'
 import { CharacterClassRepository } from '../../../../api/repositories/CharacterClassRepository'
 import { LoggerService } from '../../../../api/services/LoggerService'
 import { ICharacter } from '../../../../api/interfaces/entities/character/ICharacter'
+import ClickerLoot from './ClickerLoot'
+import ClickerDialogCharacter from './ClickerDialogCharacter'
 
 interface ClickerCharacterProps {
   characterService: CharacterService
@@ -29,11 +30,11 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
 
   const [tick, setTick] = useState(0)
   const { notifications, addNotification } = useFloatingNotifications()
-  const [isBagVisible, setIsBagVisible] = useState(false)
+  const [isLootVisible, setIsLootVisible] = useState(false)
   const [isAlchemyVisible, setIsAlchemyVisible] = useState(false)
   const [isCookingVisible, setIsCookingVisible] = useState(false)
 
-  const toggleBag = () => setIsBagVisible((prev) => !prev)
+  const toggleLoot = () => setIsLootVisible((prev) => !prev)
   const toggleAlchemy = () => setIsAlchemyVisible((prev) => !prev)
   const toggleCooking = () => setIsCookingVisible((prev) => !prev)
 
@@ -49,6 +50,8 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
       switch (event.type) {
         case 'quest-start':
           addNotification(`Started: ${event.questName}`)
+          characterService.character.status = event.questName
+          console.log(characterService.character.status)
           onModifyCharacter(characterService)
           onSaveCharacter(characterService.character)
           break
@@ -57,13 +60,13 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
           addNotification(`+${event.experience.toFixed(2)} XP`)
           characterService.addXp(event.experience)
           characterService.character.gold += event.gold
-          characterService.character.status = 'Walking home...'
+          // characterService.character.status = 'Resting'
           onModifyCharacter(characterService)
           onSaveCharacter(characterService.character)
           break
         case 'quest-failed':
           addNotification(`Quest Failed: ${event.questName}`)
-          characterService.character.status = 'Crawling to the nearest town...'
+          characterService.character.status = 'Woke up at the nearest tavern.'
           onModifyCharacter(characterService)
           onSaveCharacter(characterService.character)
           break
@@ -114,7 +117,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
   }, [questService, characterService, addNotification, onModifyCharacter])
 
   const onTavern = () => {
-    characterService.character.status = 'At the pub down the road...'
+    // characterService.character.status = 'Resting'
     const healthGain = characterService.character.maxHealth * 0.05
     const manaGain = characterService.character.maxMana * 0.05
     const staminaGain = characterService.character.maxStamina * 0.05
@@ -132,7 +135,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
       characterService.character.maxStamina,
     )
 
-    addNotification(`zZzZzZz +${healthGain.toFixed(2)} HP +${manaGain.toFixed(2)} MP +${staminaGain.toFixed(2)} ST`)
+    addNotification(`zzz +${healthGain.toFixed(2)} HP +${manaGain.toFixed(2)} MP +${staminaGain.toFixed(2)} ST`)
 
     onModifyCharacter(characterService)
   }
@@ -141,19 +144,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
     <div className="p-14 bg-black-50 rounded-xl shadow-lg max-w-3xl mx-auto">
       <div className="relative overflow-hidden space-y-6">
         <NotificationList notifications={notifications} />
-
-        <h2 className="text-4xl font-extrabold text-teal-900">
-          {characterService.character.name}
-          <span className="block text-sm font-normal">{characterClass.name.toUpperCase()}</span>
-        </h2>
-
-        <div className="flex gap-10 flex-wrap text-black-800 font-semibold">
-          <div>Level: {characterService.character.level}</div>
-          <div>
-            XP: {characterService.character.experience.toFixed(2)} /{' '}
-            {characterService.character.experienceNextLevel.toFixed(2)}
-          </div>
-        </div>
+        <ClickerDialogCharacter characterService={characterService} />
 
         <ClickerProgress
           type="addition"
@@ -162,10 +153,8 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
           left={characterService.character.experience}
         />
 
-        <div className="text-black-800 font-semibold">Gold: {characterService.character.gold ?? 0}</div>
-        <div className="text-green-800 font-semibold">Status: {characterService.character.status}</div>
+        <div className="text-green-800 font-semibold">Status: {characterService?.character?.status}</div>
 
-        
         {questService && questService.quest && questService.timeLeft > 0 && <>
           <ClickerProgress
             color="orange"
@@ -245,7 +234,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
           <Button
             color="amber"
             disabled={questService?.timeLeft !== undefined && questService.timeLeft !== 0}
-            onClick={toggleBag}
+            onClick={toggleLoot}
             placeholder={undefined} 
             onPointerEnterCapture={undefined} 
             onPointerLeaveCapture={undefined}
@@ -275,11 +264,11 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
             COOKING
           </Button>
 
-          {isBagVisible && (
+          {isLootVisible && (
             <ClickerLoot
               characterService={characterService}
-              show={isBagVisible}
-              onClose={() => setIsBagVisible(false)}
+              onClose={() => {setIsLootVisible(false)}}
+              show={isLootVisible}
             />
           )}
           {isAlchemyVisible && (

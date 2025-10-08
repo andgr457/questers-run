@@ -7,6 +7,7 @@ import { LoggerService } from '../../../../api/services/LoggerService';
 import { AllLoot, LootRepository } from '../../../../api/repositories/LootRepository';
 import ClickerLootTypes from './ClickerLootTypes';
 import { Hammer } from 'lucide-react';
+import ClickerDialogCharacter from './ClickerDialogCharacter';
 
 interface ClickerProfessionProps {
   show: boolean
@@ -38,13 +39,13 @@ export default function ClickerProfession(props: ClickerProfessionProps){
       placeholder={undefined}
       onPointerEnterCapture={undefined}
       onPointerLeaveCapture={undefined}
-      className="bg-gradient-to-br from-yellow-50 via-amber-100 to-yellow-200 text-gray-900 rounded-2xl shadow-xl border-4 border-yellow-600"
+      className="bg-gradient-to-br text-gray-900 rounded-2xl shadow-xl border-4"
     >
       <DialogHeader
         placeholder={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
-        className="border-b border-yellow-600 text-2xl font-bold flex items-center gap-2"
+        className="border-b text-2xl font-bold flex items-center gap-2"
       >
         <div>
           <Hammer className="w-6 h-6 text-yellow-700" />
@@ -54,24 +55,13 @@ export default function ClickerProfession(props: ClickerProfessionProps){
         </div>        
       </DialogHeader>
 
-      {/* Quest List */}
       <DialogBody
         placeholder={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
         className="max-h-[70vh] overflow-y-auto p-4 space-y-4"
       >
-          <div className='flex flex-row gap-3'>
-            <div>
-              {props.characterService.character.name}
-            </div>
-            <div>
-              {props.characterService.character.stamina} Stamina
-            </div>
-            <div>
-              {props.characterService.character.mana} Mana
-            </div>
-          </div>
+          <ClickerDialogCharacter characterService={props?.characterService} />
           <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}>
 
           {
