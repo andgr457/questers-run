@@ -29,7 +29,7 @@ export function ClickerNewCharacter({
       setClassId(null)
       setClasses([])
     }
-  }, [isOpen, characterClassRepo])
+  }, [isOpen])
 
   const handleNameChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value),
