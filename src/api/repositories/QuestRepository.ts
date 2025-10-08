@@ -1,6 +1,6 @@
 import { TUTORIAL_QUESTS } from '../data/quests/TutorialQuests'
 import { IQuest } from '../interfaces/entities/IQuest'
-import { IRepository } from './IRepository'
+import { IRepository } from '../interfaces/entities/IRepository'
 import { Repository } from './Repository'
 
 

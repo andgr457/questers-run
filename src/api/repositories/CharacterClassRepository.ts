@@ -1,7 +1,7 @@
 import { MAGE_CLASSES } from '../data/classes/MageClasses'
 import { MELEE_CLASSES } from '../data/classes/MeleeClasses'
 import { ICharacterClass } from '../interfaces/entities/character/ICharacterClass'
-import { IRepository } from './IRepository'
+import { IRepository } from '../interfaces/entities/IRepository'
 import { Repository } from './Repository'
 
 export class CharacterClassRepository extends Repository implements IRepository<ICharacterClass> {

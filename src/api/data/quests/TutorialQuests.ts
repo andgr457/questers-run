@@ -24,7 +24,8 @@ export const TUTORIAL_QUESTS: IQuest[] = [
       'explore',
       'gather',
       'combat'
-    ]
+    ],
+    regionId: 'reg1'
   },
   {
     id: 'quest-2',
@@ -49,7 +50,8 @@ export const TUTORIAL_QUESTS: IQuest[] = [
     types: [
       'combat',
       'gather'
-    ]
+    ],
+    regionId: 'reg1'
   },
   {
     id: "quest-3",
@@ -71,7 +73,8 @@ export const TUTORIAL_QUESTS: IQuest[] = [
     types: [
       "gather",
       "fishing"
-    ]
+    ],
+    regionId: 'reg1'
   },
   {
     id: "quest-4",
@@ -96,7 +99,8 @@ export const TUTORIAL_QUESTS: IQuest[] = [
     types: [
       "combat",
       "explore"
-    ]
+    ],
+    regionId: 'reg2'
   }
 
 ]

@@ -1,6 +1,6 @@
 import { GOLBLIN_MOBS } from '../data/mobs/Goblins'
 import { IMob } from '../interfaces/entities/IMob'
-import { IRepository } from './IRepository'
+import { IRepository } from '../interfaces/entities/IRepository'
 import { Repository } from './Repository'
 
 export class MobRepository extends Repository implements IRepository<IMob> {
