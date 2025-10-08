@@ -55,8 +55,8 @@ export default function ClickerQuestBoard(props: ClickerQuestTabsProps) {
         QUESTS
       </DialogHeader>
 
+      <ClickerDialogCharacter characterService={props.characterService} />
       <DialogBody className="max-h-[70vh] overflow-y-auto p-4 space-y-4"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <ClickerDialogCharacter characterService={props.characterService} />
 
         {/* Dimension Tabs */}
         <div className="flex gap-2 flex-wrap">

@@ -97,10 +97,9 @@ export default function ClickerLoot(props: ClickerLootProps) {
           </ClickerLootTypes>
         </div>
       </DialogHeader>
-
+      <ClickerDialogCharacter characterService={props?.characterService} />
       {/* Body */}
       <DialogBody className="max-h-[70vh] overflow-y-auto p-4 space-y-4 bg-gray-50"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <ClickerDialogCharacter characterService={props?.characterService} />
         <ClickerInventoryViewer characterService={props?.characterService} loot={allLoot} />
 
       </DialogBody>

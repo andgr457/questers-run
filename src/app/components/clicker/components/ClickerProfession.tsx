@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react';
+import { Button, Collapse, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react';
 import { CharacterService } from '../../../../api/services/CharacterService';
 import { Profession } from '../../../../api/interfaces/entities/IProfession';
 import ClickerResourceTypes from './ClickerResourceTypes';
@@ -8,6 +8,8 @@ import { AllLoot, LootRepository } from '../../../../api/repositories/LootReposi
 import ClickerLootTypes from './ClickerLootTypes';
 import { Hammer } from 'lucide-react';
 import ClickerDialogCharacter from './ClickerDialogCharacter';
+import { ClickerInventoryViewer } from './ClickerInventoryViewer';
+import { useState } from 'react';
 
 interface ClickerProfessionProps {
   show: boolean
@@ -17,9 +19,12 @@ interface ClickerProfessionProps {
   statField: string
 }
 export default function ClickerProfession(props: ClickerProfessionProps){
+  const [isInventoryOpen, setIsInventoryOpen] = useState(false);
+
   const loggerService = new LoggerService('ClickerProfession')
   const recipeRepo = new RecipeRepository(loggerService)
   const lootRepo = new LootRepository(loggerService)
+  const allLoot = lootRepo.list()
 
   const groupedLoot = props.characterService.character.loot.filter(l => l.type === 'resource').reduce((groups, lootItem: Partial<AllLoot>) => {
     const existing = groups[lootItem.id]
@@ -35,11 +40,11 @@ export default function ClickerProfession(props: ClickerProfessionProps){
     <Dialog
       size="lg"
       open={props.show}
-      handler={undefined}
+      handler={props.onClose}
       placeholder={undefined}
       onPointerEnterCapture={undefined}
       onPointerLeaveCapture={undefined}
-      className="bg-gradient-to-br text-gray-900 rounded-2xl shadow-xl border-4"
+      className="bg-gradient-to-br text-gray-900 rounded-2xl shadow-xl border-4 border-yellow-600"
     >
       <DialogHeader
         placeholder={undefined}
@@ -51,31 +56,57 @@ export default function ClickerProfession(props: ClickerProfessionProps){
           <Hammer className="w-6 h-6 text-yellow-700" />
         </div>
         <div>
-          {props.profession.toUpperCase()} RECIPES
+          {props.profession.toUpperCase()}
         </div>        
       </DialogHeader>
-
+      <ClickerDialogCharacter characterService={props?.characterService} />
       <DialogBody
         placeholder={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
         className="max-h-[70vh] overflow-y-auto p-4 space-y-4"
       >
-          <ClickerDialogCharacter characterService={props?.characterService} />
+          <Collapse open={false} >
+            <ClickerInventoryViewer characterService={props?.characterService} loot={allLoot} />
+          </Collapse>
+          <div>
+            {/* Button to toggle collapse */}
+            <button
+              onClick={() => setIsInventoryOpen(!isInventoryOpen)}
+              className="px-4 py-2 bg-gray-500 text-white rounded"
+            >
+              LOOT
+            </button>
+
+            {/* Collapse */}
+            <Collapse open={isInventoryOpen}>
+              <ClickerInventoryViewer
+                characterService={props?.characterService}
+                loot={allLoot}
+              />
+            </Collapse>
+          </div>
+
           <div style={{display: 'flex', flexWrap: 'wrap', gap: '5'}}>
 
           {
           recipeRepo.list({profession: props.profession}).sort((a,b) => a.level - b.level).map(r => {
             const item = lootRepo.getById(r.craftedItemId)
             return (
-              <div style={{width: '100%'}} className="p-4 rounded-xl shadow-md border transition-all cursor-pointer bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500 mb-3">
-                <div className="flex flex-col gap-1">
+              <div 
+              key={r.id}
+                  className={`p-4 rounded-xl shadow-md border transition-all cursor-pointer gap-4 hover:shadow-lg hover:border-gray-600'`}
+              >
+                <div className="flex flex-col gap-2">
                   <div className="text-lg font-semibold flex items-center gap-2 text-yellow-900">
-                    <ClickerLootTypes type={item.type} profession={props.profession} />
+                  <ClickerLootTypes type={item.type} profession={props.profession} />
                     <span style={{ fontWeight: 'lighter', fontSize: '1.5rem' }}>
                       {r.title}
                     </span>
                   </div>
+                  <div className="text-lg font-semibold text-gray-900">Lvl {r.level}</div>
+                  <div className="text-sm text-gray-700">{r.description}</div>
+                  
                   <div className="text-sm text-gray-700">
                     {r.description}
                     <br />
@@ -91,7 +122,7 @@ export default function ClickerProfession(props: ClickerProfessionProps){
                   </span>
                   <div>
                     {r.recipeItems.map(ri => {
-                      const item = lootRepo.list().find(rr => rr.id === ri.resourceId)
+                      const item = allLoot.find(rr => rr.id === ri.resourceId)
                       return (
                         <div style={{display: 'flex', gap: '7px', fontSize: 'smaller'}}>
                           {ri.quantity}x <span style={{fontWeight: 'bolder'}} title={item.description}>{item.title}</span> <ClickerResourceTypes type={item.resourceType} />
@@ -131,23 +162,7 @@ export default function ClickerProfession(props: ClickerProfessionProps){
           }
           </div>
 
-          <div className='flex flex-row gap-3'>
-          {Object.values(groupedLoot).map((l) => (
-            <div
-              key={l.id}
-              className="p-4 rounded-xl shadow-md border transition-all cursor-pointer bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500 mb-3"
-            >
-              <div className='flex flex-row gap-10'>
-                <div className="text-lg font-semibold flex items-center gap-2 text-yellow-900">
-                  <span title={l.description} style={{ fontWeight: 'lighter', fontSize: '1.25rem' }}>
-                    {l.title} {l.quantity > 1 && <span className="text-sm">×{l.quantity}</span>}
-                  </span>
-                </div>
-              </div>
-
-            </div>
-          ))}
-          </div>
+          
       </DialogBody>
 
       {/* Footer */}

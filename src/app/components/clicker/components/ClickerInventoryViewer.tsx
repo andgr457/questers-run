@@ -62,7 +62,7 @@ export const ClickerInventoryViewer: React.FC<ClickerInventoryViewerProps> = ({ 
   ]
 
   return (
-    <div className="p-4 bg-gradient-to-br from-gray-100 via-white to-gray-50 rounded-2xl border-2 border-gray-200 shadow-lg">
+    <div className="p-4 bg-gradient-to-br  rounded-2xl border-2 border-gray-200 shadow-lg">
       {/* Type Tabs */}
       <Tabs value={activeType}>
         <TabsHeader className="bg-gray-200 rounded-xl"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
