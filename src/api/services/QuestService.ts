@@ -90,7 +90,7 @@ export class QuestService extends Service {
       this.quest.startDate = DateTime.utc().toISO()
     }
     this.timeLeft--
-    this.emitEvent({ type: 'gain-xp', experience: this.quest.experience }); //half quest xp per tick
+    this.emitEvent({ type: 'gain-xp', experience: this.quest.experience });
     for (const mob of this.potentialMobs) {
       if (Math.random() < mob.chance) {
         // Roll for each side to hit
