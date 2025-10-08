@@ -8,10 +8,10 @@ import { QuestRepository } from '../../../api/repositories/QuestRepository'
 import { IQuest } from '../../../api/interfaces/entities/IQuest'
 import ClickerCharacter from './components/ClickerCharacter'
 import { QuestService } from '../../../api/services/QuestService'
-import ClickerQuestBoard, { ClickerQuestBoardProps } from './components/ClickerQuestBoard'
 import { ClickerNewCharacter } from './components/ClickerNewCharacter'
 import { Button } from '@material-tailwind/react'
 import { CharacterRepository } from '../../../api/repositories/CharacterRepository'
+import ClickerQuestBoard, { ClickerQuestTabsProps } from './components/ClickerQuestBoard'
 
 export default function Clicker() {
   const loggerService = new LoggerService('Clicker')
@@ -27,7 +27,7 @@ export default function Clicker() {
 
   const [newCharModalOpen, setNewCharModalOpen] = useState(false)
 
-  const [showQuestsParams, setShowQuestsParams] = useState<ClickerQuestBoardProps>(undefined)
+  const [showQuestsParams, setShowQuestsParams] = useState<ClickerQuestTabsProps>(undefined)
 
   useEffect(() => {
     setQuests(questRepo.list());
@@ -143,7 +143,6 @@ export default function Clicker() {
       setCharacterServices((prevChars) =>
         prevChars.map((c) => {
           if (c.character.id === characterId) {
-            c.character.status = 'Questing'
             c.character.stamina -= quest.stamina
             return new CharacterService(loggerService, {
               character: { ...c.character },

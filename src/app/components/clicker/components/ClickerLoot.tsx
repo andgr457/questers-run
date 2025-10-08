@@ -1,10 +1,14 @@
+import { useEffect, useState } from 'react'
 import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react'
 import { CharacterService } from '../../../../api/services/CharacterService'
 import ClickerResourceTypes from './ClickerResourceTypes'
 import ClickerRarity from './ClickerRarity'
-import { AllLoot } from '../../../../api/repositories/LootRepository'
+import { AllLoot, LootRepository } from '../../../../api/repositories/LootRepository'
 import ClickerLootTypes from './ClickerLootTypes'
-import { PackageOpen, Zap } from 'lucide-react'
+import { PackageOpen } from 'lucide-react'
+import ClickerDialogCharacter from './ClickerDialogCharacter'
+import { ClickerInventoryViewer } from './ClickerInventoryViewer'
+import { LoggerService } from '../../../../api/services/LoggerService'
 
 export interface ClickerLootProps {
   show: boolean
@@ -12,7 +16,41 @@ export interface ClickerLootProps {
   characterService: CharacterService
 }
 
+/**
+ * @file ClickerLoot.tsx
+ * @description
+ * Main inventory view for a character. Displays all loot items in a modal.
+ * Provides top-level tabs for loot type filtering (All, Resource, Consumable, Armor, Weapon, Junk)
+ * and sub-tabs for subcategories (e.g., Armor slots, Resource types).
+ *
+ * Features:
+ * - Full character inventory display.
+ * - Tabs/sub-tabs for filtering by type and subtype.
+ * - Uses LootItemCard to render each item safely using Partial<ILoot>.
+ * - Standalone, reusable, TypeScript-safe.
+ *
+ * Props:
+ * @prop {boolean} show - Whether the modal is visible.
+ * @prop {() => void} onClose - Callback to close the modal.
+ * @prop {CharacterService} characterService - Service containing character info and loot.
+ *
+ * Usage:
+ * <ClickerLoot show={showLoot} onClose={handleClose} characterService={characterService} />
+ */
+
 export default function ClickerLoot(props: ClickerLootProps) {
+  const loggerService = new LoggerService('ClickerLoot')
+  
+  const [activeTab, setActiveTab] = useState<string>('all')
+  const [allLoot, setAllLoot] = useState([])
+
+  const lootRepo = new LootRepository(loggerService)
+
+  useEffect(() => {
+    setAllLoot(lootRepo.list())
+  }, [])
+
+  // Group loot by id and count quantities
   const groupedLoot = props.characterService.character.loot.reduce((groups, lootItem) => {
     const existing = groups[lootItem.id]
     if (!existing) {
@@ -23,30 +61,31 @@ export default function ClickerLoot(props: ClickerLootProps) {
     return groups
   }, {} as Record<string, Partial<AllLoot> & { quantity: number }>)
 
+  // Derive loot type categories dynamically
+  const lootTypes = Array.from(
+    new Set(Object.values(groupedLoot).map((l) => l.type || 'misc'))
+  )
+
+  const filteredLoot = Object.values(groupedLoot).filter(
+    (l) => activeTab === 'all' || l.type === activeTab
+  )
+
   return (
     <Dialog
       size="lg"
       open={props.show}
       handler={props.onClose}
-      placeholder={undefined}
-      onPointerEnterCapture={undefined}
-      onPointerLeaveCapture={undefined}
-      className="bg-gradient-to-br from-yellow-50 via-amber-100 to-yellow-200 text-gray-900 rounded-2xl shadow-xl border-4 border-yellow-600"
-    >
-      <DialogHeader
-        placeholder={undefined}
-        onPointerEnterCapture={undefined}
-        onPointerLeaveCapture={undefined}
-        className="border-b border-yellow-600 text-2xl font-bold flex items-center gap-2"
-      >
+      className="bg-gradient-to-br text-gray-900 rounded-2xl shadow-xl border-4 border-yellow-600"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}    >
+      {/* Header */}
+      <DialogHeader className="border-b text-2xl font-bold flex items-center gap-2"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
         <div>
           <PackageOpen className="w-6 h-6 text-yellow-700" />
         </div>
         <div>
           LOOT
         </div> 
-        
-        <div style={{flexWrap: 'wrap', display: 'flex', gap: '15px', fontSize: '.5em'}}>
+
+        <div className="flex flex-wrap gap-4 text-xs ml-auto">
           <ClickerRarity>
             <div>RARITY</div>
           </ClickerRarity>
@@ -59,73 +98,18 @@ export default function ClickerLoot(props: ClickerLootProps) {
         </div>
       </DialogHeader>
 
-      <DialogBody
-        placeholder={undefined}
-        onPointerEnterCapture={undefined}
-        onPointerLeaveCapture={undefined}
-        className="max-h-[70vh] overflow-y-auto p-4 space-y-4"
-      >
-        <div className="sticky -top-2 z-10 bg-white flex flex-col sm:flex-row gap-3 p-2 shadow-sm">
-          <div>
-            {props.characterService.character.name}
-          </div>
-          <div>
-            {props.characterService.character.gold.toLocaleString()} GP
-          </div>
-        </div>
-
-        <div className='flex flex-row gap-1 flex-wrap'>
-
-          {Object.values(groupedLoot).map((l) => (
-            <div
-              key={l.id}
-              style={{width: '100%'}}
-              className="flex flex-col gap-4 p-4 rounded-xl shadow-md border transition-all cursor-pointer bg-amber-50 border-yellow-600 hover:shadow-lg hover:border-yellow-500 mb-3"
-            >
-                <div className="flex flex-col gap-1">
-                  <div title={l.description} className="text-lg font-semibold flex items-center gap-2 text-yellow-900">
-                    <ClickerRarity rarity={l.rarity} /> 
-
-                    <span style={{ fontWeight: 'lighter', fontSize: '1.5rem' }}>
-                      {l.title} {l.quantity > 1 && <span className="text-sm">×{l.quantity}</span>}
-                    </span>
-                    
-                    <ClickerLootTypes type={l.type} />
-                    <ClickerResourceTypes type={l.resourceType} />
-                  </div>
-                  <div style={{fontSize: '0.69rem'}}>
-                    {l.description}
-                  </div>
-                  <div style={{ fontSize: '.64rem' }} className='flex flex-wrap gap 3'>
-                    <span >
-                    </span>
-                    <span title={`${(l.chance * 100).toFixed(1)} chance on tick.`}>
-                      {(l.chance * 100).toFixed(1)}%
-                    </span>
-                    <span title={`${l.gold} gold on unalive on tick.`}>
-                      GP {l.gold}
-                    </span>
-                  </div>
-                </div>
-              </div>
-          ))}
-        </div>
+      {/* Body */}
+      <DialogBody className="max-h-[70vh] overflow-y-auto p-4 space-y-4 bg-gray-50"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+        <ClickerDialogCharacter characterService={props?.characterService} />
+        <ClickerInventoryViewer characterService={props?.characterService} loot={allLoot} />
 
       </DialogBody>
 
-      <DialogFooter
-        placeholder={undefined}
-        onPointerEnterCapture={undefined}
-        onPointerLeaveCapture={undefined}
-        className="border-t border-yellow-600 pt-3"
-      >
+      {/* Footer */}
+      <DialogFooter className="border-t border-gray-600 pt-3"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
         <Button
           onClick={props.onClose}
-          placeholder={undefined}
-          onPointerEnterCapture={undefined}
-          onPointerLeaveCapture={undefined}
-          className="bg-gray-700 hover:bg-orange-600 text-white rounded-xl px-6 py-2 shadow-md"
-        >
+          className="bg-gray-700 hover:bg-orange-600 text-white rounded-xl px-6 py-2 shadow-md"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}        >
           Close
         </Button>
       </DialogFooter>

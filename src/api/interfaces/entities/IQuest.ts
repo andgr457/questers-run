@@ -32,4 +32,5 @@ export interface IQuest {
   /** When the quest was started utc  */
   startDate?: string
   types: string[]
+  regionId: string
 }
