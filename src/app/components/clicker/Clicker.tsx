@@ -12,6 +12,7 @@ import { ClickerNewCharacter } from './components/ClickerNewCharacter'
 import { Button } from '@material-tailwind/react'
 import { CharacterRepository } from '../../../api/repositories/CharacterRepository'
 import ClickerQuestBoard, { ClickerQuestTabsProps } from './components/ClickerQuestBoard'
+import Roadmap from '../roadmap/Roadmap'
 
 export default function Clicker() {
   const loggerService = new LoggerService('Clicker')
@@ -28,6 +29,7 @@ export default function Clicker() {
   const [newCharModalOpen, setNewCharModalOpen] = useState(false)
 
   const [showQuestsParams, setShowQuestsParams] = useState<ClickerQuestTabsProps>(undefined)
+  const [showRoadMap, setShowRoadmap] = useState<boolean>(false)
 
   useEffect(() => {
     setQuests(questRepo.list());
@@ -243,6 +245,9 @@ export default function Clicker() {
     }
   }
 
+  const showRoadmap = () => setShowRoadmap(true)
+  const hideRoadmap = () => setShowRoadmap(false)
+
   return (
     <div>
       <ClickerNewCharacter
@@ -259,6 +264,8 @@ export default function Clicker() {
         show={showQuestsParams?.show ?? false}
       />
 
+      <Roadmap onClose={hideRoadmap} show={showRoadMap} />
+
       {/* New Character Button */}
       <div className="mb-4">
         <Button
@@ -274,6 +281,12 @@ export default function Clicker() {
           color="red"
           onClick={() => {resetSave()} } placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}        >
           Reset All Characters
+        </Button>
+
+        <Button
+          color="blue"
+          onClick={() => setShowRoadmap(true)} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}        >
+          Roadmap
         </Button>
       </div>
 
