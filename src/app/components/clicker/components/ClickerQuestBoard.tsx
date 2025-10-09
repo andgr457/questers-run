@@ -8,6 +8,8 @@ import { LoggerService } from '../../../../api/services/LoggerService';
 import ClickerDialogCharacter from './ClickerDialogCharacter';
 import ClickerLootTypes from './ClickerLootTypes';
 import { MobRepository } from '../../../../api/repositories/MobRepository';
+import { LootRepository } from '../../../../api/repositories/LootRepository';
+import ClickerResourceTypes from './ClickerResourceTypes';
 
 export interface ClickerQuestTabsProps {
   show: boolean;
@@ -23,6 +25,7 @@ export default function ClickerQuestBoard(props: ClickerQuestTabsProps) {
   const realmRepo = new RealmRepository(loggerService);
   const regionRepo = new RegionRepository(loggerService);
   const mobRepo = new MobRepository(loggerService)
+  const lootRepo = new LootRepository(loggerService)
 
   const dimensions = dimRepo.list();
 
@@ -46,6 +49,7 @@ export default function ClickerQuestBoard(props: ClickerQuestTabsProps) {
   const filteredQuests = activeRegion ? allQuests.filter(q => q.regionId === activeRegion) : [];
 
   const mobs = mobRepo.list();
+  const loot = lootRepo.list();
 
   return (
     <Dialog size="lg" open={props.show} handler={props.onClose} className="bg-gradient-to-br text-gray-900 rounded-2xl shadow-xl border-4 border-gray-400"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
@@ -158,8 +162,26 @@ export default function ClickerQuestBoard(props: ClickerQuestTabsProps) {
                     }
                     {q.possibleMobIds.length === 0 && <div style={{fontSize: '.7rem'}}>No Danger</div>}
                     </div>
-                  
-                  </div>
+                    <div className="mt-3 flex items-center gap-4 text-sm">
+                      {q.possibleLootIds.map(id => {
+                        const lootItem = loot.find(rl => rl.id === id)
+                        if(!lootItem){
+                          return null
+                        }
+                        return <div style={{fontSize: '.7rem'}}>
+                          <div className="flex items-center gap-1">
+                            {lootItem.title} <ClickerLootTypes type={lootItem.type} /> <ClickerResourceTypes type={lootItem.resourceType} /> 
+                            <br/>
+                            
+                          </div>
+                          <span style={{fontSize: '.64rem'}}> {(lootItem.chance * 100).toFixed(1)}% chance p/t</span>
+                           <br/><span style={{fontSize: '.64rem'}}> GP {lootItem.gold}</span>
+                        </div>
+                      })
+                    }
+                    {q.possibleLootIds.length === 0 && <div style={{fontSize: '.7rem'}}>No Loot</div>}
+                    </div>
+                </div>
                 </div>
               );
             })}
