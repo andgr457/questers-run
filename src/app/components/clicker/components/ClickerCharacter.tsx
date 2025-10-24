@@ -139,7 +139,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
 
     onModifyCharacter(characterService)
     onSaveCharacter(characterService.character)
-    addNotification(`+${recipe.title}`)
+    addNotification(`+${recipe.title} crafted!`)
   }, [characterService, recipeRepo, lootRepo, onModifyCharacter, onSaveCharacter])
 
   const onTavern = () => {
