@@ -56,7 +56,7 @@ export const POTIONS_ALCHEMY_RECIPES: IRecipe[] = [
     recipeItems: [
       {
         quantity: 3,
-        resourceId: 'herb-3'
+        resourceId: 'herb-2'
       },
       {
         quantity: 1,

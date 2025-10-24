@@ -6,10 +6,11 @@ import { RecipeRepository } from '../../../../api/repositories/RecipeRepository'
 import { LoggerService } from '../../../../api/services/LoggerService';
 import { AllLoot, LootRepository } from '../../../../api/repositories/LootRepository';
 import ClickerLootTypes from './ClickerLootTypes';
-import { Hammer } from 'lucide-react';
+import { Check, Hammer, X } from 'lucide-react';
 import ClickerDialogCharacter from './ClickerDialogCharacter';
 import { ClickerInventoryViewer } from './ClickerInventoryViewer';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import ClickerProgress from './ClickerProgress';
 
 interface ClickerProfessionProps {
   show: boolean
@@ -17,16 +18,18 @@ interface ClickerProfessionProps {
   characterService: CharacterService
   profession: Profession
   statField: string
+  handleCharacterCraft: (recipeId: string) => void
 }
 export default function ClickerProfession(props: ClickerProfessionProps){
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
+  const [craft, setCraft] = useState({left: 0, total: 0})
 
   const loggerService = new LoggerService('ClickerProfession')
   const recipeRepo = new RecipeRepository(loggerService)
   const lootRepo = new LootRepository(loggerService)
   const allLoot = lootRepo.list()
 
-  const groupedLoot = props.characterService.character.loot.filter(l => l.type === 'resource').reduce((groups, lootItem: Partial<AllLoot>) => {
+  const groupedLoot = props.characterService.character.loot.reduce((groups, lootItem: Partial<AllLoot>) => {
     const existing = groups[lootItem.id]
     if (!existing) {
       groups[lootItem.id] = { ...lootItem, quantity: 1 } 
@@ -35,6 +38,10 @@ export default function ClickerProfession(props: ClickerProfessionProps){
     }
     return groups
   }, {} as Record<string, Partial<AllLoot> & { quantity: number }>)
+
+  const handleCraftClicked = useCallback((e) => {
+    props.handleCharacterCraft(e.target.dataset.recipeid)
+  }, [props.handleCharacterCraft])
 
   return (
     <Dialog
@@ -92,6 +99,32 @@ export default function ClickerProfession(props: ClickerProfessionProps){
           {
           recipeRepo.list({profession: props.profession}).sort((a,b) => a.level - b.level).map(r => {
             const item = lootRepo.getById(r.craftedItemId)
+            let uncraftable = true
+            let uncraftableReason = ''
+            if(props.characterService.character.level < r.level){
+              uncraftableReason = 'Level requirements not met.'
+            } else {
+              let hasRequiredItems = true
+              for(const recipeItem of r.recipeItems){
+                if(!groupedLoot[recipeItem.resourceId]){
+                  hasRequiredItems = false
+                  groupedLoot[recipeItem.resourceId] = {
+                    quantity: 0
+                  }
+                  uncraftableReason = `Missing required resources.`
+                } else {
+                  const characterQuantity = groupedLoot[recipeItem.resourceId].quantity
+                  if(characterQuantity < recipeItem.quantity){
+                    uncraftableReason = `Missing required resources.`
+                    hasRequiredItems = false
+                  }
+                }
+              }
+              if(hasRequiredItems === true){
+                uncraftable = false
+              }
+            }
+
             return (
               <div 
               key={r.id}
@@ -105,7 +138,6 @@ export default function ClickerProfession(props: ClickerProfessionProps){
                     </span>
                   </div>
                   <div className="text-lg font-semibold text-gray-900">Lvl {r.level}</div>
-                  <div className="text-sm text-gray-700">{r.description}</div>
                   
                   <div className="text-sm text-gray-700">
                     {r.description}
@@ -123,9 +155,13 @@ export default function ClickerProfession(props: ClickerProfessionProps){
                   <div>
                     {r.recipeItems.map(ri => {
                       const item = allLoot.find(rr => rr.id === ri.resourceId)
+                      
                       return (
                         <div style={{display: 'flex', gap: '7px', fontSize: 'smaller'}}>
-                          {ri.quantity}x <span style={{fontWeight: 'bolder'}} title={item.description}>{item.title}</span> <ClickerResourceTypes type={item.resourceType} />
+                          {groupedLoot[ri.resourceId]?.quantity >= ri.quantity ?
+                            <Check color='green' /> : <X color='red' />
+                          }
+                          {groupedLoot[ri.resourceId]?.quantity ?? 0}/{ri.quantity}x <span style={{fontWeight: 'bolder'}} title={item.description}>{item.title}</span> <ClickerResourceTypes type={item.resourceType} />
                         </div>
                       )
                     })}
@@ -141,18 +177,21 @@ export default function ClickerProfession(props: ClickerProfessionProps){
                   </div>
                   <div>
                     <div className="mt-2 text-xs text-black-500 italic">
-                      Requires Lvl {r.level}
+                      Requires Lvl {r.level}<br/>{uncraftableReason}
                     </div>
-                    {props.characterService.character.level >= r.level && <div className="mt-2 text-xs text-red-500 italic">
+                    {!uncraftable && <div className="mt-2 text-xs text-red-500 italic">
                       <Button
-                        onClick={undefined}
+                        disabled={uncraftable}
+                        onClick={handleCraftClicked}
+                        data-recipeid={r.id}
                         placeholder={undefined}
                         onPointerEnterCapture={undefined}
                         onPointerLeaveCapture={undefined}
-                        className={`bg-blue-700 ${props.characterService.character.level >= r.level ? 'hover:bg-green-600' : 'hover:bg-red-600'} text-white rounded-xl px-6 py-2 shadow-md`}
+                        className={` ${props.characterService.character.level >= r.level ? 'hover:bg-green-600' : 'hover:bg-red-600'} text-white rounded-xl px-6 py-2 shadow-md`}
                       >
-                        CRAFT x1
+                        CRAFT
                       </Button>
+
                     </div>}
                   </div>
                 </div>
@@ -170,8 +209,10 @@ export default function ClickerProfession(props: ClickerProfessionProps){
         placeholder={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
-        className="border-t border-yellow-600 pt-3"
+        
       >
+        <ClickerProgress total={craft.left} left={craft.total}  />
+
         <Button
           onClick={props.onClose}
           placeholder={undefined}
@@ -181,6 +222,7 @@ export default function ClickerProfession(props: ClickerProfessionProps){
         >
           Close
         </Button>
+        
       </DialogFooter>
     </Dialog>
   )

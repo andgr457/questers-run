@@ -1,5 +1,5 @@
 import { Button } from '@material-tailwind/react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useFloatingNotifications } from '../hooks/useFloatingNotifications'
 import { CharacterService } from '../../../../api/services/CharacterService'
 import { QuestService } from '../../../../api/services/QuestService'
@@ -11,6 +11,8 @@ import { LoggerService } from '../../../../api/services/LoggerService'
 import { ICharacter } from '../../../../api/interfaces/entities/character/ICharacter'
 import ClickerLoot from './ClickerLoot'
 import ClickerDialogCharacter from './ClickerDialogCharacter'
+import { RecipeRepository } from '../../../../api/repositories/RecipeRepository'
+import { LootRepository } from '../../../../api/repositories/LootRepository'
 
 interface ClickerCharacterProps {
   characterService: CharacterService
@@ -24,6 +26,8 @@ interface ClickerCharacterProps {
 export default function ClickerCharacter(props: ClickerCharacterProps) {
   const loggerService = new LoggerService('ClickerCharacter')
   const characterClassRepo = new CharacterClassRepository(loggerService)
+  const recipeRepo = new RecipeRepository(loggerService)
+  const lootRepo = new LootRepository(loggerService)
   const characterClass = characterClassRepo.getById(props.characterService.character.classId)
 
   const { characterService, questService, onModifyCharacter, onQuest, onSaveCharacter } = props
@@ -38,10 +42,10 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
   const toggleAlchemy = () => setIsAlchemyVisible((prev) => !prev)
   const toggleCooking = () => setIsCookingVisible((prev) => !prev)
 
-  useEffect(() => {
-    const interval = setInterval(() => setTick((t) => t + 1), 1000)
-    return () => clearInterval(interval)
-  }, [])
+  // useEffect(() => {
+  //   const interval = setInterval(() => setTick((t) => t + 1), 1000)
+  //   return () => clearInterval(interval)
+  // }, [])
 
   useEffect(() => {
     if (!questService) return
@@ -60,7 +64,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
           addNotification(`+${event.experience.toFixed(2)} XP`)
           characterService.addXp(event.experience)
           characterService.character.gold += event.gold
-          // characterService.character.status = 'Resting'
+          characterService.character.status = 'Resting'
           onModifyCharacter(characterService)
           onSaveCharacter(characterService.character)
           break
@@ -116,6 +120,28 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
     }
   }, [questService, characterService, addNotification, onModifyCharacter])
 
+  const handleCharacterCraft = useCallback((recipeId: string) => {
+    const recipe = recipeRepo.getById(recipeId)
+    const loot = characterService.character.loot
+    for(const recipeItem of recipe.recipeItems){
+      for(let i = 0; i < recipeItem.quantity; i++){
+        const index = loot.findIndex(item => item.id === recipeItem.resourceId)
+        if (index !== -1) {
+          loot.splice(index, 1)
+        } else {
+          // Stop early if no more matching items are found
+          break
+        }
+      }
+    }
+    const lootItem = lootRepo.getById(recipe.craftedItemId)
+    characterService.character.loot.push(lootItem)
+
+    onModifyCharacter(characterService)
+    onSaveCharacter(characterService.character)
+    addNotification(`+${recipe.title}`)
+  }, [characterService, recipeRepo, lootRepo, onModifyCharacter, onSaveCharacter])
+
   const onTavern = () => {
     // characterService.character.status = 'Resting'
     const healthGain = characterService.character.maxHealth * 0.05
@@ -146,13 +172,15 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
         <NotificationList notifications={notifications} />
         <ClickerDialogCharacter characterService={characterService} />
 
-        <ClickerProgress
-          type="addition"
-          color="purple"
-          total={characterService.character.experienceNextLevel}
-          left={characterService.character.experience}
-        />
-
+<       div key={'XP'} className="flex flex-col gap-1">
+          <div className="flex justify-between font-medium text-black-900">
+            <span>XP:</span>
+            <span>
+              {characterService.character.experience.toFixed(0)} / {characterService.character.experienceNextLevel.toFixed(0)}
+            </span>
+          </div>
+          <ClickerProgress color={'purple'} left={characterService.character.experience} total={characterService.character.experienceNextLevel} />
+        </div>
         <div className="text-green-800 font-semibold">Status: {characterService?.character?.status}</div>
 
         {questService && questService.quest && questService.timeLeft > 0 && <>
@@ -193,7 +221,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
               <div className="flex justify-between font-medium text-black-900">
                 <span>{label}:</span>
                 <span>
-                  {current.toFixed(2)} / {max.toFixed(2)}
+                  {current.toFixed(0)} / {max.toFixed(2)}
                 </span>
               </div>
               <ClickerProgress color={color} left={current} total={max} />
@@ -273,6 +301,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
           )}
           {isAlchemyVisible && (
             <ClickerProfession
+              handleCharacterCraft={handleCharacterCraft}
               statField="mana"
               characterService={characterService}
               onClose={() => setIsAlchemyVisible(false)}
@@ -282,6 +311,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
           )}
           {isCookingVisible && (
             <ClickerProfession
+              handleCharacterCraft={handleCharacterCraft}
               statField="stamina"
               characterService={characterService}
               onClose={() => setIsCookingVisible(false)}

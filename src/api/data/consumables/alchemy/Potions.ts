@@ -40,8 +40,8 @@ export const POTION_LOOT: ILootConsumable[] = [
     type: 'consumable',
     defense: 0,
     dps: 0,
-    health: 25,
+    health: 0,
     mana: 0,
-    stamina: 0
+    stamina: 25
   }
 ]
