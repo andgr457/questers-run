@@ -62,14 +62,27 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     subtitle: 'Quests with randomization and completion logic',
     description: 'Add quest repository, filtering, and clicker integration for rewards and progress.',
     category: 'feature',
-    status: 'in-progress',
+    status: 'completed',
     milestone: 'v0.3.0',
-    progress: 80,
+    progress: 100,
     plannedReleaseDate: '2025-10-10',
     lastUpdated: '2025-10-08T00:00:00Z'
   },
 
   // ⚔️ GAMEPLAY EXPANSIONS
+  {
+    id: 'r020-1',
+    title: 'Professions System',
+    subtitle: 'Implement professions with some base items for gameplay.',
+    description: 'Add component to list profession recipes and ability for characters to craft items.',
+    category: 'feature',
+    status: 'in-progress',
+    milestone: 'v0.4.0',
+    progress: 20,
+    plannedReleaseDate: '2025-10-20',
+    dependencies: ['r012'],
+    lastUpdated: '2025-10-08T00:00:00Z'
+  },
   {
     id: 'r020',
     title: 'Equipment System',
@@ -77,7 +90,7 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     description: 'Add component to equip items, update stats dynamically, and integrate with loot data.',
     category: 'feature',
     status: 'planned',
-    milestone: 'v0.4.0',
+    milestone: 'v0.4.5',
     progress: 0,
     plannedReleaseDate: '2025-10-20',
     dependencies: ['r011'],
@@ -90,7 +103,7 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     description: 'Implement shoppe with buy/sell interface, item pricing, and stock based on character level.',
     category: 'feature',
     status: 'planned',
-    milestone: 'v0.4.1',
+    milestone: 'v0.4.5',
     progress: 0,
     plannedReleaseDate: '2025-10-25',
     dependencies: ['r011', 'r020'],

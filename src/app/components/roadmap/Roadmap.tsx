@@ -11,6 +11,7 @@ import { IRoadmap } from '../../../api/interfaces/roadmap/IRoadmap'
 import { RoadmapRepository } from '../../../api/repositories/roadmap/RoadmapRepository'
 import { LoggerService } from '../../../api/services/LoggerService'
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react'
+import ClickerProgress from '../clicker/components/ClickerProgress'
 
 interface RoadmapProps {
   show: boolean
@@ -93,8 +94,7 @@ export default function Roadmap({ show, onClose }: RoadmapProps) {
                         </span>
                       )}
                     </div>
-
-                    <Progress value={item.progress ?? 0} className="h-2" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+                    <ClickerProgress color={item.status === 'in-progress' ? 'yellow' : item.status === 'completed' ? 'green' : ''} left={item.progress ?? 0} total={100} />
                   </Card>
                 ))}
               </div>
