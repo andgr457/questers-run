@@ -120,7 +120,7 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     status: 'planned',
     milestone: 'v0.5.0',
     progress: 0,
-    plannedReleaseDate: '2025-11-05',
+    plannedReleaseDate: '2026-01-15',
     dependencies: ['r010', 'r012', 'r020'],
     lastUpdated: '2025-10-08T00:00:00Z'
   },
@@ -133,7 +133,7 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     status: 'planned',
     milestone: 'v0.5.1',
     progress: 0,
-    plannedReleaseDate: '2025-11-15',
+    plannedReleaseDate: '2026-02-15',
     dependencies: ['r030'],
     lastUpdated: '2025-10-08T00:00:00Z'
   },
@@ -146,7 +146,7 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     status: 'planned',
     milestone: 'v0.6.0',
     progress: 0,
-    plannedReleaseDate: '2025-12-01',
+    plannedReleaseDate: '2026-03-15',
     dependencies: ['r031'],
     lastUpdated: '2025-10-08T00:00:00Z'
   },
@@ -161,7 +161,7 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     status: 'planned',
     milestone: 'v0.6.1',
     progress: 0,
-    plannedReleaseDate: '2025-12-15',
+    plannedReleaseDate: '2026-04-15',
     dependencies: ['r012', 'r030'],
     lastUpdated: '2025-10-08T00:00:00Z'
   },
@@ -171,12 +171,12 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     id: 'r050',
     title: 'UI/UX Overhaul',
     subtitle: 'Refine layout, colors, and transitions',
-    description: 'Improve usability, introduce animations, and unify style across components using Tailwind and shadcn.',
+    description: 'Improve usability, introduce animations, and unify style across components using Tailwind.',
     category: 'ui',
     status: 'planned',
     milestone: 'v0.7.0',
     progress: 0,
-    plannedReleaseDate: '2025-12-20',
+    plannedReleaseDate: '2026-05-15',
     dependencies: ['r040'],
     lastUpdated: '2025-10-08T00:00:00Z'
   }
