@@ -79,7 +79,7 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     status: 'in-progress',
     milestone: 'v0.4.0',
     progress: 20,
-    plannedReleaseDate: '2025-10-20',
+    plannedReleaseDate: '2025-11-20',
     dependencies: ['r012'],
     lastUpdated: '2025-10-08T00:00:00Z'
   },
@@ -92,7 +92,7 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     status: 'planned',
     milestone: 'v0.4.5',
     progress: 0,
-    plannedReleaseDate: '2025-10-20',
+    plannedReleaseDate: '2025-12-25',
     dependencies: ['r011'],
     lastUpdated: '2025-10-08T00:00:00Z'
   },
@@ -105,7 +105,7 @@ export const ROADMAP_ITEMS: IRoadmap[] = [
     status: 'planned',
     milestone: 'v0.4.5',
     progress: 0,
-    plannedReleaseDate: '2025-10-25',
+    plannedReleaseDate: '2025-12-25',
     dependencies: ['r011', 'r020'],
     lastUpdated: '2025-10-08T00:00:00Z'
   },
