@@ -9,7 +9,7 @@ import ClickerLootTypes from './ClickerLootTypes';
 import { Check, Hammer, X } from 'lucide-react';
 import ClickerDialogCharacter from './ClickerDialogCharacter';
 import { ClickerInventoryViewer } from './ClickerInventoryViewer';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import ClickerProgress from './ClickerProgress';
 
 interface ClickerProfessionProps {
@@ -22,7 +22,7 @@ interface ClickerProfessionProps {
 }
 export default function ClickerProfession(props: ClickerProfessionProps){
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
-  const [craft, setCraft] = useState({left: 0, total: 0})
+  const [craft, setCraft] = useState({ left: 0, total: 0, active: false, status: 'Waiting to craft...' })
 
   const loggerService = new LoggerService('ClickerProfession')
   const recipeRepo = new RecipeRepository(loggerService)
@@ -40,11 +40,33 @@ export default function ClickerProfession(props: ClickerProfessionProps){
   }, {} as Record<string, Partial<AllLoot> & { quantity: number }>)
 
   const handleCraftClicked = useCallback((e) => {
-    props.handleCharacterCraft(e.target.dataset.recipeid)
-  }, [props.handleCharacterCraft])
+    const recipeId = e.target.dataset.recipeid
+    const recipe = recipeRepo.getById(recipeId)
+    const item = lootRepo.getById(recipe.craftedItemId)
+    // Prevent overlapping crafts
+    if (craft.active) return
 
-  return (
-    <Dialog
+    // Start crafting progress
+    setCraft({ left: 0, total: 2000, active: true, status: `Crafting ${item.title}...` })
+
+    const startTime = Date.now()
+
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - startTime
+      if (elapsed >= 2000) {
+        clearInterval(interval)
+        setCraft({ left: 2000, total: 2000, active: false, status: `Crafted ${item.title}!` })
+
+        // Complete the craft
+        props.handleCharacterCraft(recipeId)
+      } else {
+        setCraft({ left: elapsed, total: 2000, active: true, status: `Crafting ${item.title}...` })
+      }
+    }, 100)
+  }, [props.handleCharacterCraft, craft.active])
+
+  const view = useMemo(() => {
+    return <Dialog
       size="lg"
       open={props.show}
       handler={props.onClose}
@@ -200,7 +222,10 @@ export default function ClickerProfession(props: ClickerProfessionProps){
           })
           }
           </div>
-
+        <ClickerProgress total={craft.total} left={craft.left} />
+        <div>
+          {craft.status}
+        </div>
           
       </DialogBody>
 
@@ -211,8 +236,6 @@ export default function ClickerProfession(props: ClickerProfessionProps){
         onPointerLeaveCapture={undefined}
         
       >
-        <ClickerProgress total={craft.left} left={craft.total}  />
-
         <Button
           onClick={props.onClose}
           placeholder={undefined}
@@ -225,5 +248,7 @@ export default function ClickerProfession(props: ClickerProfessionProps){
         
       </DialogFooter>
     </Dialog>
-  )
+  }, [props, craft, isInventoryOpen])
+
+  return view
 }

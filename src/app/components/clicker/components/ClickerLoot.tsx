@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react'
 import { CharacterService } from '../../../../api/services/CharacterService'
 import ClickerResourceTypes from './ClickerResourceTypes'
@@ -42,36 +42,11 @@ export default function ClickerLoot(props: ClickerLootProps) {
   const loggerService = new LoggerService('ClickerLoot')
   
   const [activeTab, setActiveTab] = useState<string>('all')
-  const [allLoot, setAllLoot] = useState([])
 
   const lootRepo = new LootRepository(loggerService)
 
-  useEffect(() => {
-    setAllLoot(lootRepo.list())
-  }, [])
-
-  // Group loot by id and count quantities
-  const groupedLoot = props.characterService.character.loot.reduce((groups, lootItem) => {
-    const existing = groups[lootItem.id]
-    if (!existing) {
-      groups[lootItem.id] = { ...lootItem, quantity: 1 }
-    } else {
-      existing.quantity += 1
-    }
-    return groups
-  }, {} as Record<string, Partial<AllLoot> & { quantity: number }>)
-
-  // Derive loot type categories dynamically
-  const lootTypes = Array.from(
-    new Set(Object.values(groupedLoot).map((l) => l.type || 'misc'))
-  )
-
-  const filteredLoot = Object.values(groupedLoot).filter(
-    (l) => activeTab === 'all' || l.type === activeTab
-  )
-
-  return (
-    <Dialog
+  const view = useMemo(() => {
+    return <Dialog
       size="lg"
       open={props.show}
       handler={props.onClose}
@@ -100,7 +75,7 @@ export default function ClickerLoot(props: ClickerLootProps) {
       <ClickerDialogCharacter characterService={props?.characterService} />
       {/* Body */}
       <DialogBody className="max-h-[70vh] overflow-y-auto p-4 space-y-4 bg-gray-50"  placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-        <ClickerInventoryViewer characterService={props?.characterService} loot={allLoot} />
+        <ClickerInventoryViewer characterService={props?.characterService} loot={lootRepo.list()} />
 
       </DialogBody>
 
@@ -113,5 +88,7 @@ export default function ClickerLoot(props: ClickerLootProps) {
         </Button>
       </DialogFooter>
     </Dialog>
-  )
+  }, [props, activeTab])
+
+  return view
 }

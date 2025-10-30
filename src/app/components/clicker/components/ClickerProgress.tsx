@@ -34,8 +34,8 @@ export default function ClickerProgress({
       <div
         className={`${colors[color] ?? colors.green} h-3 transition-all duration-300 ease-linear`}
         style={{ width: `${progressPercent}%` }}
-        title={`${total}/${clampedLeft}`}
-      >{total.toFixed(0)}/{clampedLeft.toFixed(0)}</div>
+        title={`${clampedLeft}/${total}`}
+      >{clampedLeft.toFixed(0)}/{total.toFixed(0)}</div>
     </div>
   );
 }

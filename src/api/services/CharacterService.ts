@@ -62,31 +62,32 @@ export class CharacterService extends Service {
 
   levelUp(): void {
     // Level up loop to handle multiple levels if XP is enough
-    while (this.character.experience >= this.character.experienceNextLevel) {
-      this.character.experience -= this.character.experienceNextLevel
-      this.character.level += 1
-      this.character.experienceNextLevel = this.calculateNextLevelXP()
+    if(this.character.experience < this.character.experienceNextLevel) return
 
-      const levelFactor = 0.02 * this.character.level // 2% per level multiplier (adjust as needed)
+    const leftOverExperience = this.character.experience - this.character.experienceNextLevel
+    this.character.experience = 0 + leftOverExperience
+    this.character.level += 1
+    this.character.experienceNextLevel = this.calculateNextLevelXP()
 
-      // Helper to apply base + % increase
-      const enhanceStat = (base: number, modifier: number) =>
-        base + modifier + base * levelFactor
+    const levelFactor = 0.02 * this.character.level // 2% per level multiplier (adjust as needed)
 
-      // Upgrade stats with base modifier + percentage boost
-      this.character.strength = enhanceStat(this.character.strength, this.characterClass.statModifiersPerLevel.strength)
-      this.character.willpower = enhanceStat(this.character.willpower, this.characterClass.statModifiersPerLevel.willpower)
-      this.character.agility = enhanceStat(this.character.agility, this.characterClass.statModifiersPerLevel.agility)
-      
-      this.character.maxHealth = enhanceStat(this.character.maxHealth, this.characterClass.statModifiersPerLevel.health)
-      this.character.maxMana = enhanceStat(this.character.maxMana, this.characterClass.statModifiersPerLevel.mana)
-      this.character.maxStamina = enhanceStat(this.character.maxStamina, this.characterClass.statModifiersPerLevel.stamina)
+    // Helper to apply base + % increase
+    const enhanceStat = (base: number, modifier: number) =>
+      base + modifier + base * levelFactor
 
-      // Reset current stats to max after level up
-      this.character.health = this.character.maxHealth
-      this.character.mana = this.character.maxMana
-      this.character.stamina = this.character.maxStamina
-    }
+    // Upgrade stats with base modifier + percentage boost
+    this.character.strength = enhanceStat(this.character.strength, this.characterClass.statModifiersPerLevel.strength)
+    this.character.willpower = enhanceStat(this.character.willpower, this.characterClass.statModifiersPerLevel.willpower)
+    this.character.agility = enhanceStat(this.character.agility, this.characterClass.statModifiersPerLevel.agility)
+    
+    this.character.maxHealth = enhanceStat(this.character.maxHealth, this.characterClass.statModifiersPerLevel.health)
+    this.character.maxMana = enhanceStat(this.character.maxMana, this.characterClass.statModifiersPerLevel.mana)
+    this.character.maxStamina = enhanceStat(this.character.maxStamina, this.characterClass.statModifiersPerLevel.stamina)
+
+    // Reset current stats to max after level up
+    this.character.health = this.character.maxHealth
+    this.character.mana = this.character.maxMana
+    this.character.stamina = this.character.maxStamina
   }
 
   calculateNextLevelXP(): number {
