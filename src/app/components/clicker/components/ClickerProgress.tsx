@@ -30,11 +30,12 @@ export default function ClickerProgress({
 
   // Always render, even if 0% filled
   return (
-    <div className="w-full h-3 bg-gray-300 rounded-full overflow-hidden">
+    <div className="w-full h-3 bg-gray-300 rounded-full overflow-hidden" style={{fontSize: '10px', textAlign: 'center'}}>
       <div
         className={`${colors[color] ?? colors.green} h-3 transition-all duration-300 ease-linear`}
         style={{ width: `${progressPercent}%` }}
-      />
+        title={`${total}/${clampedLeft}`}
+      >{total.toFixed(0)}/{clampedLeft.toFixed(0)}</div>
     </div>
   );
 }

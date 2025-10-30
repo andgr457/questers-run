@@ -220,8 +220,8 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
             <div key={label} className="flex flex-col gap-1">
               <div className="flex justify-between font-medium text-black-900">
                 <span>{label}:</span>
-                <span>
-                  {current.toFixed(0)} / {max.toFixed(2)}
+                <span title={`${current}/${max}`}>
+                  {current.toFixed(0)} / {max.toFixed(0)}
                 </span>
               </div>
               <ClickerProgress color={color} left={current} total={max} />
