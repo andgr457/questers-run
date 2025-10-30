@@ -13,6 +13,7 @@ import { Button } from '@material-tailwind/react'
 import { CharacterRepository } from '../../../api/repositories/CharacterRepository'
 import ClickerQuestBoard, { ClickerQuestTabsProps } from './components/ClickerQuestBoard'
 import Roadmap from '../roadmap/Roadmap'
+import ClickerProgress from './components/ClickerProgress'
 
 export default function Clicker() {
   const loggerService = new LoggerService('Clicker')
@@ -290,18 +291,92 @@ export default function Clicker() {
         </Button>
       </div>
 
-      <div style={{ flexWrap: 'wrap', display: 'flex', gap: '5px' }}>
-        {characterServices?.sort((a, b) => {return a.character.level - b.character.level}).map((c) => (
-          <ClickerCharacter
-            key={c.character.id}
-            characterService={c}
-            onModifyCharacter={handleModifyCharacter}
-            onQuest={handleShowQuestSelection}
-            questService={questServices.get(c.character.id)}
-            onSaveCharacter={saveCharacter}
-          />
-        ))}
-      </div>
+<div className="flex flex-col w-full rounded-xl overflow-hidden border border-gray-700 bg-gray-900 text-gray-100">
+  <div className="grid grid-cols-8 gap-2 p-3 font-bold bg-gray-800 text-yellow-400 text-sm uppercase">
+    <div>Name</div>
+    <div>Level</div>
+    <div>XP</div>
+    <div>Health</div>
+    <div>Mana</div>
+    <div>Stamina</div>
+    <div>Status</div>
+    <div>Actions</div>
+  </div>
+
+  <div className="divide-y divide-gray-700">
+    {characterServices
+      ?.sort((a, b) => a.character.level - b.character.level)
+      .map((c) => (
+        // <ClickerCharacter characterService={c} onModifyCharacter={handleModifyCharacter} onQuest={handleShowQuestSelection} onSaveCharacter={saveCharacter} questService={questServices.get(c.character.id)} />
+        <div
+          key={c.character.id}
+          className="grid grid-cols-8 gap-2 p-3 items-center hover:bg-gray-800 transition"
+        >
+          <div className="font-semibold">{c.character.name}</div>
+          <div>{c.character.level}</div>
+
+          {/* XP */}
+          <div>
+            <ClickerProgress
+              color="purple"
+              left={c.character.experience}
+              total={c.character.experienceNextLevel}
+            />
+          </div>
+
+          {/* Health */}
+          <div>
+            <ClickerProgress
+              color="green"
+              left={c.character.health}
+              total={c.character.maxHealth}
+            />
+          </div>
+
+          {/* Mana */}
+          <div>
+            <ClickerProgress
+              color="blue"
+              left={c.character.mana}
+              total={c.character.maxMana}
+            />
+          </div>
+
+          {/* Stamina */}
+          <div>
+            <ClickerProgress
+              color="yellow"
+              left={c.character.stamina}
+              total={c.character.maxStamina}
+            />
+          </div>
+
+          {/* Status */}
+          <div className="text-sm italic">{c.character.status}</div>
+
+          {/* Actions */}
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              color="blue"
+              onClick={() => handleShowQuestSelection(c.character.level, c.character.id)}
+              disabled={questServices.get(c.character.id)?.timeLeft !== undefined &&
+                questServices.get(c.character.id)?.timeLeft !== 0} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
+              Quest
+            </Button>
+
+            <Button
+              size="sm"
+              color="green"
+              onClick={() => saveCharacter(c.character)} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}            >
+              Save
+            </Button>
+          </div>
+        </div>
+      ))}
+  </div>
+</div>
+
     </div>
 )
 }
