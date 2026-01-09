@@ -181,7 +181,7 @@ export default function ClickerCharacter(props: ClickerCharacterProps) {
           </div>
           <ClickerProgress color={'purple'} left={characterService.character.experience} total={characterService.character.experienceNextLevel} />
         </div>
-        <div className="text-green-800 font-semibold">Status: {characterService?.character?.status}</div>
+        <div>Status: {characterService?.character?.status}</div>
 
         {questService && questService.quest && questService.timeLeft > 0 && <>
           <ClickerProgress
