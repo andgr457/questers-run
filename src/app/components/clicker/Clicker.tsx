@@ -251,6 +251,7 @@ export default function Clicker() {
 
   return (
     <div>
+      <div>Hello World</div>
       <ClickerNewCharacter
         characterClassRepo={characterClassRepo}
         isOpen={newCharModalOpen}
