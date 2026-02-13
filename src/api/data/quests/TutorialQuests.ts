@@ -101,6 +101,31 @@ export const TUTORIAL_QUESTS: IQuest[] = [
       "explore"
     ],
     regionId: 'reg2'
+  },
+  {
+    id: 'quest-guthix',
+    title: 'Guthix Lives',
+    description: 'Comedian and Sotamaster require some herbs. Watch out for trolls! Travel to Buth and splash some potions around.',
+    experience: 5,
+    level: 1,
+    eventSpread: 3,
+    time: 15,
+    stamina: 5,
+    gold: 10,
+    possibleLootIds: [
+      'herb-3',
+      'herb-2',
+      'vegetable-1'
+    ],
+    possibleMobIds: [
+      'goblin-3'
+    ],
+    types: [
+      'explore',
+      'gather',
+      'combat'
+    ],
+    regionId: 'reg1'
   }
 
 ]
