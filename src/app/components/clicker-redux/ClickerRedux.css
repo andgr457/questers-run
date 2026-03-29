@@ -1,0 +1,38 @@
+:root {
+  --bg-dark: #1b1b1b;
+  --panel: #2a2a2a;
+  --panel-light: #3a3a3a;
+  --gold: #c9a227;
+  --gold-dark: #9f7f1c;
+  --danger: #8b1e1e;
+  --text: #e6e2d3;
+  --main-green: #1e2f22;
+}
+
+body {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  background: radial-gradient(circle at top, #1b1b1b, #121212);
+  color: var(--text);
+}
+
+.clicker-main {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.clicker-modal-slide {
+  opacity: 0%;
+  animation: slowTextShow 2s ease-in forwards 2s;
+}
+
+@keyframes slowTextShow {
+  0% {
+    opacity: 0%;
+  }
+  50% {
+    opacity: 50%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}

@@ -1,0 +1,2 @@
+export const REDUX_CHARACTER_LIMIT = 10
+export const REDUX_CHARACTER_LEVEL_LIMIT = 50
