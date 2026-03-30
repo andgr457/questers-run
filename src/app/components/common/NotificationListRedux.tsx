@@ -1,0 +1,43 @@
+import { useEffect, useRef } from "react";
+import FloatingNotifyRedux from './FloatingNotifyRedux';
+
+export default function NotificationListRedux({ notifications }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [notifications]);
+
+  return (
+<div
+  ref={containerRef}
+  className="
+    absolute top-0 right-0
+    max-h-40
+    flex flex-col items-end gap-2
+    pointer-events-none
+    px-4 py-2
+    z-50
+  "
+  /**
+   * "
+    absolute bottom left-1/2 -translate-x-1/2
+    w-full max-h-40
+    flex flex-col items-center gap-2
+    pointer-events-none
+    px-4 py-2
+    z-50
+  "
+   */
+  
+>
+  {notifications.map((n) => {
+    console.log(n)
+    return <FloatingNotifyRedux key={n.id} text={n.text} icon={n.icon} />
+  })}
+</div>
+
+  );
+}

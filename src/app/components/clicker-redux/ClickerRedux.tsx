@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react'
 import './ClickerRedux.css'
-import CRNewGuildModal from './CRNewGuildModal';
+import './ClickerSlides.css'
+
+import CRIntroductionModal from './CRIntroductionModal';
+import { useFloatingNotifications } from '../../hooks/useFloatingNotifications';
+import NotificationList from '../common/NotificationList';
 
 export default function ClickerRedux() {
   const [tick, setTick] = useState<number>(0);
   const [gameData, setGameData] = useState<string>('Initialized');
 
-  const [guildName, setGuildName] = useState(undefined)
-  const [newCharacterName, setNewCharacterName] = useState(undefined)
+  const [guildName, setGuildName] = useState('')
+  const [guildmasterName, setGuildmasterName] = useState('')
 
   const [characters, setCharacters] = useState(undefined)
 
@@ -30,31 +34,39 @@ export default function ClickerRedux() {
     if (tick > 0) {
       setGameData(`Tick ${tick}: Updating game state...`);
       // Add game logic here (e.g., move NPCs, update scores)
-      if(!guildName && !showNewGuildModal){
+      const guildSetupComplete = guildName 
+        && guildName.trim().length > 0 
+        && guildmasterName 
+        && guildmasterName.trim().length > 0
+        && showNewGuildModal === false
+      if(!guildSetupComplete && !showNewGuildModal){
         setShowNewGuildModal(true)
       }
-      if(guildName && (!characters || characters.length === 0) && showNewCharacterModal === false){
+      if(guildSetupComplete && (!characters || characters.length === 0) && showNewCharacterModal === false){
         setShowNewCharacterModal(true)
       }
     }
   }, [tick]);
 
   return <div className='clicker-main'>
-    <CRNewGuildModal 
+    <CRIntroductionModal 
       backdropHides={false}
       isOpen={showNewGuildModal}
       onClose={() => {
         setGuildName('')
         setShowNewGuildModal(false)
       }}
-      handleSetGuildName={setGuildName}
+      handleSetGuildName={(_guildName: string) => setGuildName(_guildName)}
       guildName={guildName}
       handleAcceptClicked={() => {
         setShowNewGuildModal(false)
       }}
+      guildmasterName={guildmasterName}
+      handleSetGuildmasterName={(_guildmasterName: string) => setGuildmasterName(_guildmasterName)}
+      closeButton={false}
     >
       <></>
-    </CRNewGuildModal>
+    </CRIntroductionModal>
     Clicker Redux {gameData}
     <div>
       {showNewGuildModal === false && guildName}

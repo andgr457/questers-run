@@ -14,25 +14,15 @@ body {
   font-family: "Cinzel", serif;
   background: radial-gradient(circle at top, #1b1b1b, #121212);
   color: var(--text);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 12px;
 }
 
 .clicker-main {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 10px;
 }
 
-.clicker-modal-slide {
-  opacity: 0%;
-  animation: slowTextShow 2s ease-in forwards 2s;
-}
-
-@keyframes slowTextShow {
-  0% {
-    opacity: 0%;
-  }
-  50% {
-    opacity: 50%;
-  }
-  100% {
-    opacity: 100%;
-  }
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
 }

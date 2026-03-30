@@ -1,6 +1,6 @@
 import { Button } from '@material-tailwind/react'
 import { useState, useEffect, useCallback } from 'react'
-import { useFloatingNotifications } from '../hooks/useFloatingNotifications'
+import { useFloatingNotifications } from '../../../hooks/useFloatingNotifications'
 import { CharacterService } from '../../../../api/services/CharacterService'
 import { QuestService } from '../../../../api/services/QuestService'
 import NotificationList from '../../common/NotificationList'
