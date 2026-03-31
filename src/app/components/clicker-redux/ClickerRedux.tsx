@@ -62,14 +62,18 @@ export default function ClickerRedux() {
         setShowNewGuildModal(false)
       }}
       guildmasterName={guildmasterName}
-      handleSetGuildmasterName={(_guildmasterName: string) => setGuildmasterName(_guildmasterName)}
+      handleSetGuildmasterName={(_guildmasterName: string) => {
+        setGuildmasterName(_guildmasterName)
+      }}
       closeButton={false}
     >
       <></>
     </CRIntroductionModal>
     Clicker Redux {gameData}
     <div>
-      {showNewGuildModal === false && guildName}
+      {guildName && guildmasterName && !showNewGuildModal && <div>
+        {guildName} - {guildmasterName}
+      </div>}
     </div>
   </div>
 }

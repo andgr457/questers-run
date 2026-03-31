@@ -1,15 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import Modal, { ModalProps } from '../common/Modal';
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { AnimatedText } from '../common/AnimatedText';
 import { RainbowJumpyText } from '../common/RainbowJumpyText';
-import { useFloatingNotifications } from '../../hooks/useFloatingNotifications';
 import NotificationListRedux from '../common/NotificationListRedux';
 
 interface IntroductionModalProps extends ModalProps {
   handleAcceptClicked: () => void
   handleSetGuildName: (guildName: string) => void
-  handleSetGuildmasterName: (guildMasterName: string) => void
+  handleSetGuildmasterName: (_guildmasterName: string) => void
   guildName: string
   guildmasterName: string
 }
@@ -37,26 +36,8 @@ interface SlideButton {
 
 
 export default function CRIntroductionModal(props: IntroductionModalProps) {
-  const NO_ICON = undefined
-  const [slideIndex, setSlideIndex] = useState(0)
-  const [groupingIndex, setGroupingIndex] = useState(0)
-  const [inputSelected, setInputSelected] = useState<'guildmasterName' | 'guildName' | undefined>(undefined)
-
-  const {notifications, addNotification} = useFloatingNotifications()
-
-  const handleEnterPress = () => {
-    if(inputSelected === 'guildmasterName'){
-      if(props.guildmasterName && props.guildmasterName.trim().length > 0){
-        //move to next item (copy this slide indexes continue onClick)
-      }
-    } else if(inputSelected === 'guildName'){
-      if(props.guildName && props.guildName.trim().length > 0){
-        //no more input after guild name
-      }
-    }
-  };
-
-  useKeyPress('Enter', handleEnterPress);
+  const [slideIndex, setSlideIndex] = useState<number>(0)
+  const [groupingIndex, setGroupingIndex] = useState<number>(0)
 
   const skipSectionButton = (sIndex: number, gIndex: number) => {
     return {
@@ -93,7 +74,7 @@ export default function CRIntroductionModal(props: IntroductionModalProps) {
     }
   }
 
-  const rawSlides: Slide[] = [
+  const slides: Slide[] = [
     // 0, 0
     {
       id: 'slide-1',
@@ -263,20 +244,21 @@ export default function CRIntroductionModal(props: IntroductionModalProps) {
           <input
             type='text'
             value={props.guildmasterName}
-            onChange={(e) => {props.handleSetGuildmasterName(e.currentTarget.value)}}
-            onFocus={() => setInputSelected('guildmasterName')}
+            onChange={(e) => {
+              props.handleSetGuildmasterName(e.currentTarget.value)}
+            }
             placeholder='Sign your name...'
             style={{width: '100%'}}
           >
           </input>
         </div>
           {props.guildmasterName && <div>
-            Guild-Master  
+            Rank 1 Guild-Master {props.guildmasterName}  
           </div>}
 
       </div>,
       actionButtons: [
-        continueButton(!INCREMENT_GROUPING_TRUE, !props.guildmasterName || props.guildmasterName?.trim()?.length === 0)
+        continueButton(!INCREMENT_GROUPING_TRUE, !props.guildmasterName || props.guildmasterName?.trim()?.length === 0, 'Sign')
       ],
       grouping: 3
     },
@@ -287,50 +269,35 @@ export default function CRIntroductionModal(props: IntroductionModalProps) {
       location: <div>Blackridge Guild Registrar Office</div>,
       description: <div>
         <AnimatedText>
-          <div className='clicker-modal-dialog'>
-            "Now, what will you name your <RainbowJumpyText>guild</RainbowJumpyText>?" 
-          </div>
+          <em>Registrar</em>: "Now, what will you name your <RainbowJumpyText>guild</RainbowJumpyText>?" 
         </AnimatedText>
         
         <input
           type='text'
           value={props.guildName}
           onChange={(e) => {props.handleSetGuildName(e.currentTarget.value)}}
-          onFocus={() => {setInputSelected('guildName')}}
           placeholder='Enter guild name...'
           style={{width: '100%'}}
         >
         </input>
       </div>,
       actionButtons: [
-        {
-          text: 'Continue',
-          onClick: props.handleAcceptClicked,
-          disabled: !props.guildName || props.guildName?.trim()?.length === 0
-        }
+        continueButton(INCREMENT_GROUPING_TRUE, !props.guildName || props.guildName?.trim()?.length === 0, 'Confirm')
       ],
-      grouping: 2
+      grouping: 3
     },
     // 10, 4
     {
       id: 'slide-11',
-      title: <div>Quester's Run Introduction - "{props.guildName}" Confirmation</div>,
+      title: <div>Quester's Run Introduction - Guild "{props.guildName}" Confirmation</div>,
       location: <div>Blackridge Guild Registrar Office</div>,
       description: <div>
         <AnimatedText>
-          <div className='clicker-modal-dialog'>
-            "Now before I stamp these papers, make sure this information is correct." 
-          </div>
+          <em>Registrar</em>: "Now before I stamp these papers, make sure this information is correct." 
+          <br/>
+          <br/>
+          Rank 1 Guildmaster <RainbowJumpyText>{props.guildmasterName}</RainbowJumpyText> of the <RainbowJumpyText>{props.guildName}</RainbowJumpyText> guild.
         </AnimatedText>
-        
-        <input
-          type='text'
-          value={props.guildName}
-          onChange={(e) => {props.handleSetGuildName(e.currentTarget.value)}}
-          placeholder='Enter guild name...'
-          style={{width: '100%'}}
-        >
-        </input>
       </div>,
       actionButtons: [
         {
@@ -338,62 +305,43 @@ export default function CRIntroductionModal(props: IntroductionModalProps) {
           onClick: props.handleAcceptClicked,
         },
         {
-          text: 'Back to Edit',
-          onClick: {},
+          text: 'Back',
+          onClick: () => {
+            setSlideIndex(9)
+            setGroupingIndex(3)
+          },
         }
       ],
       grouping: 4
     },
   ]
 
-  const [slides, setSlides] = useState(rawSlides)
-
-  const handleAddNotification = useCallback((slideId: string) => {
-    const newSlides = []
-    let notifyText: string
-    for(const slide of slides){
-      if(slide.id === slideId){
-        slide.notification.shown = true
-        notifyText = slide.notification.text
-      }
-      newSlides.push(slide)
-    }
-    addNotification(notifyText, NO_ICON, 6000)
-    setSlides(newSlides)
-  }, [slides])
-
   return <Modal
     backdropHides={false}
     isOpen={props.isOpen}
     onClose={props.onClose}
-    title={<div>{rawSlides[slideIndex].title}</div>}
+    title={<div>{slides[slideIndex].title}</div>}
     closeButton={props.closeButton}
   >
     <div className='clicker-modal-slides'>
-      <NotificationListRedux notifications={notifications} />
-
       <div className='flex-wrap' style={{gap: '10px', fontSize: 'smaller'}}>
         <div className='click-modal-slides-location'>
-          {rawSlides[slideIndex].location} 
+          <em>{slides[slideIndex].location}</em> 
         </div>
         <div className='click-modal-slides-queststep'>
-          Quest Step {slideIndex+1}/{rawSlides.length}
+          Quest Step {slideIndex+1}/{slides.length}
         </div>
       </div>
       {slides.map((slide, index) => {
         
         if(index <= slideIndex && groupingIndex === slide.grouping){
-          return <div className='clicker-modal-slide-item'>
-            <div>{slide.description}</div>
+          return <div key={`${slide.id}`} className='clicker-modal-slide-item'>
+            <div key={`${slide.id}_description`}>{slide.description}</div>
             {index === slideIndex && <div className='flex-wrap' style={{gap: '1em', marginTop: '10px'}}>
-              {rawSlides[slideIndex].actionButtons.map(b => {
-                if(slide.notification?.text){
-                  if(slide.notification?.shown === false){
-                    handleAddNotification(slide.id)
-                  }
-                }
+              {slides[slideIndex].actionButtons.map(b => {
                 return <div>
                   <button 
+                    className='confirm'
                     onClick={b.onClick} 
                     hidden={b?.disabled} 
                     disabled={b?.disabled}
