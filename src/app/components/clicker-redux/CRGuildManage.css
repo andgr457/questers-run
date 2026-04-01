@@ -1,0 +1,68 @@
+.guild-manage {
+  padding: 1em;
+  border: white solid 1px;
+  border-radius: 4px;
+}
+
+.guild-manage-header {
+  gap: 1em;
+}
+
+.guild-manage-title-info.name {
+  color: var(--gold);
+  font-size: 16px;
+  letter-spacing: 2px;
+  
+}
+
+.guild-manage-title-info {
+  font-size: 10px;
+  color: #bbbbbb;
+  letter-spacing: 1px;
+}
+
+.guild-manage-title-level {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--gold)
+}
+
+.guild-manage-nav-section {
+  gap: 0.6em;
+}
+
+.guild-manage-app {
+  margin-top: 5px;
+  padding: 1em;
+  border: white 1px solid;
+  border-radius: 4px;
+}
+
+.guild-manage-app-title {
+  color: var(--gold);
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.recruit-settings {
+
+}
+
+.recruit-setting {
+
+}
+
+.members-list {
+  background-color: var(--main-green);
+}
+
+.member {
+  background-color: var(--bg);
+  padding: 5px;
+  letter-spacing: 2px;
+}
+
+.member-title {
+  color: var(--gold);
+  filter: brightness(2);
+}

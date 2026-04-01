@@ -1,9 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import Modal, { ModalProps } from '../common/Modal';
-import { useKeyPress } from '../../hooks/useKeyPress';
 import { AnimatedText } from '../common/AnimatedText';
 import { RainbowJumpyText } from '../common/RainbowJumpyText';
-import NotificationListRedux from '../common/NotificationListRedux';
 
 interface IntroductionModalProps extends ModalProps {
   handleAcceptClicked: () => void

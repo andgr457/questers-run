@@ -3,39 +3,6 @@
 
 }
 
-
-.clicker-modal-slides input  {
-  padding: 8px;
-  background-color: var(--bg-dark);
-  border-radius: 5px;
-  margin-top: 5px;
-  letter-spacing: 2px;
-}
-
-.clicker-modal-slides button {
-  opacity: 0%;
-  padding: 8px;
-  color: #1fac3d;
-  background-color: var(--bg-dark);
-  min-width: 100px;
-  animation: slowTextShow 1s ease-in forwards 2.5s;
-  border: solid 1px #004406;
-  border-radius: 5px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 10px;
-}
-
-.clicker-modal-slides button.confirm {
-  animation: slowTextShow 1s ease-in forwards;
-
-}
-
-.clicker-modal-slides button:hover {
-  filter: brightness(2);
-}
-
-
 .clicker-modal-slide-item {
   padding: 8px;
   opacity: 0%;
